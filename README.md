@@ -9,6 +9,8 @@ Base repo for collective 2-year students' project
 5. "Босс" из п.1 дает доступ на запись в свой репозиторий каждому участнику команды (settings->collaborators)
 
 ## Далее
-Потом - стандартный цикл: git pull - git add - git commit - git push
+Javadoc на классы от преподавателя можно посмотреть **тут**: http://dimalit.github.io/ChatApp/index.html
+
+Стандартный цикл разработки: git pull - git add - git commit - git push
 
 Как тут: http://rogerdudler.github.io/git-guide/
