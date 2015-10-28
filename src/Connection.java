@@ -1,3 +1,3 @@
 public class Connection {
-    //комментарий
+    //some changes made here
 }
