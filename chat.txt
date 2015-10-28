@@ -1,0 +1,2 @@
+public class server 
+must contain different positions, like a input and output messages.
