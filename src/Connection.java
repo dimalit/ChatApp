@@ -4,51 +4,66 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Connection {
+class Connection {
     private ServerSocket serverSocket;
     private Socket socket;
-    private Connection user;
-    private String nick;
+    private String userNick;
     private String myNick;
 
-    public Connection(Connection user) throws IOException {
+    private Connection(Connection user) throws IOException {
         serverSocket = new ServerSocket(28411);
         socket = user.serverSocket.accept();
-
     }
 
-    public String getNick(){
-        return nick;
+    public String getUserNick(){
+        return userNick;
     }
 
-    public String getMyNick() {
+    String getMyNick() {
         return myNick;
     }
 
-    public void sendNickHello(Connection user){
+    void getNick(Connection newUser) {
+        this.userNick = newUser.getMyNick();
+    }
+    void sendNick(Connection newUser){
+        newUser.userNick=getMyNick();
+    }
+
+    void sendNickHello(String user){
         sendMessage("ChatApp 2015 user "+ this.getMyNick());
     }
 
-    public void sendNickBusy(Connection user){
+    void sendNickBusy(String user){
         if (socket.isConnected()){
             sendMessage("Busy");
         }
 
     }
 
+
+    void setConnection(Connection newUser){
+        try {
+            Connection user = new Connection(newUser);
+            getNick(newUser);
+            sendNick(newUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     void accept(){
-        sendNickHello(nick);
+        sendNickHello(userNick);
     }
 
     void reject(){
-        sendNickBusy(nick);
+        sendNickBusy(userNick);
         disconnect();
     }
 
-    public void sendMessage(String message){
+    void sendMessage(String message){
         try{
-            serverSocket = new ServerSocket();
-            socket = serverSocket.accept();
+            Connection(newUser);
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
