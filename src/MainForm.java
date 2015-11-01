@@ -23,9 +23,9 @@ public class MainForm {
 
 	private JFrame frame;
 	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_5;
+	private JTextField nickField;
+	private JTextField remoteLogiField;
+	private JTextField remoteAddrField;
 
 	/**
 	 * Launch the application.
@@ -66,48 +66,48 @@ public class MainForm {
 		panel_nick.setLayout(new BoxLayout(panel_nick,BoxLayout.X_AXIS));
 		panel_login.add(panel_nick);
 		
-		JLabel lblNewLabel = new JLabel("local login");
-		panel_nick.add(lblNewLabel);
+		JLabel loginLabel = new JLabel("local login");
+		panel_nick.add(loginLabel);
 		
-		textField_1 = new JTextField();
-		textField_1.setMaximumSize(new Dimension(150, 20));
-		panel_nick.add(textField_1);
-		textField_1.setColumns(10);
+		nickField = new JTextField();
+		nickField.setMaximumSize(new Dimension(150, 20));
+		panel_nick.add(nickField);
+		nickField.setColumns(10);
 		JPanel panel_connection=new JPanel();
 		panel_connection.setMaximumSize(new Dimension(32767, 100));
 		panel_connection.setLayout(new GridLayout(2,3));
 		frame.getContentPane().add(top_panel);
 		top_panel.add(panel_login);
 		
-		JButton btnNewButton_1 = new JButton("Apply");
-		panel_login.add(btnNewButton_1);
+		JButton nickApplyButton = new JButton("Apply");
+		panel_login.add(nickApplyButton);
 		top_panel.add(panel_connection);
 		
-		JLabel lblNewLabel_1 = new JLabel("Remote login");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel_connection.add(lblNewLabel_1);
+		JLabel remoteNickLabel = new JLabel("Remote login");
+		remoteNickLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		panel_connection.add(remoteNickLabel);
 		
-		textField_2 = new JTextField();
-		textField_2.setMaximumSize(new Dimension(150, 20));
-		panel_connection.add(textField_2);
-		textField_2.setColumns(10);
+		remoteLogiField = new JTextField();
+		remoteLogiField.setMaximumSize(new Dimension(150, 20));
+		panel_connection.add(remoteLogiField);
+		remoteLogiField.setColumns(10);
 		
-		JButton btnNewButton_2 = new JButton("Disconnect");
-		btnNewButton_2.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel_connection.add(btnNewButton_2);
+		JButton discButton = new JButton("Disconnect");
+		discButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel_connection.add(discButton);
 		
-		JLabel lblNewLabel_2 = new JLabel("Remote addr");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel_connection.add(lblNewLabel_2);
+		JLabel remoteAddrLabel = new JLabel("Remote addr");
+		remoteAddrLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		panel_connection.add(remoteAddrLabel);
 		
-		textField_5 = new JTextField();
-		textField_5.setMaximumSize(new Dimension(150, 20));
-		panel_connection.add(textField_5);
-		textField_5.setColumns(10);
+		remoteAddrField = new JTextField();
+		remoteAddrField.setMaximumSize(new Dimension(150, 20));
+		panel_connection.add(remoteAddrField);
+		remoteAddrField.setColumns(10);
 		
-		JButton btnNewButton_3 = new JButton("connect");
-		btnNewButton_3.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel_connection.add(btnNewButton_3);
+		JButton connectButt = new JButton("connect");
+		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel_connection.add(connectButt);
 		JPanel main_panel= new JPanel();
 		main_panel.setLayout(new GridLayout(1,1));
 		JPanel bot_panel = new JPanel();
@@ -123,11 +123,11 @@ public class MainForm {
 		main_panel.add(textArea);
 		frame.getContentPane().add(bot_panel);
 		
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setMinimumSize(new Dimension(16, 4));
-		textArea_1.setMaximumSize(new Dimension(800, 100));
-		textArea_1.setLineWrap(true);
-		bot_panel.add(textArea_1);
+		JTextArea messageArea = new JTextArea();
+		messageArea.setMinimumSize(new Dimension(16, 4));
+		messageArea.setMaximumSize(new Dimension(800, 100));
+		messageArea.setLineWrap(true);
+		bot_panel.add(messageArea);
 		
 		JButton btnNewButton = new JButton("Send");
 		btnNewButton.setMinimumSize(new Dimension(60, 25));
