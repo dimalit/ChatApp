@@ -18,7 +18,9 @@ public class Connection {
 		this.nickname = nickName.trim();
 
 	}
-
+	public boolean isOpen(){
+		return !s.isClosed();
+	}
 	public void sendNickHello(String nick) throws UnsupportedEncodingException, IOException {
 		outStream.write(("ChatApp 2015 user " + nickname + "\n").getBytes(ENCODING));
 		outStream.flush();
