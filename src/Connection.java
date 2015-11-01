@@ -51,8 +51,7 @@ public class Connection {
 		w.flush();
 	}
 	public void sendMessage(String Message) throws UnsupportedEncodingException{
-		GregorianCalendar time = new GregorianCalendar();
-		Message=nickName+" "+time.get(Calendar.DAY_OF_MONTH)+"/"+time.get(Calendar.MONTH)+"/"+time.get(Calendar.YEAR)+"\n"+Message;
+		Message+="\n";
 		byte[] buf=Message.getBytes(code);
 		w.println(buf);
 		w.flush();
