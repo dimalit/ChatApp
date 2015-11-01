@@ -30,21 +30,25 @@ public class Connection {
     }
 
     public void accept() throws IOException {
-        outStream.writeBoolean(true);
+        outStream.write("Accepted\n".getBytes());
         outStream.flush();
     }
 
     public void reject() throws IOException {
-        outStream.writeBoolean(false);
+        outStream.write("Rejected\n".getBytes());
         outStream.flush();
     }
 
     public void sendMessage(final String message) throws UnsupportedEncodingException, IOException {
-        outStream.write(Message.getBytes(ENCODING));
+    	outStream.write("Message\n".getBytes(ENCODING));
+        outStream.write((message+"\n").getBytes(ENCODING));
         outStream.flush();
     }
 
     public void disconnect() throws IOException {
+    	outStream.write("Disconnect\n".getBytes(ENCODING));
+    	outStream.flush();
+    	outStream.close();
         s.close();
     }
 }
