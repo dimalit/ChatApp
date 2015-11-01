@@ -39,7 +39,7 @@ public class Connection {
         outStream.flush();
     }
 
-    public void sendMessage(final String Message) throws UnsupportedEncodingException, IOException {
+    public void sendMessage(final String message) throws UnsupportedEncodingException, IOException {
         outStream.write(Message.getBytes(ENCODING));
         outStream.flush();
     }
