@@ -62,9 +62,9 @@ public class Connection {
  //TODO:Подумать про случай пустой строки, и вообще как оно должно приходить  
     public Command recive() throws IOException {
         StringBuffer sb = new StringBuffer();
-        char c;
-        while ((c = inStream.readChar()) = ! "\n") 
-            sb.append(c);
+        char ch;
+        while (ch=inStream.readChar()) = ! "\n") 
+            sb.append(ch);
         return 0 == sb.length() ? null : new Command(Command.CommandType.valueOf(sb.toString()));
     }
 }
