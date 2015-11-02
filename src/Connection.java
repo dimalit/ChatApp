@@ -65,6 +65,10 @@ public class Connection {
 		char c;
 		while ((c=inStream.readChar()) != ((char)(10)))
 			sb.append(c);
+		if (sb.toString().equals("Accepted") || sb.toString().equals("Rejected"))
+				sb=sb.delete(sb.length()-2, sb.length()-1);
+		else if(sb.substring(0,16).equals("ChatApp 2015 user"))
+			sb=new StringBuffer("Nick");
 		return 0 == sb.length() ? null : new Command(Command.CommandType.valueOf(sb.toString()));
 	}
 }
