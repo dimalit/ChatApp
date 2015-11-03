@@ -13,16 +13,13 @@ public class Caller {
 		BUSY, NO_SERVICE, NOT_ACCESIBLE, OK, REJECTED
 	}
 
+	// TODO:why so many constructors?
 	public Caller() {
-		localNick = "NickName";
-		ip = "localhost";
-		remoteAddress = new InetSocketAddress("127.0.0.1", Connection.PORT);
+		this("NickName", "127.0.0.1");
 	}
 
 	public Caller(String localNick) {
-		this.localNick = localNick;
-		ip = "localhost";
-		remoteAddress = new InetSocketAddress("127.0.0.1", Connection.PORT);
+		this(localNick, "127.0.0.1");
 	}
 
 	public Caller(String localNick, SocketAddress remoteAddress) {
@@ -34,7 +31,7 @@ public class Caller {
 	public Caller(String localNick, String ip) {
 		this.localNick = localNick;
 		this.ip = ip;
-		remoteAddress = new InetSocketAddress("127.0.0.1", Connection.PORT);
+		remoteAddress = new InetSocketAddress(ip, Connection.PORT);
 	}
 
 	public Connection call() throws IOException, InterruptedException {
