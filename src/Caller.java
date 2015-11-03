@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.TimeUnit;
 
 public class Caller {
 	private String localNick;
@@ -9,7 +10,7 @@ public class Caller {
 	private SocketAddress remoteAddress;
 
 	private static enum CallStatus {
-		BUSY, NO_SERVICE, NOT_ACCeSIBLE, OK, REJECTED
+		BUSY, NO_SERVICE, NOT_ACCESIBLE, OK, REJECTED
 	}
 
 	public Caller() {
@@ -37,20 +38,10 @@ public class Caller {
 	}
 
 	public Connection call() throws IOException, InterruptedException {
-		StringBuffer ip = new StringBuffer();
-		char ch;
-		int i = 1;
-		while ((ch = remoteAddress.toString().charAt(i)) != ':') {
-			ip.append(ch);
-			i++;
-		}
-		Socket s = new Socket(ip.toString(), Connection.PORT);
-		wait(1000);
-		if (s.isConnected()) {
-			Connection c = new Connection(s, localNick);
-			return c;
-		}
-		return null;
+		String ip = remoteAddress.toString(); // "/ip:port"
+		Socket s = new Socket(ip.substring(1, ip.indexOf(':')), Connection.PORT);
+		TimeUnit.SECONDS.sleep(1);
+		return s.isConnected() ? new Connection(s, localNick) : null;
 	}
 
 	public String getLocalNick() {
