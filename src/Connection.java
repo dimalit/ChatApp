@@ -8,17 +8,17 @@ import java.io.UnsupportedEncodingException;
 public class Connection {
 
 	private Socket s;
-	private final int PORT = 28411;
-	private final String ENCODING = "UTF-8";
+	public static final int PORT = 28411;
+	public static final String ENCODING = "UTF-8";
 	private DataOutputStream outStream;
 	private DataInputStream inStream;
 	private String nickname;
 
-	public Connection(String host, String nickName) throws IOException {
-		s = new Socket(host, PORT);
+	public Connection(Socket s, String nickname) throws IOException {
+		this.s=s;
 		outStream = new DataOutputStream(s.getOutputStream());
 		inStream = new DataInputStream(s.getInputStream());
-		this.nickname = nickName.trim();
+		this.nickname=nickname;
 
 	}
 
