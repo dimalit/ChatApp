@@ -1,4 +1,3 @@
-
 import java.net.Socket;
 import java.io.IOException;
 import java.io.DataInputStream;
@@ -15,10 +14,10 @@ public class Connection {
 	private String nickname;
 
 	public Connection(Socket s, String nickname) throws IOException {
-		this.s=s;
+		this.s = s;
 		outStream = new DataOutputStream(s.getOutputStream());
 		inStream = new DataInputStream(s.getInputStream());
-		this.nickname=nickname;
+		this.nickname = nickname;
 
 	}
 
@@ -59,16 +58,15 @@ public class Connection {
 		s.close();
 	}
 
-	// TODO:Подумать про случай пустой строки, и вообще как оно должно приходить
 	public Command recive() throws IOException {
 		StringBuffer sb = new StringBuffer();
 		char c;
-		while ((c=inStream.readChar()) != ((char)(10)))
+		while ((c = inStream.readChar()) != ((char) (10)))
 			sb.append(c);
-		if (sb.toString().equals("Accepted") || sb.toString().equals("Rejected"))
-				sb=sb.delete(sb.length()-2, sb.length()-1);
-		else if(sb.substring(0,16).equals("ChatApp 2015 user"))
-			sb=new StringBuffer("Nick");
+		if (sb.toString().toLowerCase().indexOf("ed") > 0)
+			sb = new StringBuffer(sb.toString().toLowerCase().replace("ed", ""));
+		else if (sb.toString().toLowerCase().contains("chatapp 2015 user"))
+			sb = new StringBuffer("Nick");
 		return 0 == sb.length() ? null : new Command(Command.CommandType.valueOf(sb.toString()));
 	}
 }
