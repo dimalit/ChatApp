@@ -89,6 +89,7 @@ public class Connection {
 					sb.append(c);
 				}
 				command = new MessageCommand(sb.toString());
+				return command;
 			}
 		}
 		return 0 == sb.length() ? null : new Command(Command.CommandType.valueOf(sb.toString()));
