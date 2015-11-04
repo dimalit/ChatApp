@@ -8,7 +8,8 @@ public class Caller {
 	private String localNick;
 	private String ip;
 	private SocketAddress remoteAddress;
-
+	private String remoteNick;
+	private final static int remotePort=28411;
 	private static enum CallStatus {
 		BUSY, NO_SERVICE, NOT_ACCESIBLE, OK, REJECTED
 	}
@@ -48,10 +49,9 @@ public class Caller {
 	public SocketAddress getRemoteAddess() {
 		return remoteAddress;
 	}
-
-	// TODO:wher is RemoteNick?
+//TODO:Where are you getting remoteNick?
 	public String getRemoteNick() {
-		return null;
+		return remoteNick;
 	}
 
 	public void setLocalNick(String localNick) {

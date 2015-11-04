@@ -1,18 +1,18 @@
 public class NickCommand extends Command {
-	private boolean busy;
+	private boolean isBusy;
 	private String nick;
 	private String version;
 
 	public NickCommand(String version, String nick, boolean busy) {
 		super(Command.CommandType.NICK);
-		this.busy = busy;
+		this.isBusy = busy;
 		this.nick = nick;
 		this.version = version;
 	}
 
 	@Override
 	public String toString() {
-		return busy + " " + nick + " " + version + "\n";
+		return isBusy + " " + nick + " " + version + "\n";
 	}
 
 }
