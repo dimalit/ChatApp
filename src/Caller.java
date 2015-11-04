@@ -24,7 +24,7 @@ public class Caller {
 
 	public Caller(String localNick, SocketAddress remoteAddress) {
 		this.localNick = localNick;
-		ip = "localhost";
+		ip = "127.0.0.1";
 		this.remoteAddress = remoteAddress;
 	}
 

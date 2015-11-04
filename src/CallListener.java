@@ -14,11 +14,11 @@ public class CallListener {
 	}
 
 	public CallListener(String localnick) throws IOException {
-		this(localnick, "localhost");
+		this(localnick, "127.0.0.1");
 	}
 
 	public CallListener() throws IOException {
-		this("NickName", "localhost");
+		this("NickName", "127.0.0.1");
 	}
 
 	// TODO: make function
@@ -59,6 +59,7 @@ public class CallListener {
 		this.localNick = localNick;
 	}
 	//TODO:String pattern?
+	@Override
 	public String toString() {
 		return null;
 	}

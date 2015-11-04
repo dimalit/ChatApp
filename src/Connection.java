@@ -63,10 +63,12 @@ public class Connection {
 		char c;
 		while ((c = inStream.readChar()) != ((char) (10)))
 			sb.append(c);
-		if (sb.toString().toLowerCase().indexOf("ed") > 0)
+		if (sb.toString().toLowerCase().indexOf("ed") > -1)
 			sb = new StringBuffer(sb.toString().toLowerCase().replace("ed", ""));
-		else if (sb.toString().toLowerCase().contains("chatapp 2015 user"))
+		//TODO: write nick and busy
+		else if (sb.toString().toLowerCase().contains("chatapp 2015 user") && !sb.toString().toLowerCase().contains("busy")){
 			sb = new StringBuffer("Nick");
+		}
 		return 0 == sb.length() ? null : new Command(Command.CommandType.valueOf(sb.toString()));
 	}
 }

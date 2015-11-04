@@ -1,13 +1,13 @@
 public class Command {
 
-	private Command.CommandType type;
+	protected CommandType type;
 
 	public static enum CommandType {ACCEPT, DISCONNECT, MESSAGE, NICK, REJECT;}
 
-	public Command(Command.CommandType t) {
+	public Command(CommandType t) {
 		type = t;
 	}
-
+	@Override
 	public String toString() {
 		return type.toString();
 	}
