@@ -2,79 +2,55 @@
 import java.net.*;
 import java.io.*;
 public class Connection{
-    private ServerSocket ss;
     private Socket s;
     private final static int PORT = 28411;
-    private String distNick;
-    private String myNick;
+    private final static String ENCODING = "UTF-8";
+    private String nick;
+    private DataOutputStream out;
+    private DataInputStream in;
 
     public Connection(String nick, String ip) throws IOException{
-        ss = new ServerSocket(PORT);
-        s = ss.accept();
+        s = new Socket(ip,PORT);
+        out = new DataOutputStream(s.getOutputStream());
+        in = new DataInputStream(s.getInputStream());
+        this.nick = nick;
     }
 
-    public void sendMessage(String message){
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream(),"UTF-8"));
-            PrintWriter out = new PrintWriter(s.getOutputStream(),true);
-            String input;
-            while((input = in.readLine()) != null){
-                out.write(message);
-                input = in.readLine();
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+    public void sendMessage(String message) throws IOException{
+        out.writeUTF("Message\n" + message+"\n");
+        out.flush();
     }
 
-    public void Disconnect(){
-        try {
-            s.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+    public void Disconnect() throws IOException{
+        out.writeUTF("Disconnect\n");
+        out.close();
+        in.close();
+        s.close();
     }
 
-    public void SetConnetion(Connection newUser) throws IOException{
-        Connection user = new Connection("2","2");
-        getNick(newUser);
-        sendNick(newUser);
+
+    public void sendNickHello(String nick) throws IOException {
+        out.writeUTF("ChatApp 2015 user " + nick+"\n");
+        out.flush();
     }
 
-    public String getDistNick() {
-        return distNick;
-    }
-
-    public String getMyNick() {
-        return myNick;
-    }
-
-    public void getNick(Connection user){
-        this.distNick = user.getMyNick();
-    }
-
-    public void sendNick(Connection user){
-        user.distNick = getMyNick();
-    }
-
-    public void HelloMessage(String s){
-        sendMessage("ChatApp 2015 user " + this.getMyNick());
-    }
-
-    public void Busy(){
+    public void sendNickBusy() throws IOException {
         if(s.isConnected()){
-            sendMessage("ChatApp 2015 user " + this.getMyNick() + " busy");
+            out.writeUTF("ChatApp 2015 user " + nick+" busy\n");
+            out.flush();
         }
     }
 
     public void accept(Connection newUser) throws IOException{
-        SetConnetion(newUser);
-        HelloMessage(newUser.getDistNick());
+        out.writeUTF("Accepted\n");
+        out.flush();
     }
 
-    public void decline(){
-        Busy();
-        Disconnect();
+    public void reject() throws IOException {
+        out.writeUTF("Rejected");
+        out.flush();
     }
-
+    public Command recieve(){
+        return null;
+    }
 }
