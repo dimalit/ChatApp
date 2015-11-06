@@ -5,16 +5,16 @@ import java.net.SocketAddress;
 public class CallListener {
 	private String localNick;
 	private String localIp;
-	private ServerSocket ss;
+	private ServerSocket sSocket;
 
-	public CallListener(String localnick, String localIp) throws IOException {
-		this.localNick = localnick;
+	public CallListener(String localNick, String localIp) throws IOException {
+		this.localNick = localNick;
 		this.localIp = localIp;
-		ss = new ServerSocket(Connection.PORT);
+		this.sSocket = new ServerSocket(Connection.PORT);
 	}
 
-	public CallListener(String localnick) throws IOException {
-		this(localnick, "127.0.0.1");
+	public CallListener(String localNick) throws IOException {
+		this(localNick, "127.0.0.1");
 	}
 
 	public CallListener() throws IOException {
@@ -23,11 +23,11 @@ public class CallListener {
 
 	// TODO: make function
 	public Connection getConnection() throws IOException {
-		return new Connection(ss.accept(), localNick);
+		return new Connection(sSocket.accept(), localNick);
 	}
 
 	public SocketAddress getListenAddress() throws IOException {
-		return ss.getLocalSocketAddress();
+		return sSocket.getLocalSocketAddress();
 	}
 
 	public String getLocalNick() {
@@ -35,7 +35,7 @@ public class CallListener {
 	}
 
 	public SocketAddress getRemoteAddress() throws IOException {
-		return ss.accept().getRemoteSocketAddress();
+		return sSocket.accept().getRemoteSocketAddress();
 	}
 
 	// TODO: Where the RemoteNick?
@@ -44,7 +44,7 @@ public class CallListener {
 	}
 
 	public boolean isBusy() {
-		return ss.isBound();
+		return sSocket.isBound();
 	}
 
 	// TODO: Some with it
@@ -58,10 +58,10 @@ public class CallListener {
 	public void setLocalNick(String localNick) {
 		this.localNick = localNick;
 	}
-	//TODO:String pattern?
+	 //for test
 	@Override
 	public String toString() {
-		return null;
+		return "CallListener [localNick=" + localNick + ", localIp=" + localIp + ", sSocket=" + sSocket + "]";
 	}
 
 	public static void main(String[] args) {

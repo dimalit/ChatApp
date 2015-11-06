@@ -9,7 +9,8 @@ public class Caller {
 	private String ip;
 	private SocketAddress remoteAddress;
 	private String remoteNick;
-	private final static int remotePort=28411;
+	// private final static int REMOTE_PORT = 28411; nused
+
 	private static enum CallStatus {
 		BUSY, NO_SERVICE, NOT_ACCESIBLE, OK, REJECTED
 	}
@@ -18,7 +19,7 @@ public class Caller {
 	public Caller() {
 		this("NickName", "127.0.0.1");
 	}
-//Тестовый комментарий 
+
 	public Caller(String localNick) {
 		this(localNick, "127.0.0.1");
 	}
@@ -49,7 +50,8 @@ public class Caller {
 	public SocketAddress getRemoteAddess() {
 		return remoteAddress;
 	}
-//TODO:Where are you getting remoteNick?
+
+	// TODO:Where are you getting remoteNick?
 	public String getRemoteNick() {
 		return remoteNick;
 	}
@@ -62,9 +64,11 @@ public class Caller {
 		this.remoteAddress = remoteAddress;
 	}
 
-	// TODO: What toString?
+ //for test
+	@Override
 	public String toString() {
-		return null;
+		return "Caller [localNick=" + localNick + ", ip=" + ip + ", remoteAddress=" + remoteAddress + ", remoteNick="
+				+ remoteNick + "]";
 	}
 
 	// TODO:What Status?
