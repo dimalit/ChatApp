@@ -18,7 +18,7 @@ public class Caller {
 	public Caller() {
 		this("NickName", "127.0.0.1");
 	}
-
+//Тестовый комментарий 
 	public Caller(String localNick) {
 		this(localNick, "127.0.0.1");
 	}
