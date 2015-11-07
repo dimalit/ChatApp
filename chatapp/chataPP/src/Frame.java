@@ -1,137 +1,136 @@
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JTextField;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import java.awt.Dimension;
+import java.awt.Component;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
 
-public class Frame extends java.awt.Frame 
-{
-    
-    public Frame() {
-	        initComponents();
-	    }
-    
-    
-    private void initComponents() {
+public class Frame {
 
-	        jLayeredPane1 = new javax.swing.JLayeredPane();
-	        jScrollPane1 = new javax.swing.JScrollPane();
-	        jList1 = new javax.swing.JList();
-	        scrollbar1 = new java.awt.Scrollbar();
-	        label1 = new java.awt.Label();
-	        button1 = new java.awt.Button();
-	        button2 = new java.awt.Button();
-	        jTextField1 = new javax.swing.JTextField();
-	        button3 = new java.awt.Button();
-	        label2 = new java.awt.Label();
-	        label3 = new java.awt.Label();
-	        label4 = new java.awt.Label();
-	        button4 = new java.awt.Button();
-	        button5 = new java.awt.Button();
-
-	        setMinimumSize(new java.awt.Dimension(600, 400));
-	        addWindowListener(new java.awt.event.WindowAdapter() {
-	            public void windowClosing(java.awt.event.WindowEvent evt) {
-	                exitForm(evt);
-	            }
-	        });
-
-	        jLayeredPane1.setMinimumSize(new java.awt.Dimension(600, 600));
-	        jLayeredPane1.setPreferredSize(new java.awt.Dimension(600, 400));
-	        jLayeredPane1.setVerifyInputWhenFocusTarget(false);
-
-	        jList1.setModel(new javax.swing.AbstractListModel() {
-	            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-	            public int getSize() { return strings.length; }
-	            public Object getElementAt(int i) { return strings[i]; }
-	        });
-	        jScrollPane1.setViewportView(jList1);
-
-	        jLayeredPane1.add(jScrollPane1);
-	        jScrollPane1.setBounds(460, 100, 120, 260);
-	        jLayeredPane1.add(scrollbar1);
-	        scrollbar1.setBounds(580, 100, 16, 260);
-
-	        label1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-	        label1.setText("A?ocuy");
-	        jLayeredPane1.add(label1);
-	        label1.setBounds(488, 60, 100, 30);
-	        label1.getAccessibleContext().setAccessibleName("Friends");
-
-	        button1.setLabel("Aiaaaeou");
-	        jLayeredPane1.add(button1);
-	        button1.setBounds(460, 360, 70, 24);
-	        button1.getAccessibleContext().setAccessibleName("Add");
-
-	        button2.setLabel("Oaaeeou");
-	        jLayeredPane1.add(button2);
-	        button2.setBounds(527, 360, 70, 24);
-	        button2.getAccessibleContext().setAccessibleName("Delete");
-	        button2.getAccessibleContext().setAccessibleDescription("");
-
-	        jTextField1.setText("Niiauaiea");
-	        jLayeredPane1.add(jTextField1);
-	        jTextField1.setBounds(40, 100, 390, 260);
-
-	        button3.setLabel("Ioi?aaeou");
-	        jLayeredPane1.add(button3);
-	        button3.setBounds(320, 360, 110, 40);
-
-	        label2.setText("Iee a?oaa");
-	        jLayeredPane1.add(label2);
-	        label2.setBounds(50, 60, 120, 30);
-
-	        label3.setText("A?aiy iauaiey");
-	        jLayeredPane1.add(label3);
-	        label3.setBounds(480, 10, 100, 30);
-
-	        label4.setText("IP a?oaa");
-	        jLayeredPane1.add(label4);
-	        label4.setBounds(200, 60, 150, 30);
-
-	        button4.setLabel("Niaaeieouny");
-	        jLayeredPane1.add(button4);
-	        button4.setBounds(50, 10, 110, 40);
-
-	        button5.setLabel("?acuaaeieouny");
-	        jLayeredPane1.add(button5);
-	        button5.setBounds(230, 10, 120, 40);
-
-	        add(jLayeredPane1, java.awt.BorderLayout.CENTER);
-
-	        pack();
-	    }// </editor-fold>                        
-
-	    /**
-	     * Exit the Application
-	     */
-	    private void exitForm(java.awt.event.WindowEvent evt) {                          
-	        System.exit(0);
-	    }                         
-
-	    /**
-	     * @param args the command line arguments
-	     */
-	    public static void main(String args[]) {
-	        java.awt.EventQueue.invokeLater(new Runnable() {
-	            public void run() {
-	                new Frame().setVisible(true);
-	            }
-	        });
-	    }
+	private JFrame frame;
+	private JTextField text;
+	private JTextField nick;
+	private JTextField Logi;
+	private JTextField Add;
 
 
-	    // Variables declaration - do not modify                     
-	    private java.awt.Button button1;
-	    private java.awt.Button button2;
-	    private java.awt.Button button3;
-	    private java.awt.Button button4;
-	    private java.awt.Button button5;
-	    private javax.swing.JLayeredPane jLayeredPane1;
-	    private javax.swing.JList jList1;
-	    private javax.swing.JScrollPane jScrollPane1;
-	    private javax.swing.JTextField jTextField1;
-	    private java.awt.Label label1;
-	    private java.awt.Label label2;
-	    private java.awt.Label label3;
-	    private java.awt.Label label4;
-	    private java.awt.Scrollbar scrollbar1;
-    
-    
-    
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Frame f = new Frame();
+					f.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+	public Frame() {
+		initialize();
+	}
+
+
+	private void initialize() {
+		frame = new JFrame("ChatApp");
+		frame.setBounds(100, 100, 500, 400);		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		
+		JPanel login = new JPanel();
+		login.setLayout(new BoxLayout(login,BoxLayout.Y_AXIS));
+		
+		JPanel panelNick = new JPanel();
+		panelNick.setLayout(new BoxLayout(panelNick,BoxLayout.X_AXIS));
+		
+		login.add(panelNick);
+		JLabel loginLabel = new JLabel("Логин");
+		panelNick.add(loginLabel);	
+				
+		nick = new JTextField();
+		nick.setMaximumSize(new Dimension(150, 20));
+		panelNick.add(nick);
+		nick.setColumns(10);
+		
+		JPanel panel_connection=new JPanel();
+		panel_connection.setMaximumSize(new Dimension(32767, 100));
+		panel_connection.setLayout(new GridLayout(2,3));
+		frame.getContentPane().add(topPanel);
+		topPanel.add(login);
+		
+		JButton nickApplyButton = new JButton("Войти");
+		login.add(nickApplyButton);
+		topPanel.add(panel_connection);
+		
+		JLabel time = new JLabel("Время общения");
+		login.add(time);
+		
+		JLabel remoteNickLabel = new JLabel("Удаленный логин");
+		remoteNickLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		panel_connection.add(remoteNickLabel);
+		
+		Logi = new JTextField();
+		Logi.setMaximumSize(new Dimension(150, 20));
+		panel_connection.add(Logi);
+		Logi.setColumns(10);
+		
+		JButton connect = new JButton("Соединиться");
+		connect.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel_connection.add(connect);
+		
+		JLabel remoteAddrLabel = new JLabel("IP-адрес");
+		remoteAddrLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		panel_connection.add(remoteAddrLabel);
+		
+		Add= new JTextField();
+		Add.setMaximumSize(new Dimension(100, 20));
+		panel_connection.add(Add);
+		Add.setColumns(10);
+		
+		JButton disc = new JButton("Разьединиться");
+		disc.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel_connection.add(disc);
+		
+		JPanel main_panel= new JPanel();
+		main_panel.setLayout(new GridLayout(1,1));
+		
+		JPanel bot_panel = new JPanel();
+		bot_panel.setLayout(new BoxLayout(bot_panel,BoxLayout.X_AXIS));
+		frame.getContentPane().add(main_panel);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBorder(new LineBorder(Color.BLACK, 3));
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setRows(10);
+		main_panel.add(textArea);
+		frame.getContentPane().add(bot_panel);
+		
+		JTextArea text = new JTextArea();
+		text.setMinimumSize(new Dimension(16, 40));
+		text.setMaximumSize(new Dimension(300, 100));
+		text.setLineWrap(true);
+		bot_panel.add(text);
+		
+		JButton button = new JButton("Отправить");
+		button.setMinimumSize(new Dimension(60, 25));
+		button.setMaximumSize(new Dimension(100, 50));
+		button.setAlignmentX(Component.CENTER_ALIGNMENT);
+		bot_panel.add(button);
+
+	}
+
 }
