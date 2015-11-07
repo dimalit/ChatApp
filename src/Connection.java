@@ -30,12 +30,12 @@ public class Connection {
 	}
 
 	public void sendNickHello(String nick) throws UnsupportedEncodingException, IOException {
-		outStream.write(("ChatApp 2015 user " + nickname + EOL).getBytes(ENCODING));
+		outStream.write(("ChatApp 2015 user " + nick + EOL).getBytes(ENCODING));
 		outStream.flush();
 	}
 
 	public void sendNickBusy(String nick) throws UnsupportedEncodingException, IOException {
-		outStream.write(("ChatApp 2015 user " + nickname + " busy" + EOL).getBytes(ENCODING));
+		outStream.write(("ChatApp 2015 user " + nick + " busy" + EOL).getBytes(ENCODING));
 		outStream.flush();
 	}
 
@@ -67,18 +67,18 @@ public class Connection {
 		char c;
 		while ((c = (char) inStream.readByte()) != EOL)
 			sb.append(c);
-		String str = sb.toString().toUpperCase();
-		if (str.startsWith("CHATAPP 2015 USER")) {
+		String str = sb.toString();
+		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
-			return new NickCommand(in.next(), in.skip(" USER ").next(), str.endsWith(" BUSY"));
-		} else if ("MESSAGE".equals(str)) {
+			return new NickCommand(in.next(), in.skip(" [a-z,A-z]{1,5} ").next(), str.toUpperCase().endsWith(" BUSY"));
+		} else if ("MESSAGE".equalsIgnoreCase(str)) {
 			sb = new StringBuffer();
 			while ((c = (char) inStream.readByte()) != EOL)
 				sb.append(c);
 			return new MessageCommand(sb.toString());
-		} else if (str.lastIndexOf("ED") > -1)
-			str = str.replace("ED", "");
+		} else if (str.toUpperCase().lastIndexOf("ED") > -1)
+			str = str.toUpperCase().replace("ED", "");
 		return 0 == sb.length() | !isCorrectCommand(str) ? null : new Command(Command.CommandType.valueOf(str));
 	}
 
