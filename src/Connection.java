@@ -80,7 +80,7 @@ public class Connection {
 		return 0 == sb.length() | !isCorrectCommand(str) ? null : new Command(Command.CommandType.valueOf(str));
 	}
 
-	// TODO: Write a function that will verify the correctness of the string(protocol)
+	// TODO:Write a function that will verify the correctness of the string(protocol)
 	private boolean isCorrectCommand(final String s) {
 		return false;
 	}
