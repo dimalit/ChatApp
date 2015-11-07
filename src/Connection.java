@@ -71,7 +71,7 @@ public class Connection {
 		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
-			return new NickCommand(in.next(), in.skip(" [a-z,A-z]{1,5} ").next(), str.toUpperCase().endsWith(" BUSY"));
+			return new NickCommand(in.next(), in.skip(" [a-z,A-z]{4} ").next(), str.toUpperCase().endsWith(" BUSY"));
 		} else if ("MESSAGE".equalsIgnoreCase(str)) {
 			sb = new StringBuffer();
 			while ((c = (char) inStream.readByte()) != EOL)
@@ -107,7 +107,7 @@ public class Connection {
 			Connection c = new Connection(s, "test");
 			c.sendNickBusy("nickBusyTest");
 			TimeUnit.SECONDS.sleep(1);
-			c.sendNickHello("NickTest");
+			c.sendNickHello("nickTest");
 			TimeUnit.SECONDS.sleep(1);
 			c.sendMessage("MyMessage");
 			TimeUnit.SECONDS.sleep(1);
