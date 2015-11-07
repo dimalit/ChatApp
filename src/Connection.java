@@ -71,7 +71,7 @@ public class Connection {
 		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
-			return new NickCommand(in.next(), in.skip(" [a-z,A-z]{4} ").next(), str.toUpperCase().endsWith(" BUSY"));
+			return new NickCommand(in.next(), in.skip(" [a-z,A-Z]{4} ").next(), str.toUpperCase().endsWith(" BUSY"));
 		} else if ("MESSAGE".equalsIgnoreCase(str)) {
 			sb = new StringBuffer();
 			while ((c = (char) inStream.readByte()) != EOL)
