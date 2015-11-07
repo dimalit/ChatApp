@@ -2,8 +2,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Connection {
 
@@ -65,23 +67,57 @@ public class Connection {
 		char c;
 		while ((c = (char) inStream.readByte()) != EOL)
 			sb.append(c);
-		String str = sb.toString().toLowerCase();
-		if (str.startsWith("chatapp 2015 user")) {
+		String str = sb.toString().toUpperCase();
+		if (str.startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
-			return new NickCommand(in.next(), in.skip(" user ").next(), str.endsWith(" busy"));
-		} else if ("message".equals(str)) {
+			return new NickCommand(in.next(), in.skip(" USER ").next(), str.endsWith(" BUSY"));
+		} else if ("MESSAGE".equals(str)) {
 			sb = new StringBuffer();
 			while ((c = (char) inStream.readByte()) != EOL)
 				sb.append(c);
 			return new MessageCommand(sb.toString());
-		} else if (str.lastIndexOf("ed") > -1)
-			sb = new StringBuffer(str.replace("ed", ""));
+		} else if (str.lastIndexOf("ED") > -1)
+			str = str.replace("ED", "");
 		return 0 == sb.length() | !isCorrectCommand(str) ? null : new Command(Command.CommandType.valueOf(str));
 	}
 
-	// TODO:Write a function that will verify the correctness of the string(protocol)
+	// TODO:Write a function that will verify the correctness of the
+	// string(protocol)
 	private boolean isCorrectCommand(final String s) {
-		return false;
+		return true;
+	}
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+		// Test recive
+		int i = 2;
+		switch (i) {
+		case 1: {
+			ServerSocket ss = new ServerSocket(Connection.PORT);
+			Socket s = ss.accept();
+			Connection c = new Connection(s, "max");
+			while (true) {
+				Command cc = c.recive();
+				System.out.printf("%s : %s\n", cc.getClass(), cc);
+			}
+			// break;
+		}
+		case 2: {
+			Socket s = new Socket("127.0.0.1", Connection.PORT);
+			Connection c = new Connection(s, "test");
+			c.sendNickBusy("nickBusyTest");
+			TimeUnit.SECONDS.sleep(1);
+			c.sendNickHello("NickTest");
+			TimeUnit.SECONDS.sleep(1);
+			c.sendMessage("MyMessage");
+			TimeUnit.SECONDS.sleep(1);
+			c.accept();
+			TimeUnit.SECONDS.sleep(1);
+			c.reject();
+			TimeUnit.SECONDS.sleep(1);
+			break;
+		}
+		}
+
 	}
 }

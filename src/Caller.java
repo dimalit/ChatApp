@@ -12,7 +12,7 @@ public class Caller {
 	// private final static int REMOTE_PORT = 28411; nused
 
 	private static enum CallStatus {
-		BUSY, NO_SERVICE, NOT_ACCESIBLE, OK, REJECTED
+		BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
 	}
 
 	// TODO:why so many constructors?
