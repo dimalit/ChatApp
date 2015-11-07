@@ -66,25 +66,22 @@ public class Connection {
 		while ((c = (char) inStream.readByte()) != EOL)
 			sb.append(c);
 		String str = sb.toString().toLowerCase();
-		// FIXME: if user nick have ED substring it's a problem
-		if (str.lastIndexOf("ed") > -1)
-			sb = new StringBuffer(str.replace("ed", ""));
-		else if (str.contains("chatapp 2015 user")) {
+		if (str.startsWith("chatapp 2015 user")) {
 			Scanner in = new Scanner(str);
 			in.next();
-			return new NickCommand(in.next(), in.skip("user").next(), str.contains("busy"));
+			return new NickCommand(in.next(), in.skip(" user ").next(), str.endsWith(" busy"));
 		} else if ("message".equals(str)) {
 			sb = new StringBuffer();
 			while ((c = (char) inStream.readByte()) != EOL)
 				sb.append(c);
 			return new MessageCommand(sb.toString());
-		}
+		} else if (str.lastIndexOf("ed") > -1)
+			sb = new StringBuffer(str.replace("ed", ""));
 		return 0 == sb.length() | !isCorrectCommand(str) ? null : new Command(Command.CommandType.valueOf(str));
 	}
 
-	// TODO:Write a function that will verify the correctness of the line(protocol)
+	// TODO: Write a function that will verify the correctness of the string(protocol)
 	private boolean isCorrectCommand(final String s) {
 		return false;
 	}
-
 }
