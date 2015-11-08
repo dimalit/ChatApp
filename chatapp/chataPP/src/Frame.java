@@ -1,17 +1,6 @@
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.JTextField;
-import java.awt.GridLayout;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import java.awt.Dimension;
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
 
 public class Frame {
 
