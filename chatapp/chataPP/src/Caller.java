@@ -1,5 +1,7 @@
 import java.net.*;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class Caller 
 {
     private static final int remotePort = 9999;
@@ -12,23 +14,32 @@ public class Caller
     public Caller() {
     }
 
-    public void Call() throws UnknownHostException, IOException {
-		socket = new Socket(remoteAdress, remotePort);
-	}
+    public void Call() 
+    {
+        try {
+            socket = new Socket(remoteAdress, remotePort);
+        } catch (IOException ex) {
+            Logger.getLogger(Caller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-	public void setLocalNick(String localNick) {
+	public void setLocalNick(String localNick) 
+        {
 		this.localNick = localNick;
 	}
 
-	public void setRemoteNick(String remoteNick) {
+	public void setRemoteNick(String remoteNick) 
+        {
 		this.remoteNick = remoteNick;
 	}
 
-	public void setRemoteAdress(String remoteAdress) {
+	public void setRemoteAdress(String remoteAdress) 
+        {
 		this.remoteAdress = remoteAdress;
 	}
 	
-	public Socket getSocket(){
+	public Socket getSocket()
+        {
 		return socket;
 	}
     
