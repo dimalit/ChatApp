@@ -46,7 +46,7 @@ public class Frame {
 		panelNick.setLayout(new BoxLayout(panelNick,BoxLayout.X_AXIS));
 		
 		login.add(panelNick);
-		JLabel loginLabel = new JLabel("Логин");
+		JLabel loginLabel = new JLabel("Login");
 		panelNick.add(loginLabel);	
 				
 		nick = new JTextField();
@@ -60,14 +60,14 @@ public class Frame {
 		frame.getContentPane().add(topPanel);
 		topPanel.add(login);
 		
-		JButton nickApplyButton = new JButton("Войти");
+		JButton nickApplyButton = new JButton("Enter");
 		login.add(nickApplyButton);
 		topPanel.add(panel_connection);
 		
-		JLabel time = new JLabel("Время общения");
+		JLabel time = new JLabel("Time");
 		login.add(time);
 		
-		JLabel remoteNickLabel = new JLabel("Удаленный логин");
+		JLabel remoteNickLabel = new JLabel("Remote login");
 		remoteNickLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel_connection.add(remoteNickLabel);
 		
@@ -76,11 +76,11 @@ public class Frame {
 		panel_connection.add(Logi);
 		Logi.setColumns(10);
 		
-		JButton connect = new JButton("Соединиться");
+		JButton connect = new JButton("Connect");
 		connect.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(connect);
 		
-		JLabel remoteAddrLabel = new JLabel("IP-адрес");
+		JLabel remoteAddrLabel = new JLabel("IP-adress");
 		remoteAddrLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel_connection.add(remoteAddrLabel);
 		
@@ -89,7 +89,7 @@ public class Frame {
 		panel_connection.add(Add);
 		Add.setColumns(10);
 		
-		JButton disc = new JButton("Разьединиться");
+		JButton disc = new JButton("Disconnect");
 		disc.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(disc);
 		
@@ -114,7 +114,7 @@ public class Frame {
 		text.setLineWrap(true);
 		bot_panel.add(text);
 		
-		JButton button = new JButton("Отправить");
+		JButton button = new JButton("Send");
 		button.setMinimumSize(new Dimension(60, 25));
 		button.setMaximumSize(new Dimension(100, 50));
 		button.setAlignmentX(Component.CENTER_ALIGNMENT);
