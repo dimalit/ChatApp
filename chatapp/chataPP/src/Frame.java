@@ -31,8 +31,15 @@ public class Frame {
 
 
 	private void initialize() {
+                   
+                Toolkit kit = Toolkit.getDefaultToolkit();
+                Dimension screen = kit.getScreenSize();
+                int w = screen.width;
+                int h = screen.height;
 		frame = new JFrame("ChatApp");
-		frame.setBounds(100, 100, 500, 400);		
+		frame.setSize(w/2,h/2);
+                frame.setLocation(w/4, h/4);
+                
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
