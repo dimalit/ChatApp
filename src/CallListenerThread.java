@@ -7,7 +7,7 @@ import java.util.Observable;
 public class CallListenerThread extends Observable implements Runnable {
 	private CallListener callListener;
 	private Caller.CallStatus callStatus;
-	private boolean isOpen;
+	private volatile boolean isOpen;
 	//TODO: Add lastEvent;
 	
 	public CallListenerThread() throws IOException{
