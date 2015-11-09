@@ -11,7 +11,7 @@ public class Caller {
 	private String remoteNick;
 	// private final static int REMOTE_PORT = 28411; nused
 
-	private static enum CallStatus {
+	public static enum CallStatus {
 		BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
 	}
 

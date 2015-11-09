@@ -52,7 +52,7 @@ public class CallListener {
 	}
 
 	// TODO: Some with it
-	public void setListenAddress(SocketAddress lestanAddress) {
+	public void setListenAddress(SocketAddress listenAddress) {
 	}
 
 	public void setLocalNick(String localNick) {

@@ -99,6 +99,11 @@ public class Connection {
 			while (true) {
 				Command cc = c.recive();
 				System.out.printf("%s : %s\n", cc.getClass(), cc);
+				if (cc.equals("REJECT")){
+					ss.close();
+					s.close();
+					break;
+				}
 			}
 			// break;
 		}
