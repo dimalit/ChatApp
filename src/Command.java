@@ -1,8 +1,8 @@
 
 public class Command {
-    private String disconnect = "Disconnect\n";
-    private String accept = "Accepted\n";
-    private String reject = "Reject\n";
+    private static final String disconnect = "Disconnect\n";
+    private static final String accept = "Accepted\n";
+    private static final String reject = "Reject\n";
 
     public Command() {
         this.accept = accept;
