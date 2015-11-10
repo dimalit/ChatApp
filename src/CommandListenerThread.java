@@ -21,10 +21,7 @@ public class CommandListenerThread extends Observable implements Runnable {
 	}
 
 	boolean isDisconnected() {
-		if (disconnected)
-			return true;
-		else
-			return false;
+		return disconnected;
 	}
 
 	public void run() {
@@ -32,7 +29,7 @@ public class CommandListenerThread extends Observable implements Runnable {
 
 			try {
 				synchronized (this) {
-					this.lastCommand = con.recive();
+					this.lastCommand = con.receive();
 					setChanged();
 					notifyObservers();
 				}
