@@ -1,21 +1,25 @@
- import java.net.InetSocketAddress;
 
- 
- public class CallListener {
-     private String localNick;
-     private InetSocketAddress localAddress;
-     private boolean isBusy;
-    private String remoteNick;
- 
-     public CallListener(){
-         this("Untitled");
-     }
- 
-     public CallListener(String localNick){
-         this.localNick = localNick;
-     }
- 
- 
-   
-    
+
+import java.io.IOException;
+import java.net.*;
+
+public class CallListener {
+	private ServerSocket server;
+
+	public CallListener(ServerSocket server) {
+		this.server = server;
+	}
+
+
+	public void setServerSocket(ServerSocket server) {
+		this.server = server;
+	}
+
+	public Socket getSocket(){
+		Socket socket = null;
+		try{
+		 socket = server.accept();
+		} catch (IOException e){}
+		return socket;
+	}
 }
