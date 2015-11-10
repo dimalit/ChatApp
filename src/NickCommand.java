@@ -1,7 +1,7 @@
 
 public class NickCommand extends Command{
-    private String nickname = "ChatApp 2015 user ";
-    private Boolean isBusy = true;
+    private static String nickname = "ChatApp 2015 user ";
+    private static Boolean isBusy = true;
 
     public NickCommand() {
         this.nickname = nickname;
