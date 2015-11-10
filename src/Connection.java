@@ -62,7 +62,7 @@ public class Connection {
 		socket.close();
 	}
 
-	public Command recive() throws IOException {
+	public Command receive() throws IOException {
 		StringBuffer sb = new StringBuffer();
 		char c;
 		while ((c = (char) inStream.readByte()) != EOL)
@@ -85,11 +85,27 @@ public class Connection {
 	// TODO:Write a function that will verify the correctness of the
 	// string(protocol)
 	private boolean isCorrectCommand(final String s) {
-		return true;
+		boolean c = false;
+		Command.CommandType [] a = Command.CommandType.values();
+		for (int i = 0; i < a.length; i++) {
+			if ((a[i].toString().toLowerCase().equals("reject"))
+					|| (a[i].toString().toLowerCase().equals("accept"))) {
+				if (s.equalsIgnoreCase(a[i].toString().concat ("ed"))) {
+					c = true;
+					break;
+				}
+			} else {
+				if (a[i].toString().equals(s)) {
+					c = true;
+					break;
+				}
+			}
+	}
+		return c;
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		// Test recive
+		// Test receive
 		int i = 2;
 		switch (i) {
 		case 1: {
@@ -97,7 +113,7 @@ public class Connection {
 			Socket s = ss.accept();
 			Connection c = new Connection(s, "max");
 			while (true) {
-				Command cc = c.recive();
+				Command cc = c.receive();
 				System.out.printf("%s : %s\n", cc.getClass(), cc);
 				if (cc.equals("REJECT")){
 					ss.close();
