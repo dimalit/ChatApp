@@ -1,19 +1,21 @@
-import java.io.*;
-import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+ import java.net.InetSocketAddress;
 
-public class CallListener
-{
-
-    public CallListener() 
-    {
-        
-    }
-
-  
-    
-    
-    
+ 
+ public class CallListener {
+     private String localNick;
+     private InetSocketAddress localAddress;
+     private boolean isBusy;
+    private String remoteNick;
+ 
+     public CallListener(){
+         this("Untitled");
+     }
+ 
+     public CallListener(String localNick){
+         this.localNick = localNick;
+     }
+ 
+ 
+   
     
 }
