@@ -25,11 +25,12 @@ public class CommandListenerThread extends Observable implements Runnable {
 	}
 
 	public void run() {
-		while (!stopFlag) {
+		while (!isDisconnected()) {
 
 			try {
 				synchronized (this) {
 					this.lastCommand = con.receive();
+					
 					setChanged();
 					notifyObservers();
 				}
@@ -42,13 +43,15 @@ public class CommandListenerThread extends Observable implements Runnable {
 
 	}
 
-	void start() {
-		stopFlag = false;
-		run();
+	void start()
+	{
+		disconnected= false;
+		Thread t=new Thread();
+		t.run();
 	}
 
 	void stop() {
-		stopFlag = true;
+		disconnected = true;
 
 	}
 

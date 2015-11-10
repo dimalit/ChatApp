@@ -12,7 +12,7 @@ public class NickCommand extends Command {
 
 	@Override
 	public String toString() {
-		return isBusy + " " + nick + " " + version + "\n";
+		return version+ " " + nick + " " +isBusy  + "\n";
 	}
 
 }

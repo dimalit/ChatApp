@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -110,17 +112,14 @@ public class MainForm {
 		JButton discButton = new JButton("Disconnect");
 		discButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(discButton);
-
 		JLabel remoteAddrLabel = new JLabel("Remote addr");
 		remoteAddrLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel_connection.add(remoteAddrLabel);
-
 		remoteAddrField = new JTextField();
 		remoteAddrField.setMaximumSize(new Dimension(150, 20));
 		panel_connection.add(remoteAddrField);
 		remoteAddrField.setColumns(10);
-
-		JButton connectButt = new JButton("connect");
+		JButton connectButt = new JButton("Connect");
 		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(connectButt);
 		JPanel main_panel = new JPanel();
@@ -128,7 +127,6 @@ public class MainForm {
 		JPanel bot_panel = new JPanel();
 		bot_panel.setLayout(new BoxLayout(bot_panel, BoxLayout.X_AXIS));
 		frame.getContentPane().add(main_panel);
-
 		JTextArea textArea = new JTextArea();
 		textArea.setBackground(new Color(255, 255, 204));
 		textArea.setBorder(new LineBorder(Color.CYAN, 3));
@@ -162,33 +160,37 @@ public class MainForm {
 						e1.printStackTrace();
 					}
 				} else {
-					formConnectOrNo(true, "disconnected");
+					formConnectOrNo(true, "You're already disconnected");
 				}
 			}
 		});
 		connectButt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((!con)&&(remoteAddrLabel.getText()!=null)) {
+				if ((!con) && (remoteAddrField.getText() != null)) {
 					formWait(true);
 					String login;
-					if (loginLabel.getText().equals(""))
-						login="unnamed";
+					if (nickField.getText().equals(""))
+						login = "unnamed";
 					else
-						login=loginLabel.getText();
-					caller = new Caller(login, remoteAddrLabel.getText());
+						login = nickField.getText();
+					caller = new Caller(login, remoteAddrField.getText());
 					try {
 						connection = caller.call();
 						if (connection != null)
 							connection.sendNickHello(login);
-
+						// There are receiving nick from remote user
 						con = true;
+
 					} catch (IOException | InterruptedException e1) {
 
 						e1.printStackTrace();
 					}
 
 				} else {
-					formConnectOrNo(true, "connected");
+					if (remoteAddrField.getText() == null)
+						formConnectOrNo(true, "You must write remote address");
+					else
+						formConnectOrNo(true, "You're already connected");
 				}
 
 			}
@@ -204,6 +206,67 @@ public class MainForm {
 			}
 
 		});
+		// TODO
+		nickApplyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		CommandListenerThread com = new CommandListenerThread();
+		com.start();
+		com.addObserver(new Observer() {
+			public void update(Observable ob, Object obj) {
+				switch (com.getLastCommand().type) {
+				case ACCEPT: {
+					messageArea.append("User is accepted");
+					break;
+				}
+				case REJECT: {
+					messageArea.append("rejected");
+					break;
+				}
+				case MESSAGE: {// add message to messageArea
+					break;
+				}
+				case DISCONNECT: {
+					messageArea.append("User was disconnected");
+					break;
+				}
+				case NICK: {
+					messageArea.append("User write to you");
+					if (!con) {
+						String login;
+						if (nickField.getText().equals(""))
+							login = "unnamed";
+						else
+							login = nickField.getText();
+						try {
+							connection.sendNickHello(login);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} else {
+						String login;
+						if (nickField.getText().equals(""))
+							login = "unnamed";
+						else
+							login = nickField.getText();
+						try {
+							connection.sendNickBusy(login);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
+					break;
+				}
+
+				}
+			}
+
+		});
 	}
 
 	void formConnectOrNo(boolean b, String str) {
@@ -214,7 +277,7 @@ public class MainForm {
 		m.setVisible(b);
 		Container cp = m.getContentPane();
 		cp.setLayout(null);
-		JLabel text = new JLabel("You're already ".concat(str));
+		JLabel text = new JLabel(str);
 		text.setSize(230, 60);
 		text.setLocation(120, 30);
 		cp.add(text);
