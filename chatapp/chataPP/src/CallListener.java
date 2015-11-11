@@ -1,25 +1,22 @@
-
-
 import java.io.IOException;
 import java.net.*;
 
-public class CallListener {
-	private ServerSocket server;
+public class CallListener 
+{
+   
+    private String LocalNick;
+    private boolean Busy;
+    private String RemoteNick;
+    private 
+    
+    public void getConnection()
+    {
+        
+    }
+    
 
-	public CallListener(ServerSocket server) {
-		this.server = server;
-	}
 
-
-	public void setServerSocket(ServerSocket server) {
-		this.server = server;
-	}
-
-	public Socket getSocket(){
-		Socket socket = null;
-		try{
-		 socket = server.accept();
-		} catch (IOException e){}
-		return socket;
-	}
+        
+        
+        
 }
