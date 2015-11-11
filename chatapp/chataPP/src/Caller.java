@@ -43,6 +43,11 @@ public class Caller
 		return socket;
 	}
     
+        private enum CallStatus
+        {
+            BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
+        };
+        
     
     
 }
