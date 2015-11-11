@@ -1,10 +1,10 @@
 
-public class NickCommand extends Command {
+public class NickCommand extends Comand {
 	private boolean isBusy;
 	private String nick, version;
 
 	public NickCommand(String version, String nick, boolean busy) {
-		super(Command.CommandType.valueOf("NICK"));
+		super(Comand.CommandType.valueOf("NICK"));
 		this.version = version;
 		this.isBusy = busy;
 		this.nick = nick;
