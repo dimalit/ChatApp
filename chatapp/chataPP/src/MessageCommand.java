@@ -1,8 +1,8 @@
-public class MessageCommand extends Command {
+public class MessageCommand extends Comand {
 	String message;
 
 	public MessageCommand(String message) {
-		super(Command.CommandType.MESSAGE);
+		super(Comand.CommandType.MESSAGE);
 		this.message = message;
 	}
 
