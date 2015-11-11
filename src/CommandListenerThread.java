@@ -47,7 +47,7 @@ public class CommandListenerThread extends Observable implements Runnable {
 	{
 		disconnected= false;
 		Thread t=new Thread();
-		t.run();
+		t.start();
 	}
 
 	void stop() {

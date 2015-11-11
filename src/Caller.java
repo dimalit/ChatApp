@@ -36,11 +36,16 @@ public class Caller {
 		remoteAddress = new InetSocketAddress(ip, Connection.PORT);
 	}
 
-	public Connection call() throws IOException, InterruptedException {
+	public Connection call() throws InterruptedException {
 		String ip = remoteAddress.toString(); // "/ip:port"
-		Socket s = new Socket(ip.substring(1, ip.indexOf(':')), Connection.PORT);
-		TimeUnit.SECONDS.sleep(1);
-		return s.isConnected() ? new Connection(s, localNick) : null;
+		try {
+			Socket s = new Socket(ip.substring(1, ip.indexOf(':')), Connection.PORT);
+			TimeUnit.SECONDS.sleep(1);
+			return s.isConnected() ? new Connection(s, localNick) : null;
+		} catch (IOException e) {
+			System.out.println("Not connected");
+		}
+		return null;
 	}
 
 	public String getLocalNick() {
@@ -64,7 +69,7 @@ public class Caller {
 		this.remoteAddress = remoteAddress;
 	}
 
- //for test
+	// for test
 	@Override
 	public String toString() {
 		return "Caller [localNick=" + localNick + ", ip=" + ip + ", remoteAddress=" + remoteAddress + ", remoteNick="

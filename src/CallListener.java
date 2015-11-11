@@ -18,7 +18,9 @@ public class CallListener {
 	}
 
 	public CallListener() throws IOException {
-		this("NickName", "127.0.0.1");
+		this.localNick = "NickName";
+		this.localIp = "127.0.0.1";
+		this.sSocket = new ServerSocket(Connection.PORT);
 	}
 
 	// TODO: make function

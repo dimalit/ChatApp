@@ -90,10 +90,8 @@ public class Connection {
 		for (int i = 0; i < a.length; i++) {
 			if ((a[i].toString().toLowerCase().equals("reject"))
 					|| (a[i].toString().toLowerCase().equals("accept"))) {
-				if (s.equalsIgnoreCase(a[i].toString().concat ("ed"))) {
 					c = true;
 					break;
-				}
 			} else {
 				if (a[i].toString().equals(s)) {
 					c = true;
@@ -115,11 +113,6 @@ public class Connection {
 			while (true) {
 				Command cc = c.receive();
 				System.out.printf("%s : %s\n", cc.getClass(), cc);
-				if (cc.equals("REJECT")){
-					ss.close();
-					s.close();
-					break;
-				}
 			}
 			// break;
 		}
