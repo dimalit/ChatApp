@@ -2,18 +2,18 @@
 import java.io.IOException;
 import java.util.Observable;
 
-public class CommandListenerThread  {
+public class CommandListenerThread extends Observable implements Runnable {
 	private boolean stopFlag;
-	private boolean disconnected;
-	private Connection con;
+	private boolean disconnect;
+	private Connection connection;
 	private Command lastCommand;
 
 	CommandListenerThread() {
 
 	}
 
-	CommandListenerThread(Connection con) {
-		this.con = con;
+	CommandListenerThread(Connection connection) {
+		this.connection = connection;
 
 	}
 
@@ -22,8 +22,40 @@ public class CommandListenerThread  {
 	}
 
 	boolean isDisconnected() {
-		return disconnected;
+		return disconnect;
 	}
 
+	public void run() {
+		while (!isDisconnected()) {
+
+			while (!isDisconnected()) {
+
+				try {
+					synchronized (this) {
+						this.lastCommand = connection.receive();
+
+						setChanged();
+						notifyObservers();
+					}
+				} catch (IOException e) {
+
+					e.printStackTrace();
+
+				}
+			}
+		}
+
+	}
+
+	void start() {
+		disconnect = false;
+		Thread t = new Thread();
+		t.start();
+	}
+
+	void stop() {
+		disconnect = true;
+
+	}
 
 }
