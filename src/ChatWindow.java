@@ -1,23 +1,19 @@
 import javax.swing.*;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 
 public class ChatWindow extends JFrame {
 
-	private ChatWindow() {
-		this.setSize(900, 900);
+	public ChatWindow() {
+		this.setSize(900, 700);
+		this.setTitle("This is CHAT");
+
 		final JPanel panel = new JPanel();
 		final JPanel field1 = new JPanel();
 		final JPanel field2 = new JPanel();
 		final JPanel field3 = new JPanel();
 		final JPanel messArea = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		
-		
 
 		final JLabel txt1 = new JLabel("    local login");
 		final JLabel txt2 = new JLabel("remote login");
@@ -26,9 +22,9 @@ public class ChatWindow extends JFrame {
 		final JTextField text1 = new JTextField(10);
 		final JTextField text2 = new JTextField(10);
 		final JTextField text3 = new JTextField(10);
-		final JTextArea textmess = new JTextArea(3, 72);
+		final JTextArea textArea = new JTextArea(3, 72);
 		final JTextArea mess = new JTextArea(15, 75);
-		textmess.setLineWrap(true);
+		textArea.setLineWrap(true);
 		mess.setLineWrap(true);
 		
 		final JButton but1 = new JButton("Apply");
@@ -50,7 +46,7 @@ public class ChatWindow extends JFrame {
 		field1.add(but1);
 		field2.add(but2);
 		field3.add(but3);
-		messArea.add(textmess);
+		messArea.add(textArea);
 		messArea.add(sendb);
 
 		panel.setBackground(new Color(220, 243, 246));
@@ -66,51 +62,45 @@ public class ChatWindow extends JFrame {
 		sendb.setBackground(new Color(116, 199, 209));
 		
 		class SendAction implements ActionListener{
-			private String messege;
-			
-			SendAction(){	
-			}
+			private String message;
 			
 			public void actionPerformed(ActionEvent event) {
-				messege = textmess.getText();
-				mess.append(messege);
-				textmess.setText("");
+				message = textArea.getText();
+				mess.append(message + "\n");
+				textArea.setText("");
 			}
 		}
+
 		class ApplyAction implements ActionListener{
-			private String text;
-			
-			ApplyAction(){	
-			}
-			
+			private String apply;
+
 			public void actionPerformed(ActionEvent event) {
-				text = txt1.getText();
-				// Apply
+				apply = txt1.getText();
+				text1.setText("");
+
 			}
 		}
+
 		class ConnectAction implements ActionListener{
-			private String textc;
-			
-			ConnectAction(){	
-			}
-			
+			private String connect;
+
 			public void actionPerformed(ActionEvent event) {
-				textc = txt2.getText();
-				// Connect
+				connect = txt2.getText();
+				text2.setText("");
+
 			}
 		}
+
 		class DisconnectAction implements ActionListener{
-			
-			DisconnectAction(){	
-			}
-			
+			private String disconnect;
+
 			public void actionPerformed(ActionEvent event) {
-				
-				// Disconnect
+				disconnect = txt3.getText();
+				text3.setText("");
+
 			}
 		}
-		
-		
+
 		SendAction send = new SendAction();
 		sendb.addActionListener(send);
 		ApplyAction applyact = new ApplyAction();
@@ -127,15 +117,14 @@ public class ChatWindow extends JFrame {
 		panel.add(messArea);
 
 		this.add(panel);
-		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setVisible(true);
 	}
 
 	public static void main(String[] args) {
-		ChatWindow a = new ChatWindow();
-		a.setTitle("This is CHAT ");
+		ChatWindow chatWindow = new ChatWindow();
 
-		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
-		a.setIconImage(image.getImage());
+		/*ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
+		chatWindow.setIconImage(image.getImage());*/
 	}
 }

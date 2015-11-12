@@ -17,7 +17,7 @@ public class Connection{
     }
 
     public void sendMessage(String message) throws IOException{
-        out.writeUTF("Message\n" + message+"\n");
+        out.writeUTF("Message\n" + message + "\n");
         out.flush();
     }
 
@@ -28,15 +28,14 @@ public class Connection{
         s.close();
     }
 
-
     public void sendNickHello(String nick) throws IOException {
-        out.writeUTF("ChatApp 2015 user " + nick+"\n");
+        out.writeUTF("ChatApp 2015 user " + nick + "\n");
         out.flush();
     }
 
     public void sendNickBusy() throws IOException {
         if(s.isConnected()){
-            out.writeUTF("ChatApp 2015 user " + nick+" busy\n");
+            out.writeUTF("ChatApp 2015 user " + nick + " busy\n");
             out.flush();
         }
     }
