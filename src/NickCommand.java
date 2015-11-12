@@ -1,16 +1,19 @@
 public class NickCommand extends Command{
     String nick;
+    Boolean busy;
 
-    public NickCommand(CommandType type){
-        super(type);
+    public NickCommand(){
+        super(CommandType.NICK);
     }
 
-    public NickCommand(CommandType type, String nick){
-        super(type);
-        this.nick=nick;
+    public NickCommand(String string){
+        super(CommandType.NICK);
+        if (string.contains(" busy")){
+            busy = true;
+            string.replace(" busy","");
+        }
+        string.replace(Protocol.GREETING,"");
+        nick = string;
     }
 
-    public void setNick(String nick){
-        this.nick=nick;
-    }
 }

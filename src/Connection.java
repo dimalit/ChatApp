@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-class Connection {
+class Connection{
     private Socket socket;
     private Scanner in;
     private DataOutputStream out;
@@ -19,17 +19,17 @@ class Connection {
     }
 
 
-    void sendNickHello(String nick){
+    public void sendNickHello(String nick){
         try {
-            out.writeUTF(new StringBuilder(Protocol.GREETING).append(nick).toString()); //"nick" - временно, потом заменим на непосредственно некую перемненную
+            out.writeUTF(new StringBuilder(Protocol.GREETING).append(nick).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void sendNickBusy(String nick){
+    public void sendNickBusy(String nick){
         try {
-            out.writeUTF(new StringBuilder(Protocol.GREETING).append(nick).append(" busy").toString()); //"nick" - временно, потом заменим на непосредственно некую перемненную
+            out.writeUTF(new StringBuilder(Protocol.GREETING).append(nick).append(" busy").toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,7 +37,7 @@ class Connection {
 
 
 
-    void accept(){
+    public void accept(){
         try {
             out.writeUTF(Protocol.ACCEPTED);
         } catch (IOException e) {
@@ -45,7 +45,7 @@ class Connection {
         }
     }
 
-    void reject(){
+    public void reject(){
         try {
             out.writeUTF(Protocol.REJECTED);
         } catch (IOException e) {
@@ -53,7 +53,7 @@ class Connection {
         }
     }
 
-    void sendMessage(String message){
+    public void sendMessage(String message){
         try {
             out.writeUTF(new StringBuilder(Protocol.MESSAGE).append("\n").append(message).toString());
         } catch (IOException e) {
@@ -61,7 +61,7 @@ class Connection {
         }
     }
 
-    void disconnect(){
+    public void disconnect(){
         try{
             out.writeUTF(Protocol.DISCONNECT);
             socket.close();
@@ -70,16 +70,7 @@ class Connection {
         }
     }
 
-    Command recieve(){
-        Command command;
-        String recievedString = in.nextLine();
-        command = Command.getCommand(recievedString);
-        String temporary;
-        //если сообщение или ник, то еще читать его.
-        return  command;
+    public Command recieve(){
+        return  Command.getCommand(in);
     }
-
-    //Делалось совместно с Сергеем Александровичем через Skype
-
-
 }
