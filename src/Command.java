@@ -5,8 +5,17 @@ public class Command {
     private static final String reject = "Reject\n";
 
     public Command() {
-        this.accept = accept;
-        this.disconnect = disconnect;
-        this.reject = reject;
+    }
+
+    public String getDisconnect() {
+        return disconnect;
+    }
+
+    public String getAccept() {
+        return accept;
+    }
+
+    public String getReject() {
+        return reject;
     }
 }
