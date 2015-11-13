@@ -12,15 +12,12 @@ public class CallListenerThread extends Observable implements Runnable {
 	
 	public CallListenerThread() throws IOException{
 		callListener = new CallListener();
-		start();
 	}
 	public CallListenerThread(String localNick) throws IOException{
 		callListener = new CallListener(localNick);
-		start();
 	}
 	public CallListenerThread(String localNick, String localIp) throws IOException{
 		callListener = new CallListener(localNick,localIp);
-		start();
 	}
 	
 	public SocketAddress getListenAddress() throws IOException{
@@ -67,7 +64,8 @@ public class CallListenerThread extends Observable implements Runnable {
 	}
 	public void start(){
 		this.isOpen=true;
-		run();
+		Thread t = new Thread();
+		t.start();
 	};
 	public void stop(){
 		this.isOpen=false;

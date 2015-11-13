@@ -46,8 +46,10 @@ public class MainForm {
 
 	/**
 	 * Launch the application.
+	 * 
+	 * @throws IOException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -164,10 +166,24 @@ public class MainForm {
 				}
 			}
 		});
+		connectButt.setEnabled(false);
+		if (remoteAddrField!=null)
+		{
+			connectButt.setEnabled(true);	
+		}
 		connectButt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if ((!con) && (remoteAddrField.getText() != null)) {
-					formWait(true);
+					//formWait(true);
+//					//CallListenerThread callListener;
+//					//try {
+//						callListener = new CallListenerThread();
+//						callListener.start();
+//					} catch (IOException e2) {
+//						// TODO Auto-generated catch block
+//						e2.printStackTrace();
+//					}
+					
 					String login;
 					if (nickField.getText().equals(""))
 						login = "unnamed";
@@ -175,6 +191,7 @@ public class MainForm {
 						login = nickField.getText();
 					caller = new Caller(login, remoteAddrField.getText());
 					try {
+						// FIXME:
 						connection = caller.call();
 						if (connection != null)
 							connection.sendNickHello(login);
@@ -216,57 +233,57 @@ public class MainForm {
 		com.start();
 		com.addObserver(new Observer() {
 			public void update(Observable ob, Object obj) {
-				switch (com.getLastCommand().type) {
-				case ACCEPT: {
-					messageArea.append("User is accepted");
-					break;
-				}
-				case REJECT: {
-					messageArea.append("rejected");
-					break;
-				}
-				case MESSAGE: {// add message to messageArea
-					break;
-				}
-				case DISCONNECT: {
-					messageArea.append("User was disconnected");
-					break;
-				}
-				case NICK: {
-					messageArea.append("User write to you");
-					if (!con) {
-						String login;
-						if (nickField.getText().equals(""))
-							login = "unnamed";
-						else
-							login = nickField.getText();
-						try {
-							connection.sendNickHello(login);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					} else {
-						String login;
-						if (nickField.getText().equals(""))
-							login = "unnamed";
-						else
-							login = nickField.getText();
-						try {
-							connection.sendNickBusy(login);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+				
+			if (com.getLastCommand() instanceof NickCommand)
+			{	textArea.setEnabled(true);
+				textArea.append(com.getLastCommand().toString().concat(" want to speak"));
+				textArea.setEnabled(false);
+			}
+			// TODO: must be check of callListenerThread
+			else
+				{
+				if (com.getLastCommand() instanceof MessageCommand)
+			{
+				textArea.append(com.getLastCommand().toString());
+			}
+				else
+					{
+					switch (com.getLastCommand().type) {
+					case ACCEPT: {
+						messageArea.append("User is accepted");
+						break;
 					}
-
-					break;
-				}
+					case REJECT: {
+						messageArea.append("rejected");
+						try {
+							connection.disconnect();
+							con=false;
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					}
+					case DISCONNECT: {
+						messageArea.append("User was disconnected");
+						try {
+							connection.disconnect();
+							con=false;
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					}
+					}
+					
+					}
 
 				}
 			}
 
 		});
+
 	}
 
 	void formConnectOrNo(boolean b, String str) {
@@ -297,14 +314,15 @@ public class MainForm {
 		v.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					connection.disconnect();
-					con = true;
+					if (connection != null) {
+						connection.disconnect();
+						con = true;
+					}
 					f.dispose();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-
 			}
 		});
 
