@@ -1,14 +1,15 @@
 import java.util.*;
 
-public class HistoryModel extends Observable{
+public class HistoryModel extends Observable {
 	private List<Message> messages;
+
 	HistoryModel() {
 		messages = new ArrayList<Message>();
 
 	}
 
 	void addMessage(String nick, Date date, String text) {
-		HistoryModel.Message message=new HistoryModel.Message(nick,date,text);
+		HistoryModel.Message message = new HistoryModel.Message(nick, date, text);
 		messages.add(message);
 	}
 
