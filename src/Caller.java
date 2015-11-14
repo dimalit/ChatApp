@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -79,5 +80,23 @@ public class Caller {
 	// TODO:What Status?
 	public CallStatus getStatus() {
 		return null;
+	}
+	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
+		Caller c = new Caller("max", "192.168.0.100");
+		Connection connection = c.call();
+//		connection.sendNickHello("max");
+//		TimeUnit.SECONDS.sleep(1);
+//		connection.sendMessage("Hello, world!");
+		connection.sendNickBusy("nickBusyTest");
+		TimeUnit.SECONDS.sleep(1);
+		connection.sendNickHello("nickTest");
+		TimeUnit.SECONDS.sleep(1);
+		connection.sendMessage("MyMessage");
+		TimeUnit.SECONDS.sleep(1);
+		connection.accept();
+		TimeUnit.SECONDS.sleep(1);
+		connection.reject();
+		TimeUnit.SECONDS.sleep(1);
+		
 	}
 }
