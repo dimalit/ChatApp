@@ -10,11 +10,14 @@ public class Caller {
     private Command lastCommand;
 
     public Connection call() throws IOException {
-        CallListener callListener = new CallListener();
-        Connection connection = callListener.getConnection();
+        Connection connection = new Connection(new Socket(remoteIP,remotePort));
+        connection.sendNickHello(localNick);
         lastCommand = connection.recieve();
-        if (lastCommand.equals(new Command(CommandType.ACCEPT))){
-            return connection;
+        if (lastCommand.equals(new Command(CommandType.NICK))){
+            if (lastCommand.equals(new Command(CommandType.ACCEPT))){
+                return connection;
+            }
+            else return null;
         }
         else return null;
     }
