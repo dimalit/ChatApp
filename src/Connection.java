@@ -7,7 +7,7 @@ class Connection{
     private Scanner in;
     private DataOutputStream out;
 
-    private Connection(Socket socket){
+    public Connection(Socket socket){
         this.socket=socket;
         try {
             in = new Scanner(socket.getInputStream());
