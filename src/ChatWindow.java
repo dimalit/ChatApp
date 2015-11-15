@@ -31,7 +31,7 @@ public class ChatWindow extends JFrame {
 		final JTextField text3 = new JTextField();
 		final JTextArea textmess = new JTextArea();
 		final JTextArea mess = new JTextArea(15, 75);
-
+		
 		messArea.setLayout(new BoxLayout(messArea, BoxLayout.X_AXIS));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		field.setLayout(new BoxLayout(field, BoxLayout.X_AXIS));
@@ -95,10 +95,7 @@ public class ChatWindow extends JFrame {
 		but3.setBackground(new Color(116, 199, 209));
 		sendb.setBackground(new Color(116, 199, 209));
 
-		final JScrollPane scrollPane = new JScrollPane(mess);
-		fieldmess.add(scrollPane);
-		scrollPane
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
 
 		class SendAction implements ActionListener {
 			private String messege;
@@ -153,6 +150,11 @@ public class ChatWindow extends JFrame {
 		but3.addActionListener(disconnectact);
 
 		fieldmess.add(mess);
+		final JScrollPane scrollPane = new JScrollPane(mess);
+		fieldmess.add(scrollPane);
+		
+		scrollPane
+				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		field.add(field1);
 		field.add(field2);
 		field.add(field3);
