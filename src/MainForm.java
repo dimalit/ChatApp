@@ -54,7 +54,12 @@ public class MainForm extends JFrame{
 		add(rmtNick);
 		discon.setBounds(675, 15, 110, 30);
 		add(discon);
+
+		dialog.setBounds(50, 100, 700, 250);
+		add(dialog);
 		
+		msg.setBounds(100, 380, 600, 60);
+		add(msg);
 		setVisible(true);
 	}
 	
