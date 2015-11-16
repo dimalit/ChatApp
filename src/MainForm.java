@@ -40,6 +40,7 @@ public class MainForm {
 	private JTextField nickField;
 	private JTextField remoteLogiField;
 	private JTextField remoteAddrField;
+	private JTextArea textArea;
 	private Caller caller;
 	private Connection connection;
 	private boolean con;
@@ -100,6 +101,7 @@ public class MainForm {
 
 		JButton nickApplyButton = new JButton("Apply");
 		panel_login.add(nickApplyButton);
+		nickApplyButton.setEnabled(false);
 		top_panel.add(panel_connection);
 
 		JLabel remoteNickLabel = new JLabel("Remote login");
@@ -108,12 +110,14 @@ public class MainForm {
 
 		remoteLogiField = new JTextField();
 		remoteLogiField.setMaximumSize(new Dimension(150, 20));
+		remoteLogiField.setEnabled(false);
 		panel_connection.add(remoteLogiField);
 		remoteLogiField.setColumns(10);
 
 		JButton discButton = new JButton("Disconnect");
 		discButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(discButton);
+		discButton.setEnabled(false);
 		JLabel remoteAddrLabel = new JLabel("Remote addr");
 		remoteAddrLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel_connection.add(remoteAddrLabel);
@@ -123,13 +127,15 @@ public class MainForm {
 		remoteAddrField.setColumns(10);
 		JButton connectButt = new JButton("Connect");
 		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
+		connectButt.setEnabled(false);
 		panel_connection.add(connectButt);
+
 		JPanel main_panel = new JPanel();
 		main_panel.setLayout(new GridLayout(1, 1));
 		JPanel bot_panel = new JPanel();
 		bot_panel.setLayout(new BoxLayout(bot_panel, BoxLayout.X_AXIS));
 		frame.getContentPane().add(main_panel);
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setBackground(new Color(255, 255, 204));
 		textArea.setBorder(new LineBorder(Color.CYAN, 3));
 		textArea.setEditable(false);
@@ -142,12 +148,14 @@ public class MainForm {
 		messageArea.setMinimumSize(new Dimension(16, 4));
 		messageArea.setMaximumSize(new Dimension(800, 100));
 		messageArea.setLineWrap(true);
+		messageArea.setEnabled(false);
 		bot_panel.add(messageArea);
 
 		JButton send = new JButton("Send");
 		send.setMinimumSize(new Dimension(60, 25));
 		send.setMaximumSize(new Dimension(100, 50));
 		send.setAlignmentX(Component.CENTER_ALIGNMENT);
+		send.setEnabled(false);
 		bot_panel.add(send);
 		// frame.pack();
 		discButton.addActionListener(new ActionListener() {
@@ -155,9 +163,13 @@ public class MainForm {
 			public void actionPerformed(ActionEvent e) {
 				if (con) {
 					try {
-						if (connection != null)
+						if (connection != null) {
 							connection.disconnect();
-						con = false;
+							send.setEnabled(false);
+							remoteLogiField.setText("");
+							con = false;
+							discButton.setEnabled(false);
+						}
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -166,24 +178,11 @@ public class MainForm {
 				}
 			}
 		});
-		connectButt.setEnabled(false);
-		if (remoteAddrField!=null)
-		{
-			connectButt.setEnabled(true);	
-		}
+
 		connectButt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((!con) && (remoteAddrField.getText() != null)) {
-					//formWait(true);
-//					//CallListenerThread callListener;
-//					//try {
-//						callListener = new CallListenerThread();
-//						callListener.start();
-//					} catch (IOException e2) {
-//						// TODO Auto-generated catch block
-//						e2.printStackTrace();
-//					}
-					
+				if ((!con) && (remoteAddrField.getText() != "")) {
+					// formWait(true);
 					String login;
 					if (nickField.getText().equals(""))
 						login = "unnamed";
@@ -193,7 +192,6 @@ public class MainForm {
 					try {
 						// FIXME:
 						connection = caller.call();
-						if (connection != null)
 							connection.sendNickHello(login);
 						// There are receiving nick from remote user
 						con = true;
@@ -229,61 +227,106 @@ public class MainForm {
 
 			}
 		});
+		CallListenerThread callListener;
+		try {
+			callListener = new CallListenerThread();
+			callListener.start();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+		ThreadOfCommand();
+
+	}
+	public void ThreadOfCaller() throws IOException
+	{
+		CallListenerThread callLT=new CallListenerThread(nickField.getText());
+		callLT.addObserver(new Observer()
+		{
+
+			public void update(Observable arg0, Object arg1) {
+				connection=callLT.getConnection();
+				if (callLT.getCallStatus()==Caller.CallStatus.valueOf("BUSY"))
+				{
+					try {
+						connection.sendNickBusy(nickField.getText());
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+					else
+					{
+						try {
+							connection.sendNickHello(nickField.getText());
+						} catch (UnsupportedEncodingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			
+			
+		});
+		
+	}
+	public void ThreadOfCommand()
+	{
 		CommandListenerThread com = new CommandListenerThread();
 		com.start();
 		com.addObserver(new Observer() {
 			public void update(Observable ob, Object obj) {
-				
-			if (com.getLastCommand() instanceof NickCommand)
-			{	textArea.setEnabled(true);
-				textArea.append(com.getLastCommand().toString().concat(" want to speak"));
-				textArea.setEnabled(false);
-			}
-			// TODO: must be check of callListenerThread
-			else
-				{
-				if (com.getLastCommand() instanceof MessageCommand)
-			{
-				textArea.append(com.getLastCommand().toString());
-			}
-				else
-					{
-					switch (com.getLastCommand().type) {
-					case ACCEPT: {
-						messageArea.append("User is accepted");
-						break;
-					}
-					case REJECT: {
-						messageArea.append("rejected");
-						try {
-							connection.disconnect();
-							con=false;
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+
+				if (com.getLastCommand() instanceof NickCommand) {
+					textArea.setEnabled(true);
+					textArea.append(com.getLastCommand().toString().concat(" want to speak"));
+					textArea.setEnabled(false);
+				}
+				// TODO: must be check of callListenerThread
+				else {
+					if (com.getLastCommand() instanceof MessageCommand) {
+						textArea.append(com.getLastCommand().toString());
+					} else {
+						switch (com.getLastCommand().type) {
+						case ACCEPT: {
+							textArea.append("User is accepted");
+							break;
 						}
-						break;
-					}
-					case DISCONNECT: {
-						messageArea.append("User was disconnected");
-						try {
-							connection.disconnect();
-							con=false;
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						case REJECT: {
+							textArea.append("rejected");
+							try {
+								connection.disconnect();
+								con = false;
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
 						}
-						break;
-					}
-					}
-					
+						case DISCONNECT: {
+							textArea.append("User was disconnected");
+							try {
+								connection.disconnect();
+								con = false;
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+						}
+
 					}
 
 				}
 			}
 
 		});
-
 	}
 
 	void formConnectOrNo(boolean b, String str) {
@@ -317,6 +360,7 @@ public class MainForm {
 					if (connection != null) {
 						connection.disconnect();
 						con = true;
+
 					}
 					f.dispose();
 				} catch (IOException e1) {

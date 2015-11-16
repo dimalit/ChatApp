@@ -11,14 +11,20 @@ public class HistoryModel extends Observable {
 	void addMessage(String nick, Date date, String text) {
 		HistoryModel.Message message = new HistoryModel.Message(nick, date, text);
 		messages.add(message);
+		setChanged();
+		notifyObservers();
 	}
 
 	void addMessage(HistoryModel.Message model) {
 		messages.add(model);
+		setChanged();
+		notifyObservers();
 	}
 
 	void clear() {
 		messages.clear();
+		setChanged();
+		notifyObservers();
 	}
 
 	HistoryModel.Message getMessage(int pos) {

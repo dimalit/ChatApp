@@ -7,6 +7,7 @@ import java.util.Observable;
 public class CallListenerThread extends Observable implements Runnable {
 	private CallListener callListener;
 	private Caller.CallStatus callStatus;
+	private Connection connection;
 	private volatile boolean isOpen;
 	//TODO: Add lastEvent;
 	
@@ -19,6 +20,10 @@ public class CallListenerThread extends Observable implements Runnable {
 	public CallListenerThread(String localNick, String localIp) throws IOException{
 		callListener = new CallListener(localNick,localIp);
 	}
+	public Caller.CallStatus getCallStatus()
+	{
+		return callStatus;
+	}
 	
 	public SocketAddress getListenAddress() throws IOException{
 		return callListener.getListenAddress();
@@ -28,6 +33,9 @@ public class CallListenerThread extends Observable implements Runnable {
 	}
 	public SocketAddress getRemoteAddress() throws IOException{
 		return callListener.getRemoteAddress();
+	}
+	public Connection getConnection(){
+		return connection;
 	}
 	public String getRemoteNick(){
 		return callListener.getRemoteNick();
@@ -39,7 +47,7 @@ public class CallListenerThread extends Observable implements Runnable {
 	public void run() {
 		while(true){
 			try{
-				Connection connection = callListener.getConnection();
+				connection = callListener.getConnection();
 				if (connection == null)
 					callStatus = Caller.CallStatus.valueOf("BUSY");
 				else
@@ -69,5 +77,6 @@ public class CallListenerThread extends Observable implements Runnable {
 	};
 	public void stop(){
 		this.isOpen=false;
-	};
+	}
+
 }
