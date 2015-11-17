@@ -1,4 +1,6 @@
 import java.awt.EventQueue;
+import java.awt.Graphics;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
@@ -14,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.UnexpectedException;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -45,7 +48,8 @@ public class MainForm {
 	private JTextField nickField;
 	private JTextField remoteLogiField;
 	private JTextField remoteAddrField;
-	private JTextArea textArea, messageArea;
+	private HistoryView textArea;
+	private JTextArea messageArea;
 	private JButton send;
 	private JButton discButton;
 	private CallListener callListener;
@@ -54,6 +58,7 @@ public class MainForm {
 	private Connection connection;
 	private CommandListenerThread com;
 	private CallListenerThread callLT;
+	private HistoryModel model;
 
 	/**
 	 * Launch the application.
@@ -79,6 +84,8 @@ public class MainForm {
 	 * @throws IOException
 	 */
 	public MainForm() throws IOException {
+		callLT = new CallListenerThread();
+		callLT.start();
 		frame = new JFrame();
 		frame.setBounds(100, 100, 481, 243);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,7 +149,8 @@ public class MainForm {
 		JPanel bot_panel = new JPanel();
 		bot_panel.setLayout(new BoxLayout(bot_panel, BoxLayout.X_AXIS));
 		frame.getContentPane().add(main_panel);
-		textArea = new JTextArea();
+		model = new HistoryModel();
+		textArea = new HistoryView(model);
 		textArea.setBackground(new Color(255, 255, 204));
 		textArea.setBorder(new LineBorder(Color.CYAN, 3));
 		textArea.setEditable(false);
@@ -230,7 +238,9 @@ public class MainForm {
 				try {
 					if (!messageArea.getText().equals("")) {
 						connection.sendMessage(messageArea.getText());
-						textArea.append(nickField.getText() + ":" + messageArea.getText() + "\n");
+						model.addMessage(nickField.getText(), new Date(), messageArea.getText());
+
+						textArea.update(model, new Object());
 						messageArea.setText("");
 
 					}
@@ -240,7 +250,6 @@ public class MainForm {
 			}
 
 		});
-		// TODO
 		nickApplyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String login;
@@ -267,12 +276,19 @@ public class MainForm {
 
 			public void update(Observable arg0, Object arg1) {
 				connection = callLT.getConnection();
-				Command command;
+				forConnect();
 				try {
+
+					connection.sendNickHello(nickField.getText());
+					Command command;
 					command = connection.receive();
 					if (command instanceof NickCommand) {
 						// if(callLT.getCallStatus().toString().equals("BUSY"))
-						formForConnect(true, command.toString());
+						remoteLogiField.setText(com.getLastCommand().toString());
+						remoteAddrField.setText(callListener.getRemoteAddress().toString());
+						connection.accept();
+						forConnect();
+						// formForConnect(true, command.toString());
 						// else
 						// formForNewTalk(true);
 					} else {
@@ -296,27 +312,26 @@ public class MainForm {
 			public void update(Observable ob, Object obj) {
 
 				if (com.getLastCommand() instanceof MessageCommand) {
-					textArea.append(remoteLogiField.getText() + ": " + com.getLastCommand().toString());
+					textArea.getModel().addMessage(remoteLogiField.getText(), new Date(),
+							com.getLastCommand().toString());
 				} else {
-					if (com.getLastCommand() instanceof NickCommand) {
-						remoteLogiField.setText(com.getLastCommand().toString());
-					} else {
-						switch (com.getLastCommand().type) {
-						case ACCEPT: {
-							textArea.append("User is accepted");
-							break;
-						}
-						case REJECT: {
-							textArea.append("rejected");
-							forDisconnect();
-							break;
-						}
-						case DISCONNECT: {
-							textArea.append("User was disconnected");
-							forDisconnect();
-							break;
-						}
-						}
+
+					switch (com.getLastCommand().type) {
+					case ACCEPT: {
+						textArea.append("User is accepted");
+						break;
+					}
+					case REJECT: {
+						textArea.append("rejected");
+						forDisconnect();
+						break;
+					}
+					case DISCONNECT: {
+						textArea.append("User was disconnected");
+						forDisconnect();
+						break;
+					}
+
 					}
 
 				}

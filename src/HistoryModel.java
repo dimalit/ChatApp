@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class HistoryModel extends Observable {
@@ -55,6 +56,11 @@ public class HistoryModel extends Observable {
 
 		String getText() {
 			return text;
+		}
+	public String toString()
+		{SimpleDateFormat a = new SimpleDateFormat("dd.MM.yyyy");
+		String str=a.format(date)+"  "+nick+":"+text+"\n";
+			return str;
 		}
 	}
 }
