@@ -21,9 +21,6 @@ public class Caller
 		socket = new Socket(address,port);
 		}
 	Connection c = new Connection(socket, localNick);
-	//	c.sendNickHello(localNick);
-	//	Command command = c.receive();
-	//todo
 	return c;
 	}
 	
@@ -63,10 +60,10 @@ public class Caller
 	public void setNick(String nick) {
 		this.nick = nick;
 	}
-        private enum CallStatus
-        {
-            BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
-        };
+        
+       private enum CallStatus {
+        BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
+       }
         
     
     
