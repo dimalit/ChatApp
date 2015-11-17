@@ -28,12 +28,13 @@ public class CallListener
 	}
 
 	Connection getConnection() throws IOException {
-                while (true)
-                {
-                  ServerSocket ss = new ServerSocket(localPort);
+		if (isStatusBusy()) {
+			return null;
+		} else {
+			ServerSocket ss = new ServerSocket(localPort);
 			Connection connect = new Connection(ss.accept(), localNick);
-			return connect;  
-                }
+			return connect;
+		}
 
 	}
 
@@ -50,7 +51,7 @@ public class CallListener
 	}
 
 	public void setListenAddress(SocketAddress listenAddress) {
-		
+		// TODO
 	}
 
 	public SocketAddress getLocalAddress() {
@@ -81,9 +82,11 @@ public class CallListener
 		this.remoteNick = remoteNick;
 	}
 
-	
-//	public String toString() {
-//	}
+	@Override
+	/* /ÿ íå ïîéìó ÷òî èìåííî òóò äîëæíî ïåðåîáðàçîâàòüñÿ / */
+	public String toString() {
+		return "CallListener [localNick=" + localNick + ", IP=" + IP + "]";
+	}
 
 	public void setRemoteAddress(SocketAddress remoteAddress) {
 		this.remoteAddress = remoteAddress;
@@ -92,10 +95,6 @@ public class CallListener
 	public int getLocalPort() {
 		return localPort;
 	}
-    
-
-
-        
         
         
 }
