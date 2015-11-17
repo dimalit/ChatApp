@@ -79,9 +79,6 @@ public class MainForm {
 	 * @throws IOException
 	 */
 	public MainForm() throws IOException {
-		callLT = new CallListenerThread();
-		callLT.start();
-		formForNewTalk(true, "");
 		frame = new JFrame();
 		frame.setBounds(100, 100, 481, 243);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -254,7 +251,6 @@ public class MainForm {
 					login = nickField.getText();
 				nickField.setEnabled(false);
 				try {
-					callListener = new CallListener(login);
 					ThreadOfCall();
 				} catch (IOException e1) {
 					e1.printStackTrace();
