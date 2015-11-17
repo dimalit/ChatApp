@@ -1,48 +1,68 @@
 import java.net.*;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 public class Caller 
 {
-    private static final int remotePort = 9999;
-    private Socket socket;
     private String localNick;
-    private String remoteNick;
-    private String remoteAdress;
-    
-    
-    public Caller() {
+	private InetAddress address;
+	private int port;
+	private String nick;
+	private Socket socket;
+	
+	
+	public Caller(InetAddress address, int port) throws IOException {
+		this.address=address;
+		this.port=port;
+		localNick = "nick";
+		socket = new Socket(address,port);
+	}
+	
+	public Connection call() throws IOException {
+	if(socket==null){
+		socket = new Socket(address,port);
+		}
+	Connection c = new Connection(socket, localNick);
+	//	c.sendNickHello(localNick);
+	//	Command command = c.receive();
+	//todo
+	return c;
+	}
+	
+	static enum CallStatus {
+        BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
     }
+	
+	
+	public String getLocalNick() {
+		return localNick;
+	}
 
-    public void Call() 
-    {
-        try {
-            socket = new Socket(remoteAdress, remotePort);
-        } catch (IOException ex) {
-            Logger.getLogger(Caller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-	public void setLocalNick(String localNick) 
-        {
+	public void setLocalNick(String localNick) {
 		this.localNick = localNick;
 	}
 
-	public void setRemoteNick(String remoteNick) 
-        {
-		this.remoteNick = remoteNick;
+	public InetAddress getAddress() {
+		return address;
 	}
 
-	public void setRemoteAdress(String remoteAdress) 
-        {
-		this.remoteAdress = remoteAdress;
+	public void setAddress(InetAddress address) {
+		this.address = address;
 	}
-	
-	public Socket getSocket()
-        {
-		return socket;
+
+	public int getPort() {
+		return port;
 	}
-    
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public String getNick() {
+		return nick;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
         private enum CallStatus
         {
             BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
