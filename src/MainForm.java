@@ -52,6 +52,8 @@ public class MainForm {
 	private JButton connectButt;
 	private Caller caller;
 	private Connection connection;
+	private CommandListenerThread com;
+	private CallListenerThread callLT;
 
 	/**
 	 * Launch the application.
@@ -73,15 +75,13 @@ public class MainForm {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @throws IOException
 	 */
-	public MainForm() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
+	public MainForm() throws IOException {
+		callLT = new CallListenerThread();
+		callLT.start();
+		formForNewTalk(true, "");
 		frame = new JFrame();
 		frame.setBounds(100, 100, 481, 243);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -207,19 +207,21 @@ public class MainForm {
 					try {
 						connection = caller.call();
 						if (connection != null) {
-							ThreadOfCommand();
 							connection.sendNickHello(nickField.getText());
+							com = new CommandListenerThread(connection);
+							com.start();
+							ThreadOfCommand();
 							forConnect();
 
 						}
 					} catch (InterruptedException e1) {
-						
+
 						e1.printStackTrace();
 					} catch (UnsupportedEncodingException e1) {
-						
+
 						e1.printStackTrace();
 					} catch (IOException e1) {
-						
+
 						e1.printStackTrace();
 					}
 
@@ -253,7 +255,7 @@ public class MainForm {
 				nickField.setEnabled(false);
 				try {
 					callListener = new CallListener(login);
-					ThreadOfCommand();
+					ThreadOfCall();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -262,33 +264,27 @@ public class MainForm {
 		});
 	}
 
-	public void ThreadOfCaller() throws IOException {
+	public void ThreadOfCall() throws IOException {
 
-		CallListenerThread callLT = new CallListenerThread(nickField.getText());
-		Thread thread = new Thread(callLT);
-		thread.start();
+		callLT = new CallListenerThread(nickField.getText());
 		callLT.addObserver(new Observer() {
 
 			public void update(Observable arg0, Object arg1) {
 				connection = callLT.getConnection();
-
+				Command command;
 				try {
-					if (callLT.getCallStatus() == Caller.CallStatus.valueOf("BUSY")) {
-						connection.sendNickBusy(nickField.getText());
-					} else {
-
-						connection.sendNickHello(nickField.getText());
-					}
-					Command command = connection.receive();
+					command = connection.receive();
 					if (command instanceof NickCommand) {
-						formForConnect(true);
+						// if(callLT.getCallStatus().toString().equals("BUSY"))
+						formForConnect(true, command.toString());
+						// else
+						// formForNewTalk(true);
 					} else {
 						connection.reject();
 						forDisconnect();
 					}
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
 				} catch (IOException e) {
+
 					e.printStackTrace();
 				}
 
@@ -299,8 +295,7 @@ public class MainForm {
 	}
 
 	public void ThreadOfCommand() {
-		CommandListenerThread com = new CommandListenerThread();
-		com.start();
+
 		com.addObserver(new Observer() {
 			public void update(Observable ob, Object obj) {
 
@@ -351,7 +346,7 @@ public class MainForm {
 		remoteAddrField.setEnabled(false);
 	}
 
-	void formForConnect(boolean b) {
+	void formForConnect(boolean b, String nick) {
 		JFrame f = new JFrame();
 		Container cp = f.getContentPane();
 		f.setSize(400, 175);
@@ -359,7 +354,7 @@ public class MainForm {
 		f.setVisible(b);
 		JPanel panel = new JPanel();
 		cp.setLayout(null);
-		JLabel text = new JLabel("Do you want to accept incoming connection?");
+		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
 		JButton yes = new JButton("Yes");
 		JButton no = new JButton("No");
 		yes.addActionListener(new ActionListener() {
@@ -394,6 +389,44 @@ public class MainForm {
 
 			}
 		});
+		text.setSize(500, 60);
+		text.setLocation(20, 20);
+		yes.setSize(90, 25);
+		yes.setLocation(70, 95);
+		no.setSize(90, 25);
+		no.setLocation(220, 95);
+		cp.add(text);
+		cp.add(yes);
+		cp.add(no);
+		f.setContentPane(cp);
+	}
+
+	public void formForNewTalk(boolean b, String nick) {
+		JFrame f = new JFrame();
+		Container cp = f.getContentPane();
+		f.setSize(400, 175);
+		f.setLocation(200, 200);
+		f.setVisible(b);
+		JPanel panel = new JPanel();
+		cp.setLayout(null);
+		JLabel text = new JLabel("New user " + nick + " want to speak with you." + "\n");
+		JLabel text1 = new JLabel("Do you want to reject current connection?");
+		JButton yes = new JButton("Yes");
+		JButton no = new JButton("No");
+
+		text.setSize(500, 60);
+		text.setLocation(100, 20);
+		text1.setSize(500, 60);
+		text1.setLocation(85, 40);
+		yes.setSize(90, 25);
+		yes.setLocation(70, 95);
+		no.setSize(90, 25);
+		no.setLocation(220, 95);
+		cp.add(text);
+		cp.add(text1);
+		cp.add(yes);
+		cp.add(no);
+		f.setContentPane(cp);
 	}
 
 	void formWait(boolean b) {
