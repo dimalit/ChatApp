@@ -1,6 +1,6 @@
-
 import java.net.*;
 import java.io.*;
+
 public class Connection{
     private Socket s;
     private final static int PORT = 28411;
