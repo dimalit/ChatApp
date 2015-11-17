@@ -9,10 +9,9 @@ public class NickCommand extends Command {
 		this.nick = nick;
 		this.version = version;
 	}
-
-	@Override
+	
 	public String toString() {
-		return version+ " " + nick + " " +isBusy  + "\n";
+		return nick;
 	}
 
 }

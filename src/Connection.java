@@ -47,6 +47,8 @@ public class Connection {
 	public void reject() throws IOException {
 		outStream.write(("Rejected" + EOL).getBytes());
 		outStream.flush();
+		outStream.close();
+		socket.close();
 	}
 
 	public void sendMessage(final String message) throws UnsupportedEncodingException, IOException {

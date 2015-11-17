@@ -6,11 +6,14 @@ import javax.swing.JTextField;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.UnexpectedException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -29,6 +32,8 @@ import java.awt.Container;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
+import org.omg.CORBA.portable.UnknownException;
+
 import com.sun.glass.events.MouseEvent;
 
 import java.awt.Color;
@@ -40,10 +45,13 @@ public class MainForm {
 	private JTextField nickField;
 	private JTextField remoteLogiField;
 	private JTextField remoteAddrField;
-	private JTextArea textArea;
+	private JTextArea textArea, messageArea;
+	private JButton send;
+	private JButton discButton;
+	private CallListener callListener;
+	private JButton connectButt;
 	private Caller caller;
 	private Connection connection;
-	private boolean con;
 
 	/**
 	 * Launch the application.
@@ -91,6 +99,7 @@ public class MainForm {
 
 		nickField = new JTextField();
 		nickField.setMaximumSize(new Dimension(150, 20));
+		nickField.setToolTipText("You must write your nick for applying");
 		panel_nick.add(nickField);
 		nickField.setColumns(10);
 		JPanel panel_connection = new JPanel();
@@ -101,7 +110,7 @@ public class MainForm {
 
 		JButton nickApplyButton = new JButton("Apply");
 		panel_login.add(nickApplyButton);
-		nickApplyButton.setEnabled(false);
+
 		top_panel.add(panel_connection);
 
 		JLabel remoteNickLabel = new JLabel("Remote login");
@@ -114,7 +123,7 @@ public class MainForm {
 		panel_connection.add(remoteLogiField);
 		remoteLogiField.setColumns(10);
 
-		JButton discButton = new JButton("Disconnect");
+		discButton = new JButton("Disconnect");
 		discButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(discButton);
 		discButton.setEnabled(false);
@@ -125,7 +134,8 @@ public class MainForm {
 		remoteAddrField.setMaximumSize(new Dimension(150, 20));
 		panel_connection.add(remoteAddrField);
 		remoteAddrField.setColumns(10);
-		JButton connectButt = new JButton("Connect");
+		remoteAddrField.setToolTipText("You must press Enter to continue");
+		connectButt = new JButton("Connect");
 		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
 		connectButt.setEnabled(false);
 		panel_connection.add(connectButt);
@@ -144,44 +154,49 @@ public class MainForm {
 		main_panel.add(textArea);
 		frame.getContentPane().add(bot_panel);
 
-		JTextArea messageArea = new JTextArea();
+		messageArea = new JTextArea();
 		messageArea.setMinimumSize(new Dimension(16, 4));
 		messageArea.setMaximumSize(new Dimension(800, 100));
 		messageArea.setLineWrap(true);
 		messageArea.setEnabled(false);
 		bot_panel.add(messageArea);
 
-		JButton send = new JButton("Send");
+		send = new JButton("Send");
 		send.setMinimumSize(new Dimension(60, 25));
 		send.setMaximumSize(new Dimension(100, 50));
 		send.setAlignmentX(Component.CENTER_ALIGNMENT);
 		send.setEnabled(false);
 		bot_panel.add(send);
 		// frame.pack();
+		remoteAddrField.addKeyListener(new KeyAdapter() {
+
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					connectButt.setEnabled(true);
+				}
+			}
+
+		});
 		discButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				if (con) {
-					try {
-						if (connection != null) {
-							connection.disconnect();
-							send.setEnabled(false);
-							remoteLogiField.setText("");
-							con = false;
-							discButton.setEnabled(false);
-						}
-					} catch (IOException e1) {
-						e1.printStackTrace();
+
+				try {
+					if (connection != null) {
+						connection.disconnect();
+						forDisconnect();
 					}
-				} else {
-					formConnectOrNo(true, "You're already disconnected");
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
+
 			}
+
 		});
 
 		connectButt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((!con) && (remoteAddrField.getText() != "")) {
+				if (remoteAddrField.getText() != "") {
 					// formWait(true);
 					String login;
 					if (nickField.getText().equals(""))
@@ -190,107 +205,110 @@ public class MainForm {
 						login = nickField.getText();
 					caller = new Caller(login, remoteAddrField.getText());
 					try {
-						// FIXME:
 						connection = caller.call();
-							connection.sendNickHello(login);
-						// There are receiving nick from remote user
-						con = true;
+						if (connection != null) {
+							ThreadOfCommand();
+							connection.sendNickHello(nickField.getText());
+							forConnect();
 
-					} catch (IOException | InterruptedException e1) {
-
+						}
+					} catch (InterruptedException e1) {
+						
+						e1.printStackTrace();
+					} catch (UnsupportedEncodingException e1) {
+						
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						
 						e1.printStackTrace();
 					}
 
-				} else {
-					if (remoteAddrField.getText() == null)
-						formConnectOrNo(true, "You must write remote address");
-					else
-						formConnectOrNo(true, "You're already connected");
 				}
-
 			}
 		});
 		send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (con)
-					try {
+				try {
+					if (!messageArea.getText().equals("")) {
 						connection.sendMessage(messageArea.getText());
-					} catch (IOException e1) {
-						e1.printStackTrace();
+						textArea.append(nickField.getText() + ":" + messageArea.getText() + "\n");
+						messageArea.setText("");
+
 					}
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 		});
 		// TODO
 		nickApplyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String login;
+				if (nickField.getText().equals("")) {
+					login = "unnamed";
+					nickField.setText(login);
+				} else
+					login = nickField.getText();
+				nickField.setEnabled(false);
+				try {
+					callListener = new CallListener(login);
+					ThreadOfCommand();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 
 			}
 		});
-		CallListenerThread callListener;
-		try {
-			callListener = new CallListenerThread();
-			callListener.start();
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-		ThreadOfCommand();
-
 	}
-	public void ThreadOfCaller() throws IOException
-	{
-		CallListenerThread callLT=new CallListenerThread(nickField.getText());
-		callLT.addObserver(new Observer()
-		{
+
+	public void ThreadOfCaller() throws IOException {
+
+		CallListenerThread callLT = new CallListenerThread(nickField.getText());
+		Thread thread = new Thread(callLT);
+		thread.start();
+		callLT.addObserver(new Observer() {
 
 			public void update(Observable arg0, Object arg1) {
-				connection=callLT.getConnection();
-				if (callLT.getCallStatus()==Caller.CallStatus.valueOf("BUSY"))
-				{
-					try {
+				connection = callLT.getConnection();
+
+				try {
+					if (callLT.getCallStatus() == Caller.CallStatus.valueOf("BUSY")) {
 						connection.sendNickBusy(nickField.getText());
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} else {
+
+						connection.sendNickHello(nickField.getText());
 					}
-				}
-					else
-					{
-						try {
-							connection.sendNickHello(nickField.getText());
-						} catch (UnsupportedEncodingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					Command command = connection.receive();
+					if (command instanceof NickCommand) {
+						formForConnect(true);
+					} else {
+						connection.reject();
+						forDisconnect();
 					}
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			
-			
+
+			}
+
 		});
-		
+
 	}
-	public void ThreadOfCommand()
-	{
+
+	public void ThreadOfCommand() {
 		CommandListenerThread com = new CommandListenerThread();
 		com.start();
 		com.addObserver(new Observer() {
 			public void update(Observable ob, Object obj) {
 
-				if (com.getLastCommand() instanceof NickCommand) {
-					textArea.setEnabled(true);
-					textArea.append(com.getLastCommand().toString().concat(" want to speak"));
-					textArea.setEnabled(false);
-				}
-				// TODO: must be check of callListenerThread
-				else {
-					if (com.getLastCommand() instanceof MessageCommand) {
-						textArea.append(com.getLastCommand().toString());
+				if (com.getLastCommand() instanceof MessageCommand) {
+					textArea.append(remoteLogiField.getText() + ": " + com.getLastCommand().toString());
+				} else {
+					if (com.getLastCommand() instanceof NickCommand) {
+						remoteLogiField.setText(com.getLastCommand().toString());
 					} else {
 						switch (com.getLastCommand().type) {
 						case ACCEPT: {
@@ -299,28 +317,15 @@ public class MainForm {
 						}
 						case REJECT: {
 							textArea.append("rejected");
-							try {
-								connection.disconnect();
-								con = false;
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							forDisconnect();
 							break;
 						}
 						case DISCONNECT: {
 							textArea.append("User was disconnected");
-							try {
-								connection.disconnect();
-								con = false;
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							forDisconnect();
 							break;
 						}
 						}
-
 					}
 
 				}
@@ -329,19 +334,66 @@ public class MainForm {
 		});
 	}
 
-	void formConnectOrNo(boolean b, String str) {
-		JFrame m = new JFrame();
-		m.setSize(400, 175);
-		m.setTitle("Prolem");
-		m.setLocation(200, 200);
-		m.setVisible(b);
-		Container cp = m.getContentPane();
+	void forDisconnect() {
+		send.setEnabled(false);
+		remoteLogiField.setText("");
+		messageArea.setEnabled(false);
+		discButton.setEnabled(false);
+		remoteAddrField.setText("");
+		remoteAddrField.setEnabled(true);
+	}
+
+	void forConnect() {
+		send.setEnabled(true);
+		connectButt.setEnabled(false);
+		messageArea.setEnabled(true);
+		discButton.setEnabled(true);
+		remoteAddrField.setEnabled(false);
+	}
+
+	void formForConnect(boolean b) {
+		JFrame f = new JFrame();
+		Container cp = f.getContentPane();
+		f.setSize(400, 175);
+		f.setLocation(200, 200);
+		f.setVisible(b);
+		JPanel panel = new JPanel();
 		cp.setLayout(null);
-		JLabel text = new JLabel(str);
-		text.setSize(230, 60);
-		text.setLocation(120, 30);
-		cp.add(text);
-		m.setContentPane(cp);
+		JLabel text = new JLabel("Do you want to accept incoming connection?");
+		JButton yes = new JButton("Yes");
+		JButton no = new JButton("No");
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					connection.accept();
+					remoteAddrField.setText(callListener.getRemoteAddress().toString());
+					Command command = connection.receive();
+					if (command instanceof NickCommand)
+						remoteLogiField.setText(command.toString());
+
+					ThreadOfCommand();
+					forConnect();
+					f.setVisible(!b);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					connection.reject();
+					forDisconnect();
+					f.setVisible(!b);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
 	}
 
 	void formWait(boolean b) {
@@ -359,7 +411,6 @@ public class MainForm {
 				try {
 					if (connection != null) {
 						connection.disconnect();
-						con = true;
 
 					}
 					f.dispose();
