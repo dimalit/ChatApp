@@ -83,7 +83,6 @@ public class CallListener
 	}
 
 	@Override
-	/* /ÿ íå ïîéìó ÷òî èìåííî òóò äîëæíî ïåðåîáðàçîâàòüñÿ / */
 	public String toString() {
 		return "CallListener [localNick=" + localNick + ", IP=" + IP + "]";
 	}
