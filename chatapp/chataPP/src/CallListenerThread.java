@@ -5,60 +5,84 @@ public class CallListenerThread extends Observable implements Runnable
 {
 
 private CallListener listener;
-private boolean isAvailable;
-public CallListenerThread() {
+	private boolean isAvailable;
+	private Thread thread;
+	private Caller.CallStatus callStatus;
+	
+	public CallListenerThread() {
 		listener = new CallListener();
-		start();
+		thread =  new Thread(this);
+		thread.start();
 	}
-public CallListenerThread(String localNick) {
+
+	public CallListenerThread(String localNick) {
 		listener = new CallListener(localNick);
-		start();
+		thread =  new Thread(this);
+		thread.start();
 	}
-public CallListenerThread(String localNick, String localIP) {
+
+	public CallListenerThread(String localNick, String localIP) {
 		listener = new CallListener(localNick, localIP);
-		start();
+		thread =  new Thread(this);
+		thread.start();
 	}
-public String getLocalNick() {
-return listener.getLocalNick();
+
+	public String getLocalNick() {
+		return listener.getLocalNick();
 	}
-public String getRemoteNick() {
-return listener.getRemoteNick();
+
+	public String getRemoteNick() {
+		return listener.getRemoteNick();
 	}
-public SocketAddress getListenAddress() throws IOException {
-return listener.getListenAddress();
+
+	public SocketAddress getListenAddress() throws IOException {
+		return listener.getListenAddress();
 	}
-public SocketAddress getRemoteAddress() throws IOException {
-return listener.getRemoteAddress();
+
+	public SocketAddress getRemoteAddress() throws IOException {
+		return listener.getRemoteAddress();
 	}
-public boolean isBusy() {
-return listener.isStatusBusy();
+
+	public boolean isBusy() {
+		return listener.isStatusBusy();
 	}
-public void setBusy(boolean busy) {
+
+	public void setBusy(boolean busy) {
 		listener.setStatus(busy);
 	}
-public void setLocalNick(String localNick) {
+
+	public void setLocalNick(String localNick) {
 		listener.setLocalNick(localNick);
 	}
-public void setListenAddress(SocketAddress listenAddress){
-//TODO
+    
+    public void setListenAddress(SocketAddress listenAddress){
+    	listener.setListenAddress(listenAddress);
     }
-public void run() {
-while (true) {
-try {
-				listener.getConnection();
+	
+	public void run() {
+		while (!isAvailable) {
+			try {
+				Connection connection=listener.getConnection();
+				if (connection == null) 
+					callStatus = Caller.CallStatus.valueOf("BUSY"); 
+					else 
+					callStatus = Caller.CallStatus.valueOf("OK"); 
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
 			setChanged();
 			notifyObservers();
 		}
+
 	}
-public void start() {
-this.isAvailable = true;
+
+	public void start() {
+		this.isAvailable = true;
 		run();
 	}
-public void stop() {
-this.isAvailable = false;
+
+	public void stop() {
+		this.isAvailable = false;
 	}
     
     
