@@ -11,10 +11,9 @@ public class Connection{
 
     public Connection(Socket s, String nick) throws IOException{
         this.s = s;
-        out = new DataOutputStream(s.getOutputStream());
-        in = new DataInputStream(s.getInputStream());
+        out = new DataOutputStream(this.s.getOutputStream());
+        in = new DataInputStream(this.s.getInputStream());
         this.nick = nick;
-        sendMessage(s.getInetAddress()+" connected. Type your message.");
     }
 
     public void sendMessage(String message) throws IOException{
@@ -29,7 +28,7 @@ public class Connection{
         s.close();
     }
 
-    public void sendNickHello(String nick) throws IOException {
+    public void sendNickHello() throws IOException {
         out.writeUTF("ChatApp 2015 user " + nick + "\n");
         out.flush();
     }
@@ -41,13 +40,13 @@ public class Connection{
         }
     }
 
-    public void accept(Connection newUser) throws IOException{
+    public void accept() throws IOException{
         out.writeUTF("Accepted\n");
         out.flush();
     }
 
     public void reject() throws IOException {
-        out.writeUTF("Rejected");
+        out.writeUTF("Rejected\n");
         out.flush();
     }
 

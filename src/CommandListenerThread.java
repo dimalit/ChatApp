@@ -19,7 +19,7 @@ public class CommandListenerThread extends Thread {
     }
 
     public void run() {
-        try {
+        /*try {
             while (true) {
                 if () {
 
@@ -27,6 +27,6 @@ public class CommandListenerThread extends Thread {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

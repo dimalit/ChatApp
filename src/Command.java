@@ -5,4 +5,5 @@ public class Command {
     public Command(CommandTypes ctypes) {
         this.commandTypes = ctypes;
     }
+
 }
