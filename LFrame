@@ -1,0 +1,136 @@
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+
+import java.util.Vector;
+
+import javax.swing.AbstractButton;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
+
+
+public class LFrame extends JFrame {
+	JPanel panel = new JPanel();	
+	
+	JButton Send;
+	JButton Apply;
+	JButton Disconnect;
+	JButton Connect;
+
+	
+	JLabel login;
+	JLabel addr;
+	JLabel smth;
+	
+	JTextField textfieldlogin;	
+	JTextField EnterIp;
+	
+	String name = "";
+
+	String name1;
+	String text;
+	
+	int adress;
+	
+	Font font = new Font("Verdana", Font.BOLD, 13);
+	
+	
+
+	LineBorder linebord = new LineBorder(Color.BLACK, 1);
+
+	LFrame(){
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		panel.setBackground(Color.white);
+		
+		login = new JLabel("login:");
+		login.setFont(font);
+		login.setBounds(35, 40, 60, 30);
+		textfieldlogin = new JTextField();
+		textfieldlogin.setBounds(80, 40, 115, 30);
+		textfieldlogin.setBorder(linebord);
+		
+		addr = new JLabel("remote addr");
+		addr.setFont(font);
+		addr.setBounds(400,35,100,50);
+		EnterIp = new JTextField();
+		EnterIp.setBounds(500,40,150,30);
+		EnterIp.setBorder(linebord);
+       
+		JTextField mass = new JTextField();
+	    mass.setHorizontalAlignment(JTextField.LEFT);
+		mass.setBorder(linebord);
+		JTextArea ForMass = new JTextArea();
+		ForMass.setEditable(false);     
+		ForMass.setLineWrap(true);		  
+		ForMass.setWrapStyleWord(true);  
+		mass.setBounds(10, 480, 650, 75);
+		
+		smth = new JLabel();
+		smth.setLocation(10, 140);
+		smth.setSize(740,300);
+		smth.setBorder(linebord);
+		
+		Apply = new JButton("Apply");
+		Apply.setLocation(80, 80);
+		Apply.setSize(75,30);
+		Apply.setFont(font);
+		
+		Disconnect = new JButton("Disconnect");
+		Disconnect.setLocation(600,80);
+		Disconnect.setSize(130,30);
+		Disconnect.setFont(font);
+		
+	    Connect  = new JButton("Connect");
+	    Connect.setLocation(450,80);
+	    Connect.setSize(100, 30);
+	    Connect.setFont(font);
+		Send = new JButton("Send");
+		Send.setLocation(680, 530);
+		Send.setSize(100,30);
+		Send.addActionListener(new ActionListener( ) {
+        	public void actionPerformed(ActionEvent ae) {
+        		int h=0;
+        		name1 = textfieldlogin.getText();
+        
+        		if(name.equals(name1)){
+        			text = mass.getText();
+            		smth.setText(name + text);
+            	
+        		}
+        		
+        	}
+        });
+		
+		
+		panel.add(login);
+		panel.add(textfieldlogin);
+		panel.add(mass);
+		panel.add(smth);
+		panel.add(EnterIp);
+		panel.add(addr);
+		panel.add(Send);
+		panel.add(Apply);
+		panel.add(Disconnect);
+		panel.add(Connect);
+		
+		this.add(panel);
+		
+	
+	}
+
+}
