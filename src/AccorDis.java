@@ -31,7 +31,7 @@ public class AccorDis extends JFrame {
 	
 	String username = "Artem";
 
-	AccorDis(final Connection connection){
+	AccorDis(final Connection connection, final Logic logic){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(Widht, Height);
         setResizable(false);
@@ -55,6 +55,7 @@ public class AccorDis extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 connection.accept();
+                logic.accept(connection);
                 close();
             }
         });

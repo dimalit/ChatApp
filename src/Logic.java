@@ -41,10 +41,13 @@ public class Logic{
     }
 
     public void accept(Connection connection){
+        System.out.println("logic got Connection!");
         this.connection=connection;
         commandListenerThread = new CommandListenerThread(this.connection,this);
         Thread thread = new Thread(commandListenerThread);
         thread.start();
+        setBusy(true);
+        System.out.println("GOT CONNECTION, YEY!");
 
     }
 

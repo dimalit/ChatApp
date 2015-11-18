@@ -28,9 +28,11 @@ public class CallListenerThread implements Runnable {
                 remoteConnection = callListener.getConnection();
                 if (remoteConnection == null) continue;
                 remoteNick=callListener.getRemoteNick();
-                form = new AccorDis(remoteConnection);
-                if (remoteConnection.getLastCommand()==CommandType.ACCEPT) logic.accept(remoteConnection);
-                else continue;
+                form = new AccorDis(remoteConnection,logic);
+                System.out.println("AZAZA");
+                logic.setRemoteNick(remoteNick);
+
+
 
             }
         }
