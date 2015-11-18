@@ -10,7 +10,7 @@ import java.net.*;
 public class ChatWindow extends JFrame {
 
 	public ChatWindow() {
-		this.setSize(500, 600);
+		this.setSize(650, 500);
 		this.setTitle("This is CHAT ");
 		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
 		this.setIconImage(image.getImage());

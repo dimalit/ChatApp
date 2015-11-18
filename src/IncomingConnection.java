@@ -11,7 +11,6 @@ public class IncomingConnection extends JFrame {
 		this.setTitle("Incoming Connection");
 		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
 		this.setIconImage(image.getImage());
-		final int x = 0;
 		final JPanel jPanel = new JPanel();
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
 		final JPanel pan1 = new JPanel();
