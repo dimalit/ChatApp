@@ -1,40 +1,73 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class IncomingConnection extends JFrame{
+public class IncomingConnection extends JFrame {
 
-    public IncomingConnection() {
-        this.setSize(450,200);
-        this.setTitle("Incoming Connection");
+	public IncomingConnection() {
+		this.setSize(380, 150);
+		this.setTitle("Incoming Connection");
+		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
+		this.setIconImage(image.getImage());
+		final int x = 0;
+		final JPanel jPanel = new JPanel();
+		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+		final JPanel pan1 = new JPanel();
+		final JPanel pan2 = new JPanel();
+		final JLabel jLabel = new JLabel(
+				"User XXX from IP Y.Y.Y.Y wants to chat");
 
-        final JPanel jPanel = new JPanel();
-        jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.X_AXIS));
+		final JButton jButton = new JButton("Accept");
+		final JButton jButton1 = new JButton("Decline");
 
-        final JLabel jLabel = new JLabel("User XXX from IP Y.Y.Y.Y wants to chat");
+	
+		
+		jButton.addActionListener(new ActionListener(){
+			
+			 @Override
+			 public void actionPerformed(ActionEvent e){
+	                //принять
+				 
 
-        final JButton jButton = new JButton("Accept");
-        final JButton jButton1 = new JButton("Decline");
+	            }
+	        });
+		
+		
+		jButton1.addActionListener(new ActionListener(){
+			
+			 @Override
+			 public void actionPerformed(ActionEvent e){
+	                //отклонить
+				
 
-        class ButtonListener implements ActionListener {
+	            }
+	        });
+		
+		jButton1.setPreferredSize(new Dimension(100, 25));
+		jButton.setPreferredSize(new Dimension(100, 25));
+		
+		jButton1.setBackground(new Color(116, 199, 209));
+		jButton.setBackground(new Color(116, 199, 209));
+		pan1.setBackground(new Color(220, 243, 246));
+		pan2.setBackground(new Color(220, 243, 246));
+		pan1.add(jLabel);
+		pan2.add(jButton);
+		pan2.add(jButton1);
 
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        }
-
-        jPanel.add(jLabel);
-        jPanel.add(jButton);
-        jPanel.add(jButton1);
-        jLabel.setAlignmentX(CENTER_ALIGNMENT);
-
-        this.add(jPanel);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        IncomingConnection incomingConnection = new IncomingConnection();
-    }
+		jPanel.add(pan1);
+		jPanel.add(pan2);
+	
+		this.add(jPanel);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setVisible(true);
+		
+	}
+	
+	public static void main(String[] args) {
+		IncomingConnection incomingConnection = new IncomingConnection();
+		
+	}
 }
