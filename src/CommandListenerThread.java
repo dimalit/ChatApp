@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class CommandListenerThread extends Thread implements {
+public class CommandListenerThread extends Thread {
     private Connection connection;
     private Command lastCommand;
     private List<Observer> observers;

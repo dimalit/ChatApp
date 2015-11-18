@@ -1,16 +1,13 @@
 
 public class NickCommand extends Command{
-    private static final String nickname = "ChatApp 2015 user ";
-    private static final Boolean isBusy = true;
+    protected String nick;
 
-    public NickCommand() {
+    public NickCommand(CommandTypes ctp) {
+        super(ctp);
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public Boolean getIsBusy() {
-        return isBusy;
+    public NickCommand(CommandTypes ctp, String nick) {
+        super(ctp);
+        this.nick = nick;
     }
 }
