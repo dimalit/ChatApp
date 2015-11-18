@@ -23,7 +23,8 @@ import javax.swing.border.SoftBevelBorder;
 
 
 public class LFrame extends JFrame {
-	JPanel panel = new JPanel();	
+	JPanel panel = new JPanel();
+    Logic logic;
 	
 	JButton Send;
 	JButton Apply;
@@ -33,10 +34,11 @@ public class LFrame extends JFrame {
 	
 	JLabel login;
 	JLabel addr;
-	JLabel smth;
+	HistoryView smth;
 	
 	JTextField textfieldlogin;	
 	JTextField EnterIp;
+    JTextField mass;
 	
 	String name = "";
 
@@ -51,7 +53,9 @@ public class LFrame extends JFrame {
 
 	LineBorder linebord = new LineBorder(Color.BLACK, 1);
 
-	LFrame(){
+	LFrame(final Logic logic){
+        this.logic=logic;
+
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -71,7 +75,7 @@ public class LFrame extends JFrame {
 		EnterIp.setBounds(500,40,150,30);
 		EnterIp.setBorder(linebord);
        
-		JTextField mass = new JTextField();
+		mass = new JTextField();
 	    mass.setHorizontalAlignment(JTextField.LEFT);
 		mass.setBorder(linebord);
 		JTextArea ForMass = new JTextArea();
@@ -80,7 +84,7 @@ public class LFrame extends JFrame {
 		ForMass.setWrapStyleWord(true);  
 		mass.setBounds(10, 480, 650, 75);
 		
-		smth = new JLabel();
+		smth = new HistoryView(logic.getHistoryViewModel());
 		smth.setLocation(10, 140);
 		smth.setSize(740,300);
 		smth.setBorder(linebord);
@@ -89,6 +93,12 @@ public class LFrame extends JFrame {
 		Apply.setLocation(80, 80);
 		Apply.setSize(75,30);
 		Apply.setFont(font);
+        Apply.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logic.setLocalNick(textfieldlogin.getText());
+            }
+        });
 		
 		Disconnect = new JButton("Disconnect");
 		Disconnect.setLocation(600,80);
@@ -99,19 +109,26 @@ public class LFrame extends JFrame {
 	    Connect.setLocation(450,80);
 	    Connect.setSize(100, 30);
 	    Connect.setFont(font);
+        Connect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logic.setRemoteIP(EnterIp.getText());
+                logic.call();
+            }
+        });
+
 		Send = new JButton("Send");
 		Send.setLocation(680, 530);
 		Send.setSize(100,30);
 		Send.addActionListener(new ActionListener( ) {
         	public void actionPerformed(ActionEvent ae) {
         		int h=0;
-        		name1 = textfieldlogin.getText();
-        
-        		if(name.equals(name1)){
-        			text = mass.getText();
-            		smth.setText(name + text);
+
+        		text = mass.getText();
+                logic.sendMessage(text);
+            	logic.getHistoryViewModel().addLocalMessage(text);
             	
-        		}
+
         		
         	}
         });
@@ -127,6 +144,7 @@ public class LFrame extends JFrame {
 		panel.add(Apply);
 		panel.add(Disconnect);
 		panel.add(Connect);
+
 		
 		this.add(panel);
 		

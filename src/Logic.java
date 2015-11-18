@@ -1,31 +1,37 @@
+import javax.swing.*;
 import java.io.IOException;
 
 public class Logic{
-    //ссылка на GUI
+    private MainGui mainGui;
     private String localNick = "default",remoteNick,remoteIP;
     private boolean isBusy;
     private Connection connection;
     private Caller caller;
     private CallListenerThread callListenerThread;
     private Thread callThread;
+    private HistoryViewModel historyViewModel = new HistoryViewModel(this);
+    private CommandListenerThread commandListenerThread;
 
-    public Logic(/*ссылка на GUI*/){
-        callListenerThread = new CallListenerThread(localNick,isBusy);
+
+
+    public Logic(){
+        callListenerThread = new CallListenerThread(localNick,isBusy,this);
         callThread = new Thread(callListenerThread);
         callThread.start();
-        //this.GUI = GUI;
+        mainGui = new MainGui(this);
     }
 
-    public void setLocalNick(){
-        /* localNick = GUI.getLocalNick() */
+    public void setLocalNick(String nick){
+        localNick=nick;
     }
+
 
     public void setRemoteNick(String nick){
         remoteNick = nick;
     }
 
-    public void setRemoteIP(){
-        // remoteIP = GUI.getRemoteIP();        
+    public void setRemoteIP(String IP){
+        remoteIP = IP;
     }
 
     public void setBusy(boolean isBusy) {
@@ -34,18 +40,24 @@ public class Logic{
 
     }
 
-    public void accept(){
-        connection.accept();
-       // callListenerThread.setButtonPressed(CommandType.ACCEPT);
+    public void accept(Connection connection){
+        this.connection=connection;
+        commandListenerThread = new CommandListenerThread(this.connection,this);
+        Thread thread = new Thread(commandListenerThread);
+        thread.start();
+
     }
 
     public void reject(){
         connection.reject();
-       // callListenerThread.setButtonPressed(CommandType.REJECT);
+
+    }
+
+    public void sendMessage(String message){
+        connection.sendMessage(message);
     }
 
     public void call(){
-        setRemoteIP();
         //блокировка кнопок Apply, Connect
         caller = new Caller(localNick,remoteIP);
         try {
@@ -54,11 +66,17 @@ public class Logic{
             //не удалось дозвониться по какой-то причине
         }
         if (connection!=null){
-            CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
+            remoteNick=caller.getRemoteNick();
+            commandListenerThread = new CommandListenerThread(connection,this);
             Thread comThread = new Thread(commandListenerThread);
             comThread.start();
             setBusy(true);
+            System.out.println("CONNECTED, YEY");
         }
+    }
+
+    public void addMessage(String message){
+        historyViewModel.addRemoteMessage(message);
     }
 
     public void disconnect(){
@@ -67,12 +85,34 @@ public class Logic{
         //
         remoteNick=null;
         remoteIP=null;
+        commandListenerThread.kill();
         connection.disconnect();
+        historyViewModel.addSystemMessage("Disconnected");
     }
 
     public void updateGUI(){
         //
     }
+
+    public String getLocalNick(){
+        return localNick;
+    }
+
+    public String getRemoteNick(){
+        return remoteNick;
+    }
+
+    public HistoryViewModel getHistoryViewModel(){
+        return historyViewModel;
+    }
+
+    public static void main(String[] args) {
+        Logic logic = new Logic();
+    }
+
+
+
+
 
 
 

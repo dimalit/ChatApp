@@ -6,15 +6,24 @@ public class CommandListenerThread  implements Runnable {
     private Connection connection;
     private HashMap<CommandType,CommandObserver> observers;
     private boolean stop;
+    Logic logic;
 
-    public CommandListenerThread(Connection connection){
+    public CommandListenerThread(Connection connection, Logic logic){
         this.connection=connection;
+        this.logic=logic;
     }
 
     public void run() {
         while (!stop) {
             lastCommand = connection.recieve();
-            observers.get(lastCommand.type).update(lastCommand);
+            if (lastCommand.type==CommandType.MESSAGE){
+                MessageCommand mc = (MessageCommand) lastCommand;
+                logic.addMessage(mc.message);
+            }
+
+            if (lastCommand.type==CommandType.DISCONNECT){
+                logic.disconnect();
+            }
         }
     }
 

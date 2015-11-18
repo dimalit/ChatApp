@@ -3,17 +3,22 @@ import java.sql.*;
 
 public class CallListenerThread implements Runnable {
 
-   private String localNick;
-   private CallListener callListener;
-   private boolean isBusy;
-   private String remoteIP;
-   private String lastAction;
-   private boolean stop;
-   private Connection remoteConnection;
+    private String localNick;
+    private CallListener callListener;
+    private boolean isBusy;
+    private String remoteIP;
+    private String lastAction;
+    private boolean stop;
+    private String remoteNick;
+    private Connection remoteConnection;
+    private AccorDis form;
+    Logic logic;
 
 
-    public CallListenerThread(String localNick,Boolean isBusy){
+
+    public CallListenerThread(String localNick,Boolean isBusy,Logic logic){
         callListener = new CallListener(localNick, false);
+        this.logic = logic;
     }
 
     public void run() {
@@ -22,7 +27,10 @@ public class CallListenerThread implements Runnable {
 
                 remoteConnection = callListener.getConnection();
                 if (remoteConnection == null) continue;
-                //генерация кнопок АССЕРТ и РИЖЕКТ
+                remoteNick=callListener.getRemoteNick();
+                form = new AccorDis(remoteConnection);
+                if (remoteConnection.getLastCommand()==CommandType.ACCEPT) logic.accept(remoteConnection);
+                else continue;
 
             }
         }

@@ -50,4 +50,8 @@ public class CallListener {
     public boolean getBusy(){
         return isBusy;
     }
+
+    public String getRemoteNick(){
+        return remoteNick;
+    }
 }

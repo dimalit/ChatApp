@@ -50,4 +50,7 @@ public class Caller {
         }
 
     }
+    public String getRemoteNick(){
+        return remoteNick;
+    }
 }
