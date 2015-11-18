@@ -3,18 +3,18 @@ import java.io.*;
 public class Caller {
     private Socket s;
     private String nick;
-    private int port;
+    private final static int port = 28411;
     private InetAddress IP;
     private String distNick;
 
     public Caller(InetAddress ip, int port) throws IOException{
         this.IP = ip;
-        this.port = port;
         s = new Socket(IP,port);
     }
 
-    public Connection call() throws IOException {
-        Connection c = new Connection(s,nick);
+    public Connection call(InetAddress ip, int port,String nick) throws IOException {
+        Connection c = new Connection(new Socket(ip,port),nick);
+        c.sendNickHello(nick);
         return c;
     }
 
@@ -28,10 +28,6 @@ public class Caller {
 
     public int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public InetAddress getIP() {

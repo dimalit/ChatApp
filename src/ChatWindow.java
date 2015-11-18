@@ -6,8 +6,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.net.*;
+import java.util.Observable;
+import java.util.Observer;
 
-public class ChatWindow extends JFrame {
+public class ChatWindow extends JFrame implements Observer {
+
+	private CallListenerThread callt;
+	private CommandListenerThread comt;
 
 	public ChatWindow() {
 		this.setSize(500, 600);
@@ -36,6 +41,7 @@ public class ChatWindow extends JFrame {
 		final JTextField text3 = new JTextField();
 		final JTextArea textmess = new JTextArea();
 		final JTextArea mess = new JTextArea();
+
 
 		messArea.setLayout(new BoxLayout(messArea, BoxLayout.X_AXIS));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -175,7 +181,18 @@ public class ChatWindow extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		ChatWindow a = new ChatWindow();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				new ChatWindow();
+			}
+		});
+		//ChatWindow a = new ChatWindow();
 		
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+
 	}
 }
