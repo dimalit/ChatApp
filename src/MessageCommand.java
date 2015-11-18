@@ -1,16 +1,13 @@
 
 public class MessageCommand extends Command {
-    private static final String message = "Message\n";
-    private static final String messageText = "";
+    protected String messagetext;
 
-    public MessageCommand() {
+    public MessageCommand(CommandTypes type) {
+        super(type);
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public String getTextmessage() {
-        return messageText;
+    public MessageCommand(CommandTypes type, String messagetext) {
+        super(type);
+        this.messagetext = messagetext;
     }
 }
