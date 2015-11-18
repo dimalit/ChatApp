@@ -7,15 +7,18 @@ public class Logic{
     private Connection connection;
     private CallListener callListener;
     private Caller caller;
+    CallListenerThread callListenerThread = new CallListenerThread();
+    Thread callThread = new Thread(callListenerThread);
 
     public Logic(){
-        //старт CallListenerThread
-        //старт GUI
+
+        callThread.start();
+        //GUI gui = new GUI();
         //
     }
 
     public void setLocalNick(){
-        /* localNick = GUI.getLocalNick() */;
+        /* localNick = GUI.getLocalNick() */
     }
 
     public void setRemoteNick(String nick){
@@ -29,6 +32,16 @@ public class Logic{
     public void setBusy(boolean isBusy) {
         this.isBusy = isBusy;
         callListener.setBusy(isBusy);
+    }
+
+    public void accept(){
+        connection.accept();
+        callListenerThread.setButtonPressed(CommandType.ACCEPT);
+    }
+
+    public void reject(){
+        connection.reject();
+        callListenerThread.setButtonPressed(CommandType.REJECT);
     }
 
     public void call(){
@@ -55,6 +68,10 @@ public class Logic{
         remoteNick=null;
         remoteIP=null;
         connection.disconnect();
+    }
+
+    public void updateGUI(){
+        //
     }
 
 

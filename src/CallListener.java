@@ -46,4 +46,8 @@ public class CallListener {
     public void setBusy(boolean isBusy) {
         this.isBusy = isBusy;
     }
+
+    public boolean getBusy(){
+        return isBusy;
+    }
 }

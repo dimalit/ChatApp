@@ -1,3 +1,7 @@
-public interface ConnectionObserver {
+public abstract class ConnectionObserver {
+
+    public void update(Connection connection){
+
+    }
 
 }
