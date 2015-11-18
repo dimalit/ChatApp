@@ -38,6 +38,7 @@ import javax.swing.border.LineBorder;
 import org.omg.CORBA.portable.UnknownException;
 
 import com.sun.glass.events.MouseEvent;
+import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
 
 import java.awt.Color;
 
@@ -56,9 +57,9 @@ public class MainForm {
 	private JButton connectButt;
 	private Caller caller;
 	private Connection connection;
-	private CommandListenerThread com;
 	private CallListenerThread callLT;
 	private HistoryModel model;
+	private CommandListenerThread commandLT;
 
 	/**
 	 * Launch the application.
@@ -84,8 +85,6 @@ public class MainForm {
 	 * @throws IOException
 	 */
 	public MainForm() throws IOException {
-		callLT = new CallListenerThread();
-		callLT.start();
 		frame = new JFrame();
 		frame.setBounds(100, 100, 481, 243);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -188,6 +187,7 @@ public class MainForm {
 
 				try {
 					if (connection != null) {
+						
 						connection.disconnect();
 						forDisconnect();
 					}
@@ -202,7 +202,6 @@ public class MainForm {
 		connectButt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (remoteAddrField.getText() != "") {
-					// formWait(true);
 					String login;
 					if (nickField.getText().equals(""))
 						login = "unnamed";
@@ -213,11 +212,9 @@ public class MainForm {
 						connection = caller.call();
 						if (connection != null) {
 							connection.sendNickHello(nickField.getText());
-							com = new CommandListenerThread(connection);
-							com.start();
-							ThreadOfCommand();
 							forConnect();
-
+							commandLT=new CommandListenerThread(connection);
+							commandLT.start();
 						}
 					} catch (InterruptedException e1) {
 
@@ -260,46 +257,35 @@ public class MainForm {
 					login = nickField.getText();
 				nickField.setEnabled(false);
 				try {
+					callLT = new CallListenerThread();
+					callLT.start();
+					commandLT = new CommandListenerThread();
 					ThreadOfCall();
+					
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 
+				callLT.setLocalNick(login);
 			}
 		});
 	}
 
 	public void ThreadOfCall() throws IOException {
-
-		callLT = new CallListenerThread(nickField.getText());
 		callLT.addObserver(new Observer() {
 
 			public void update(Observable arg0, Object arg1) {
-				connection = callLT.getConnection();
-				forConnect();
-				try {
-
-					connection.sendNickHello(nickField.getText());
-					Command command;
-					command = connection.receive();
-					if (command instanceof NickCommand) {
-						// if(callLT.getCallStatus().toString().equals("BUSY"))
-						remoteLogiField.setText(com.getLastCommand().toString());
-						remoteAddrField.setText(callListener.getRemoteAddress().toString());
-						connection.accept();
+					try {
+						connection = callLT.getConnection();
+						commandLT.setConnection(connection);
+						commandLT.start();
 						forConnect();
-						// formForConnect(true, command.toString());
-						// else
-						// formForNewTalk(true);
-					} else {
-						connection.reject();
-						forDisconnect();
+						connection.sendNickHello(nickField.getText());
+						ThreadOfCommand();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
-
+					
 			}
 
 		});
@@ -308,15 +294,16 @@ public class MainForm {
 
 	public void ThreadOfCommand() {
 
-		com.addObserver(new Observer() {
+		commandLT.addObserver(new Observer() {
 			public void update(Observable ob, Object obj) {
-
-				if (com.getLastCommand() instanceof MessageCommand) {
+				Command lastCommand = commandLT.getLastCommand();
+				if (lastCommand instanceof MessageCommand) {
 					textArea.getModel().addMessage(remoteLogiField.getText(), new Date(),
-							com.getLastCommand().toString());
+							commandLT.getLastCommand().toString());
+				} else if (lastCommand instanceof NickCommand) {
+					remoteLogiField.setText(lastCommand.toString());
 				} else {
-
-					switch (com.getLastCommand().type) {
+					switch (lastCommand.type) {
 					case ACCEPT: {
 						textArea.append("User is accepted");
 						break;
@@ -331,7 +318,6 @@ public class MainForm {
 						forDisconnect();
 						break;
 					}
-
 					}
 
 				}

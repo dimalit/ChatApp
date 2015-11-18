@@ -7,13 +7,17 @@ public class CommandListenerThread extends Observable implements Runnable {
 	private Connection con;
 	private Command lastCommand;
 
-	CommandListenerThread() {
-
+	public CommandListenerThread() {
+		// TODO Auto-generated constructor stub
 	}
 
-	CommandListenerThread(Connection con) {
-		this.con = con;
+	public CommandListenerThread(Connection connection) {
+		// TODO Auto-generated constructor stub
+	}
 
+	void setConnection(Connection con) {
+		disconnected = false;
+		this.con = con;
 	}
 
 	Command getLastCommand() {
@@ -25,12 +29,13 @@ public class CommandListenerThread extends Observable implements Runnable {
 	}
 
 	public void run() {
-		while (!isDisconnected()) {
-
+		while (!disconnected) {
 			try {
 				synchronized (this) {
 					this.lastCommand = con.receive();
-					
+					if ((lastCommand.type == (Command.CommandType.DISCONNECT)
+							|| (lastCommand.type == (Command.CommandType.REJECT))))
+						disconnected=true;
 					setChanged();
 					notifyObservers();
 				}
@@ -43,10 +48,8 @@ public class CommandListenerThread extends Observable implements Runnable {
 
 	}
 
-	void start()
-	{
-		disconnected= false;
-		Thread t=new Thread();
+	void start() {
+		Thread t = new Thread();
 		t.start();
 	}
 
