@@ -13,7 +13,6 @@ public class CommandListenerThread extends Observable implements Runnable {
 	}
 
 	CommandListenerThread(Connection connection) {
-		this.connection = connection;
 
 	}
 
@@ -21,19 +20,21 @@ public class CommandListenerThread extends Observable implements Runnable {
 		return lastCommand;
 	}
 
-	boolean isDisconnected() {
-		return disconnect;
-	}
 
 	public void run() {
-		while (!isDisconnected()) {
+		while (!disconnect) {
 
-			while (!isDisconnected()) {
+			while (!disconnect) {
 
 				try {
 					synchronized (this) {
 						this.lastCommand = connection.receive();
-
+                                                    if (lastCommand != null)
+                                                        if ((lastCommand.commandType == (Command.CommandType.DISCONNECT)
+								|| (lastCommand.commandType == (Command.CommandType.REJECT)))) {
+							disconnect = true;
+							System.out.println("test");
+						}
 						setChanged();
 						notifyObservers();
 					}

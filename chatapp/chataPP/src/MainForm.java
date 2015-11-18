@@ -50,8 +50,9 @@ public class MainForm {
 		JPanel nick2 = new JPanel(new GridLayout(2, 2));
 		JButton b = new JButton("Apply");
 		JTextArea texttime = new JTextArea("00:00:00");
-		texttime.setBorder(new LineBorder(Color.BLACK, 2));
+		texttime.setBorder(new LineBorder(Color.BLACK, 1));
 		texttime.setEditable(false);
+                texttime.setBackground(Color.LIGHT_GRAY);
 		JLabel tt1 = new JLabel();
 		tt1.setText("Time");
 		tt1.setHorizontalAlignment(JLabel.CENTER);

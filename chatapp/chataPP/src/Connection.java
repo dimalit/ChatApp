@@ -7,13 +7,13 @@ public class Connection {
 	private OutputStream os;
 	public Socket socket;
 	private String nick;
-	private DataOutputStream ds;
+	private DataOutputStream dos;
 	private DataInputStream in;
 
 	public void disconnect() throws IOException {
-		ds.write("DISCONNECT\n".getBytes());
-		ds.flush();
-		ds.close();
+		dos.write("DISCONNECT\n".getBytes());
+		dos.flush();
+		dos.close();
 		socket.close();
 	}
 
@@ -21,7 +21,7 @@ public class Connection {
 		try {
 			socket = new Socket(InetAddress.getByName(IP), port);
 			os = socket.getOutputStream();
-			ds = new DataOutputStream(os);
+			dos = new DataOutputStream(os);
 			in = new DataInputStream(socket.getInputStream());
 			//m.setTo(IP);
 			//m.setFrom(socket.getInetAddress().getHostName());
@@ -36,7 +36,7 @@ public class Connection {
 		try {
 			socket = s;
 			os = socket.getOutputStream();
-			ds = new DataOutputStream(os);
+			dos = new DataOutputStream(os);
 			in = new DataInputStream(socket.getInputStream());
 			nick = Nick;
 			System.out.println(s.getInetAddress() + " is connected. Type message.");
@@ -50,29 +50,29 @@ public class Connection {
 		}
 
 	public void accept() throws IOException {
-		ds.write("ACCEPT\n".getBytes());
-		ds.flush();
+		dos.write("ACCEPT\n".getBytes());
+		dos.flush();
 	}
 
 	public void reject() throws IOException {
-		ds.write("REJECTED\n".getBytes());
-		ds.flush();
+		dos.write("REJECTED\n".getBytes());
+		dos.flush();
 	}
 
 	public void sendNickHello(String nick1) throws IOException {
-		ds.write(("ChatApp 2015 " + nick+ "\n").getBytes());
-		ds.flush();
+		dos.write(("ChatApp 2015 " + nick+ "\n").getBytes());
+		dos.flush();
 	}
 
 	public void sendNickBusy(String nick1) throws IOException {
-		ds.write(("ChatApp 2015 " + nick + " busy" + "\n").getBytes());
-		ds.flush();
+		dos.write(("ChatApp 2015 " + nick + " busy" + "\n").getBytes());
+		dos.flush();
 	}
 
 	public void sendMessage(String text) throws IOException {
-		ds.write("MESSAGE\n".getBytes());
-		ds.write(text.getBytes());
-		ds.flush();
+		dos.write("MESSAGE\n".getBytes());
+		dos.write(text.getBytes());
+		dos.flush();
 	}
 
 //	public Command receive() throws IOException {

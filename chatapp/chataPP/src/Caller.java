@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 public class Caller 
 {
-    private String localNick;
+        private String localNick;
 	private InetAddress address;
 	private int port;
 	private String nick;
@@ -61,9 +61,6 @@ public class Caller
 		this.nick = nick;
 	}
         
-       private enum CallStatus {
-        BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
-       }
         
     
     
