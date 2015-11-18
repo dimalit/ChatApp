@@ -48,6 +48,7 @@ public class ChatWindow extends JFrame {
 		textmess.setLineWrap(true);
 		mess.setCaretPosition(0);
 		mess.setLineWrap(true);
+		mess.setEditable(false);
 
 		textmess.setMaximumSize(new Dimension(1500, 50));
 		textmess.setPreferredSize(new Dimension(70, 50));
@@ -108,7 +109,7 @@ public class ChatWindow extends JFrame {
 
 			public void actionPerformed(ActionEvent event) {
 				messege = textmess.getText();
-				mess.append(messege + "\n");
+				mess.append(/*nick + */ " : " + messege + "\n");
 				textmess.setText("");
 				//send
 			}
