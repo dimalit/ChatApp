@@ -1,16 +1,20 @@
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketAddress;
 
 public class CallListener {
 	private String localNick;
 	private String localIp;
 	private ServerSocket sSocket;
+	private Socket socket;
+	private boolean isBusy;
 
 	public CallListener(String localNick, String localIp) throws IOException {
 		this.localNick = localNick;
 		this.localIp = localIp;
 		this.sSocket = new ServerSocket(Connection.PORT);
+		this.isBusy=false;
 	}
 
 	public CallListener(String localNick) throws IOException {
@@ -21,11 +25,13 @@ public class CallListener {
 		this.localNick = "NickName";
 		this.localIp = "127.0.0.1";
 		this.sSocket = new ServerSocket(Connection.PORT);
+		this.isBusy=false;
 	}
 
 	// TODO: make function
 	public Connection getConnection() throws IOException {
-		return new Connection(sSocket.accept(), localNick);
+		socket = sSocket.accept();
+		return new Connection(socket, localNick);
 	}
 
 	public SocketAddress getListenAddress() throws IOException {
@@ -37,12 +43,7 @@ public class CallListener {
 	}
 
 	public SocketAddress getRemoteAddress() throws IOException {
-		return sSocket.accept().getRemoteSocketAddress();
-	}
-
-	// TODO: Where the RemoteNick?
-	public String getRemoteNick() {
-		return null;
+		return socket.getRemoteSocketAddress();
 	}
 
 	public boolean isBusy() {
@@ -51,10 +52,7 @@ public class CallListener {
 
 	// TODO: Some with it
 	public void setBusy(boolean busy) {
-	}
-
-	// TODO: Some with it
-	public void setListenAddress(SocketAddress listenAddress) {
+		this.isBusy=busy;
 	}
 
 	public void setLocalNick(String localNick) {

@@ -1,5 +1,5 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
@@ -13,14 +13,14 @@ public class Connection {
 	public static final int PORT = 28411;
 	public static final String ENCODING = "UTF-8";
 	public static final char EOL = '\n';
-	private DataOutputStream outStream;
-	private DataInputStream inStream;
+	private BufferedOutputStream outStream;
+	private BufferedInputStream inStream;
 	private String nickname;
 
 	public Connection(Socket s, String nickname) throws IOException {
 		this.socket = s;
-		outStream = new DataOutputStream(s.getOutputStream());
-		inStream = new DataInputStream(s.getInputStream());
+		outStream = new BufferedOutputStream(s.getOutputStream());
+		inStream = new BufferedInputStream(s.getInputStream());
 		this.nickname = nickname;
 
 	}
@@ -47,8 +47,8 @@ public class Connection {
 	public void reject() throws IOException {
 		outStream.write(("Rejected" + EOL).getBytes());
 		outStream.flush();
-		outStream.close();
-		socket.close();
+//		outStream.close();
+//		socket.close();
 	}
 
 	public void sendMessage(final String message) throws UnsupportedEncodingException, IOException {
@@ -60,14 +60,14 @@ public class Connection {
 	public void disconnect() throws IOException {
 		outStream.write(("Disconnect" + EOL).getBytes(ENCODING));
 		outStream.flush();
-		outStream.close();
-		socket.close();
+//		outStream.close();
+//		socket.close();
 	}
 
 	public Command receive() throws IOException {
 		StringBuffer sb = new StringBuffer();
 		char c;
-		while ((c = (char) inStream.readByte()) != EOL)
+		while ((c = (char) inStream.read()) != EOL)
 			sb.append(c);
 		String str = sb.toString();
 		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
@@ -76,7 +76,7 @@ public class Connection {
 			return new NickCommand(in.next(), in.skip(" [a-z,A-Z]{4} ").next(), str.toUpperCase().endsWith(" BUSY"));
 		} else if ("MESSAGE".equalsIgnoreCase(str)) {
 			sb = new StringBuffer();
-			while ((c = (char) inStream.readByte()) != EOL)
+			while ((c = (char) inStream.read()) != EOL)
 				sb.append(c);
 			return new MessageCommand(sb.toString());
 		} else if (str.toUpperCase().lastIndexOf("ED") > -1)

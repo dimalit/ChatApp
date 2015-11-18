@@ -140,7 +140,6 @@ public class MainForm {
 		remoteAddrField.setToolTipText("You must press Enter to continue");
 		connectButt = new JButton("Connect");
 		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
-		connectButt.setEnabled(false);
 		panel_connection.add(connectButt);
 
 		JPanel main_panel = new JPanel();
@@ -172,22 +171,22 @@ public class MainForm {
 		send.setEnabled(false);
 		bot_panel.add(send);
 		// frame.pack();
-		remoteAddrField.addKeyListener(new KeyAdapter() {
-
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					connectButt.setEnabled(true);
-				}
-			}
-
-		});
+		// remoteAddrField.addKeyListener(new KeyAdapter() {
+		//
+		// public void keyPressed(KeyEvent e) {
+		// if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		// connectButt.setEnabled(true);
+		// }
+		// }
+		//
+		// });
 		discButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 
 				try {
 					if (connection != null) {
-						
+
 						connection.disconnect();
 						forDisconnect();
 					}
@@ -213,7 +212,7 @@ public class MainForm {
 						if (connection != null) {
 							connection.sendNickHello(nickField.getText());
 							forConnect();
-							commandLT=new CommandListenerThread(connection);
+							commandLT = new CommandListenerThread(connection);
 							commandLT.start();
 						}
 					} catch (InterruptedException e1) {
@@ -261,7 +260,8 @@ public class MainForm {
 					callLT.start();
 					commandLT = new CommandListenerThread();
 					ThreadOfCall();
-					
+					ThreadOfCommand();
+
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -275,17 +275,15 @@ public class MainForm {
 		callLT.addObserver(new Observer() {
 
 			public void update(Observable arg0, Object arg1) {
-					try {
-						connection = callLT.getConnection();
-						commandLT.setConnection(connection);
-						commandLT.start();
-						forConnect();
-						connection.sendNickHello(nickField.getText());
-						ThreadOfCommand();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
+				connection = callLT.getConnection();
+				commandLT.setConnection(connection);
+				commandLT.start();
+				try {
+					forConnect();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		});
@@ -293,14 +291,16 @@ public class MainForm {
 	}
 
 	public void ThreadOfCommand() {
-
+System.out.println("testif");
 		commandLT.addObserver(new Observer() {
-			public void update(Observable ob, Object obj) {
+			public void update(Observable arg0, Object arg1) {
+				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
 				if (lastCommand instanceof MessageCommand) {
 					textArea.getModel().addMessage(remoteLogiField.getText(), new Date(),
 							commandLT.getLastCommand().toString());
 				} else if (lastCommand instanceof NickCommand) {
+					
 					remoteLogiField.setText(lastCommand.toString());
 				} else {
 					switch (lastCommand.type) {
@@ -335,12 +335,13 @@ public class MainForm {
 		remoteAddrField.setEnabled(true);
 	}
 
-	void forConnect() {
+	void forConnect() throws IOException {
 		send.setEnabled(true);
 		connectButt.setEnabled(false);
 		messageArea.setEnabled(true);
 		discButton.setEnabled(true);
 		remoteAddrField.setEnabled(false);
+		remoteAddrField.setText(callLT.getRemoteAddress().toString());
 	}
 
 	void formForConnect(boolean b, String nick) {
