@@ -4,21 +4,50 @@ import java.net.Socket;
 
 public class Caller {
     private String localNick;
-    private InetAddress remoteIP;
-    private int remotePort;
+    private String remoteIP;
     private String remoteNick;
     private Command lastCommand;
+    private NickCommand nickCommand;
+    private String lastError;
+
+    public Caller(String localNick,String remoteIP){
+        this.localNick=localNick;
+        this.remoteIP=remoteIP;
+    }
 
     public Connection call() throws IOException {
-        Connection connection = new Connection(new Socket(remoteIP,remotePort));
+        Connection connection = new Connection(new Socket(remoteIP,Protocol.PORT_NUMBER));
+
+        //Проверка, к тому ли мы подключились.
+        lastCommand = connection.recieve();
+        if (lastCommand.type==CommandType.NICK) {
+            nickCommand = (NickCommand) lastCommand;
+        }
+        else{
+            connection.disconnect();
+            lastError="Wrong IP";
+            return null;
+        }
+
+        //Проверка, занят ли тот пользователь
+        remoteNick = nickCommand.getNick();
+        if (nickCommand.isBusy()){
+            lastCommand = connection.recieve();
+            connection.disconnect();
+            lastError="User is busy";
+            return null;
+        }
+
+        //Если не занят, то отсылаем ник и ждём подтверждения
         connection.sendNickHello(localNick);
         lastCommand = connection.recieve();
-        if (lastCommand.equals(new Command(CommandType.NICK))){
-            if (lastCommand.equals(new Command(CommandType.ACCEPT))){
-                return connection;
-            }
-            else return null;
+
+        //Если Accept - вернуть connection
+        if (lastCommand.type==CommandType.ACCEPT) return connection;
+        else{
+            lastError="User rejected your call";
+            return null;
         }
-        else return null;
+
     }
 }

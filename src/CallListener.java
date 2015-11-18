@@ -1,32 +1,47 @@
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Created by bresya on 15.11.2015.
- */
 public class CallListener {
-    private String remoteNick;
+    private String localNick,remoteNick;
     private boolean isBusy;
-    private InetAddress remoteIP;
+    private String remoteIP;
     private int remotePort;
+    private ServerSocket serverSocket;
+    private Command lastCommand;
+    private NickCommand nickCommand;
 
-    public CallListener(){
-        //посмотрим, что тут
+    public CallListener(String localNick, boolean isBusy){
+        try {
+            serverSocket = new ServerSocket(Protocol.PORT_NUMBER);
+        } catch (IOException e) {
+           //asd
+        }
+        this.localNick=localNick;
+        this.isBusy=isBusy;
     }
 
     public Connection getConnection() throws IOException {
-        Connection connection = new Connection(new Socket(remoteIP,remotePort));
-        Command command = connection.recieve();
+        Connection connection = new Connection(serverSocket.accept());
         if (!isBusy){
-            if (command.equals(new Command(CommandType.NICK))){
-                connection.sendNickHello(remoteNick);
+            connection.sendNickHello(localNick);
+            lastCommand=connection.recieve();
+            if (lastCommand.type==CommandType.NICK){
+                nickCommand = (NickCommand) lastCommand;
+                remoteNick = nickCommand.getNick();
                 return connection;
             }
-            else return null;
+            else{
+                return null;
+            }
         }
-        else connection.sendNickBusy(remoteNick);
-        return null;
+        else{
+            connection.sendNickBusy(localNick);
+            connection.disconnect();
+            return null;
+        }
+
 
     }
 }

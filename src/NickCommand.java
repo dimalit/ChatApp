@@ -16,4 +16,11 @@ public class NickCommand extends Command{
         nick = string;
     }
 
+    public boolean isBusy(){
+        return busy;
+    }
+
+    public String getNick() {
+        return nick;
+    }
 }
