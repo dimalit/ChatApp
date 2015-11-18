@@ -50,7 +50,14 @@ public class Connection{
         out.writeUTF("Rejected");
         out.flush();
     }
+
     public Command recieve(){
-        return null;
+        String s="";
+        if(s.contains("Accepted")) return new Command(CommandTypes.accept);
+        if(s.contains("Rejected")) return new Command(CommandTypes.reject);
+        if(s.contains("ChatApp 2015")) return new NickCommand(CommandTypes.nickname);
+        if(s.contains("Disconnect")) return new Command(CommandTypes.disconnect);
+        if(s.contains("Message")) return new MessageCommand(CommandTypes.message);
+        else return null;
     }
 }
