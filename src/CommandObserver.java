@@ -1,5 +1,12 @@
-public interface CommandObserver{
+public abstract class CommandObserver{
 
-    void update(Command command);
-    CommandType getType();
+    protected CommandListenerThread clt;
+
+    public void update(Command command) {
+
+    }
+
+    CommandType getType() {
+        return null;
+    }
 }

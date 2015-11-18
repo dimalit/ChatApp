@@ -41,7 +41,9 @@ public class CallListener {
             connection.disconnect();
             return null;
         }
+    }
 
-
+    public void setBusy(boolean isBusy) {
+        this.isBusy = isBusy;
     }
 }

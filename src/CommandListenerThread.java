@@ -1,8 +1,5 @@
-import javafx.beans.InvalidationListener;
-
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.List;
+
 
 public class CommandListenerThread  implements Runnable {
     private Command lastCommand;
@@ -18,7 +15,6 @@ public class CommandListenerThread  implements Runnable {
         while (!stop) {
             lastCommand = connection.recieve();
             observers.get(lastCommand.type).update(lastCommand);
-
         }
     }
 
