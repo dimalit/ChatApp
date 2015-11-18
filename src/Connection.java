@@ -1,6 +1,6 @@
-
 import java.net.*;
 import java.io.*;
+
 public class Connection{
     private Socket s;
     private final static int PORT = 28411;
@@ -9,11 +9,12 @@ public class Connection{
     private DataOutputStream out;
     private DataInputStream in;
 
-    public Connection(String nick, String ip) throws IOException{
-        s = new Socket(ip,PORT);
+    public Connection(Socket s, String nick) throws IOException{
+        this.s = s;
         out = new DataOutputStream(s.getOutputStream());
         in = new DataInputStream(s.getInputStream());
         this.nick = nick;
+        sendMessage(s.getInetAddress()+" connected. Type your message.");
     }
 
     public void sendMessage(String message) throws IOException{
