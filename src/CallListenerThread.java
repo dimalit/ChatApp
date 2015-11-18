@@ -1,23 +1,17 @@
 import java.util.*;
 
-public class CallListenerThread extends Thread {
+public class CallListenerThread extends Observable implements Runnable {
     private String nick;
     private final static int port = 28411;
     private final static String ip = "localhost";
     private String available = "Available";
-    private List<Observer> observers;
-    private Observable observable = new Observable();
-
-    public CallListenerThread() {
-        observers = new ArrayList<Observer>();
-    }
 
     public void addConnectionObserver(Observer o) {
-        observers.add(o);
+        addObserver(o);
     }
 
     public void removeConnectionObserver(Observer o) {
-        observers.remove(o);
+        deleteObserver(o);
     }
 
     public void run() {

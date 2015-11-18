@@ -1,27 +1,24 @@
 import java.util.*;
 
-public class CommandListenerThread extends Thread {
+public class CommandListenerThread extends Observable implements Runnable {
     private Connection connection;
     private Command lastCommand;
-    private List<Observer> observers;
-    private Observable observable = new Observable();
-
-    public CommandListenerThread() {
-        observers = new ArrayList<Observer>();
-    }
 
     public void addCommandObserver(Observer o) {
-        observers.add(o);
+        addObserver(o);
     }
 
     public void removeCommandObserver(Observer o) {
-        observers.remove(o);
+        deleteObserver(o);
     }
 
     public void run() {
         try {
             while (true) {
-                if () {
+                if (connection.accept()) {
+                    addCommandObserver();
+                }
+                else if (connection.reject();) {
 
                 }
             }

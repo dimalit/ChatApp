@@ -14,7 +14,7 @@ public class Connection{
         out = new DataOutputStream(s.getOutputStream());
         in = new DataInputStream(s.getInputStream());
         this.nick = nick;
-        sendMessage(s.getInetAddress()+" connected. Type your message.");
+        sendMessage(s.getInetAddress() + " connected. Type your message.");
     }
 
     public void sendMessage(String message) throws IOException{
