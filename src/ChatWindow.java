@@ -10,7 +10,7 @@ import java.net.*;
 public class ChatWindow extends JFrame {
 
 	public ChatWindow() {
-		this.setSize(500, 600);
+		this.setSize(650, 500);
 		this.setTitle("This is CHAT ");
 		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
 		this.setIconImage(image.getImage());
@@ -122,8 +122,7 @@ public class ChatWindow extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				text = txt1.getText();
 				//apply
-				
-				
+
 			}
 		}
 		class ConnectAction implements ActionListener {
@@ -159,8 +158,7 @@ public class ChatWindow extends JFrame {
 		final JScrollPane scrollPane = new JScrollPane(mess);
 		fieldmess.add(scrollPane);
 
-		scrollPane
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		field.add(field1);
 		field.add(field2);
 		field.add(field3);
@@ -176,6 +174,5 @@ public class ChatWindow extends JFrame {
 
 	public static void main(String[] args) {
 		ChatWindow a = new ChatWindow();
-		
 	}
 }

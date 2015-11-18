@@ -1,8 +1,6 @@
 import javax.swing.*;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class IncomingConnection extends JFrame {
 
@@ -11,24 +9,19 @@ public class IncomingConnection extends JFrame {
 		this.setTitle("Incoming Connection");
 		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
 		this.setIconImage(image.getImage());
-		final int x = 0;
 		final JPanel jPanel = new JPanel();
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
 		final JPanel pan1 = new JPanel();
 		final JPanel pan2 = new JPanel();
-		final JLabel jLabel = new JLabel(
-				"User XXX from IP Y.Y.Y.Y wants to chat");
-
+		final JLabel jLabel = new JLabel("User XXX from IP Y.Y.Y.Y wants to chat");
 		final JButton jButton = new JButton("Accept");
 		final JButton jButton1 = new JButton("Decline");
 
-	
-		
 		jButton.addActionListener(new ActionListener(){
 			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-	                //принять
+	                //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				 
 
 	            }
@@ -39,7 +32,7 @@ public class IncomingConnection extends JFrame {
 			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-	                //отклонить
+	                //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				
 
 	            }
@@ -63,11 +56,9 @@ public class IncomingConnection extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setVisible(true);
-		
 	}
 	
 	public static void main(String[] args) {
 		IncomingConnection incomingConnection = new IncomingConnection();
-		
 	}
 }

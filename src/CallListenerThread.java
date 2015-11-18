@@ -21,7 +21,7 @@ public class CallListenerThread extends Thread {
     }
 
     public void run() {
-       /* try {
+        try {
             while (true) {
                 if () {
 
@@ -29,6 +29,6 @@ public class CallListenerThread extends Thread {
             }
         } catch (InterruptedException e){
             e.printStackTrace();
-        }*/
+        }
     }
 }
