@@ -1,15 +1,11 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+
 public class Connection {
   
     private final int port = 28411;
 	private OutputStream os;
 	public Socket socket;
-	//private Message m = null;
 	private String nick;
 	private DataOutputStream ds;
 	private DataInputStream in;
@@ -32,7 +28,7 @@ public class Connection {
 			nick = Nick;
 			System.out.println(IP + " is connected. Type message.");
 		} catch (IOException ex) {
-			System.out.println(ex);
+			System.out.println("Bad");
 		}
 	}
 	
