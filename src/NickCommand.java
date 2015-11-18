@@ -1,6 +1,6 @@
 public class NickCommand extends Command{
     String nick;
-    Boolean busy;
+    Boolean busy=false;
 
     public NickCommand(){
         super(CommandType.NICK);
@@ -10,9 +10,9 @@ public class NickCommand extends Command{
         super(CommandType.NICK);
         if (string.contains(" busy")){
             busy = true;
-            string.replace(" busy","");
+            string=string.replace(" busy","");
         }
-        string.replace(Protocol.GREETING,"");
+        string = string.replace(Protocol.GREETING,"");
         nick = string;
     }
 

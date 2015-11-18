@@ -2,19 +2,18 @@ import java.io.IOException;
 
 public class Logic{
     //ссылка на GUI
-    private String localNick,remoteNick,remoteIP;
+    private String localNick = "default",remoteNick,remoteIP;
     private boolean isBusy;
     private Connection connection;
-    private CallListener callListener;
     private Caller caller;
-    CallListenerThread callListenerThread = new CallListenerThread();
-    Thread callThread = new Thread(callListenerThread);
+    private CallListenerThread callListenerThread;
+    private Thread callThread;
 
-    public Logic(){
-
+    public Logic(/*ссылка на GUI*/){
+        callListenerThread = new CallListenerThread(localNick,isBusy);
+        callThread = new Thread(callListenerThread);
         callThread.start();
-        //GUI gui = new GUI();
-        //
+        //this.GUI = GUI;
     }
 
     public void setLocalNick(){
@@ -31,17 +30,18 @@ public class Logic{
 
     public void setBusy(boolean isBusy) {
         this.isBusy = isBusy;
-        callListener.setBusy(isBusy);
+        callListenerThread.setBusy(isBusy);
+
     }
 
     public void accept(){
         connection.accept();
-        callListenerThread.setButtonPressed(CommandType.ACCEPT);
+       // callListenerThread.setButtonPressed(CommandType.ACCEPT);
     }
 
     public void reject(){
         connection.reject();
-        callListenerThread.setButtonPressed(CommandType.REJECT);
+       // callListenerThread.setButtonPressed(CommandType.REJECT);
     }
 
     public void call(){

@@ -8,7 +8,8 @@ public class DisconnectCommandObserver extends CommandObserver {
     }
 
     public void update(Command command) {
-       //херня с окном "User disconnected";
+       //вывод в чат "remoteNick disconnected;
+       //
     }
 
     public CommandType getType() {

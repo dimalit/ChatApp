@@ -21,7 +21,7 @@ class Connection{
 
     public void sendNickHello(String nick){
         try {
-            out.writeUTF(new StringBuilder(Protocol.GREETING).append(nick).toString());
+            out.write(new StringBuilder(Protocol.GREETING).append(nick).append("\n").toString().getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -29,7 +29,7 @@ class Connection{
 
     public void sendNickBusy(String nick){
         try {
-            out.writeUTF(new StringBuilder(Protocol.GREETING).append(nick).append(" busy").toString());
+            out.write(new StringBuilder(Protocol.GREETING).append(nick).append(" busy").append("\n").toString().getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +39,7 @@ class Connection{
 
     public void accept(){
         try {
-            out.writeUTF(Protocol.ACCEPTED);
+            out.write(new StringBuilder(Protocol.ACCEPTED).append("\n").toString().getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,7 +47,7 @@ class Connection{
 
     public void reject(){
         try {
-            out.writeUTF(Protocol.REJECTED);
+            out.write(new StringBuilder(Protocol.REJECTED).append("\n").toString().getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +55,7 @@ class Connection{
 
     public void sendMessage(String message){
         try {
-            out.writeUTF(new StringBuilder(Protocol.MESSAGE).append("\n").append(message).toString());
+            out.write(new StringBuilder(Protocol.MESSAGE).append("\n").append(message).append("\n").toString().getBytes("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ class Connection{
 
     public void disconnect(){
         try{
-            out.writeUTF(Protocol.DISCONNECT);
+            out.write(new StringBuilder(Protocol.DISCONNECT).append("\n").toString().getBytes("UTF-8"));
             socket.close();
         }catch (Exception e){
             e.printStackTrace();

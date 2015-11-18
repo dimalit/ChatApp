@@ -1,19 +1,18 @@
 import java.io.IOException;
+import java.sql.*;
 
 public class CallListenerThread implements Runnable {
 
    private String localNick;
    private CallListener callListener;
-   private boolean isBusy = callListener.getBusy();//тонко, типа я не знаю, зачем он здесь
+   private boolean isBusy;
    private String remoteIP;
    private String lastAction;
    private boolean stop;
    private Connection remoteConnection;
-   private boolean noConnection;
-   private CommandType buttonPressed;
 
 
-    public CallListenerThread(){
+    public CallListenerThread(String localNick,Boolean isBusy){
         callListener = new CallListener(localNick, false);
     }
 
@@ -21,25 +20,9 @@ public class CallListenerThread implements Runnable {
         try {
             while (!stop) {
 
-
-                while (noConnection = true) {//я знаю, что может подключиться второй, но давай хотя бы пока так
-                    remoteConnection = callListener.getConnection();
-                    noConnection = false;
-                }
-
+                remoteConnection = callListener.getConnection();
+                if (remoteConnection == null) continue;
                 //генерация кнопок АССЕРТ и РИЖЕКТ
-                if (buttonPressed.equals(CommandType.ACCEPT))
-                    {
-                    remoteConnection.accept();
-                    callListener.setBusy(true);
-                    }else if (buttonPressed.equals(CommandType.REJECT))
-                    {
-                    remoteConnection.reject();
-                    remoteConnection.disconnect();
-                    }
-
-
-
 
             }
         }
@@ -49,8 +32,15 @@ public class CallListenerThread implements Runnable {
 
 
     }
-    public void setButtonPressed(CommandType buttonPressed) {
-        this.buttonPressed = buttonPressed;
+
+
+    public Connection getRemoteConnection(){
+        return remoteConnection;
+    }
+
+    public void setBusy(Boolean isBusy){
+        this.isBusy=isBusy;
+        callListener.setBusy(isBusy);
     }
 
 
