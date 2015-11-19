@@ -3,7 +3,7 @@ import java.net.Socket;
 import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
-        Socket s = new Socket("files.litvinov.in.ua",28411);
+        /*Socket s = new Socket("files.litvinov.in.ua",28411);
         Connection c = new Connection(s,"azazaza");
         //Scanner in = new Scanner(System.in);
         String string;
@@ -18,6 +18,6 @@ public class Main {
         c.disconnect();
         //c.sendMessage(string);
         //System.out.println(c.testRecieve());
-        //}
+        //}*/
     }
 }

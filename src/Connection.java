@@ -10,6 +10,7 @@ public class Connection{
     private OutputStream out;
     private DataOutputStream sout;
     private DataInputStream reader;
+    private CommandTypes lastCommand;
 
     public Connection(Socket s, String nick) throws IOException{
         this.s = s;
@@ -51,6 +52,10 @@ public class Connection{
     public void reject() throws IOException {
         sout.write(new StringBuilder("Rejected\n").toString().getBytes());
         out.flush();
+    }
+
+    public CommandTypes getLastCommand() {
+        return lastCommand;
     }
 
     public void testRecieve() throws IOException {

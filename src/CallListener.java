@@ -3,6 +3,7 @@ import java.net.*;
 
 public class CallListener {
     private String localNick = "default";
+    private String remoteNick;
     private Boolean isBusy;
     private static final int localPort = 28411;
     private final static String IP = "localhost";
@@ -55,5 +56,9 @@ public class CallListener {
 
     public int getLocalPort(){
         return localPort;
+    }
+
+    public String getRemoteNick() {
+        return remoteNick;
     }
 }
