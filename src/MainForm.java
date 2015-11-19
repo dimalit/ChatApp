@@ -19,6 +19,7 @@ import java.rmi.UnexpectedException;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -273,16 +274,37 @@ public class MainForm {
 
 	public void ThreadOfCall() throws IOException {
 		callLT.addObserver(new Observer() {
-
 			public void update(Observable arg0, Object arg1) {
 				connection = callLT.getConnection();
 				commandLT.setConnection(connection);
 				commandLT.start();
-				try {
-					forConnect();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				long t1 = System.currentTimeMillis();
+				long t2 = System.currentTimeMillis();
+				boolean b=false;
+				while (((t2 - t1) <= 100000)&&(b==false)) {
+					Command command = commandLT.getLastCommand();
+					if (command instanceof NickCommand) {
+						b=true;
+						formForConnect(true, command.toString());
+					} else {
+						t2 = System.currentTimeMillis();
+					}
+				}
+				if (!b) {
+					try {
+						connection.disconnect();
+						commandLT.stop();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						forConnect();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 
@@ -291,36 +313,32 @@ public class MainForm {
 	}
 
 	public void ThreadOfCommand() {
-System.out.println("testif");
+		System.out.println("testif");
 		commandLT.addObserver(new Observer() {
 			public void update(Observable arg0, Object arg1) {
 				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
 				if (lastCommand instanceof MessageCommand) {
-					model.addMessage(remoteLogiField.getText(), new Date(),
-							commandLT.getLastCommand().toString());
+					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
 					textArea.update(model, new Object());
 				} else if (lastCommand instanceof NickCommand) {
-					
+
 					remoteLogiField.setText(lastCommand.toString());
-				} else {
+				} else if (lastCommand != null) {
 					switch (lastCommand.type) {
 					case ACCEPT: {
-						model.addMessage(remoteLogiField.getText(), new Date(),
-								" is accepted");
+						model.addMessage(remoteLogiField.getText(), new Date(), " is accepted");
 						textArea.update(model, new Object());
 						break;
 					}
 					case REJECT: {
-						model.addMessage(remoteLogiField.getText(), new Date(),
-								" was rejected");
+						model.addMessage(remoteLogiField.getText(), new Date(), " was rejected");
 						textArea.update(model, new Object());
 						forDisconnect();
 						break;
 					}
 					case DISCONNECT: {
-						model.addMessage(remoteLogiField.getText(), new Date(),
-								" was disconnected");
+						model.addMessage(remoteLogiField.getText(), new Date(), " was disconnected");
 						textArea.update(model, new Object());
 						forDisconnect();
 						break;
@@ -348,7 +366,6 @@ System.out.println("testif");
 		messageArea.setEnabled(true);
 		discButton.setEnabled(true);
 		remoteAddrField.setEnabled(false);
-		remoteAddrField.setText(callLT.getRemoteAddress().toString());
 	}
 
 	void formForConnect(boolean b, String nick) {
@@ -367,10 +384,7 @@ System.out.println("testif");
 				try {
 					connection.accept();
 					remoteAddrField.setText(callListener.getRemoteAddress().toString());
-					Command command = connection.receive();
-					if (command instanceof NickCommand)
-						remoteLogiField.setText(command.toString());
-
+					remoteLogiField.setText(nick);
 					ThreadOfCommand();
 					forConnect();
 					f.setVisible(!b);
