@@ -16,6 +16,10 @@ public class Connection{
         sout = new PrintWriter(out);
         reader = new DataInputStream(this.s.getInputStream());
         this.nick = nick;
+<<<<<<< HEAD
+=======
+        sendMessage(s.getInetAddress() + " connected. Type your message.");
+>>>>>>> origin/master
     }
 
     public void sendMessage(String message) throws IOException{
