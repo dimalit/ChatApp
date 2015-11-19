@@ -19,7 +19,6 @@ public class MainForm {
 	public MainForm() {
 		start();
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setBackground(Color.BLUE);
 		frame.setVisible(true);
 	}
 
