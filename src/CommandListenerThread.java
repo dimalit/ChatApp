@@ -13,7 +13,7 @@ public class CommandListenerThread extends Observable implements Runnable {
     }
 
     public void run() {
-        try {
+        /*try {
             while (true) {
                 if (connection.accept()) {
                     addCommandObserver();
@@ -24,6 +24,6 @@ public class CommandListenerThread extends Observable implements Runnable {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

@@ -15,7 +15,7 @@ public class CallListenerThread extends Observable implements Runnable {
     }
 
     public void run() {
-        try {
+       /* try {
             while (true) {
                 if () {
 
@@ -23,6 +23,6 @@ public class CallListenerThread extends Observable implements Runnable {
             }
         } catch (InterruptedException e){
             e.printStackTrace();
-        }
+        }*/
     }
 }
