@@ -100,6 +100,7 @@ public class MainForm {
 		conect.add(b2);
 		conect.setForeground(Color.WHITE);
 		JPanel conect2 = new JPanel(new GridLayout(1, 2,100,0));
+//                conect2.setBackground(Color.cyan);
 		conect2.add(nick2);
 		conect2.add(conect);
 
