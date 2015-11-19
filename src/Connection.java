@@ -55,7 +55,10 @@ public class Connection{
     public String testRecieve() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream(),"UTF-8"));
         String string;
-        string = reader.readLine();
+        while((string = reader.readLine())!=null) {
+            if (string.equalsIgnoreCase("\n")) break;
+            sout.println();
+        }
         return string;
     }
 
