@@ -5,95 +5,100 @@ public class CallListener
 {
    
  public String localNick, remoteNick;
-	public Boolean statusBusy;
-	private final int localPort = 28411;
-	private final String IP = "127.0.0.1";
-	public SocketAddress remoteAddress;
-	public SocketAddress localAddress;
-	public ServerSocket serverSocket;
-
-	public CallListener(String userName) {
-		localNick = userName;
-		this.remoteAddress = new InetSocketAddress(IP, localPort);
-	}
-
-	public CallListener(String userName, String remoteAdress) {
-		localNick = userName;
-		remoteAddress = new InetSocketAddress(IP, localPort);
-	}
-
-	public CallListener() {
-		localNick = " ";
-		remoteAddress = new InetSocketAddress(IP, localPort);
-	}
-
-	Connection getConnection() throws IOException {
-		if (isStatusBusy()) {
-			return null;
-		} else {
-			ServerSocket ss = new ServerSocket(localPort);
-			Connection connect = new Connection(ss.accept(), localNick);
-			return connect;
-		}
-
-	}
-
-	public SocketAddress getListenAddress() throws IOException {
-		return serverSocket.getLocalSocketAddress();
-	}
-
-	public String getLocalNick() {
-		return localNick;
-	}
-
-	public void setLocalNick(String localNick) {
-		this.localNick = localNick;
-	}
-
-	public void setListenAddress(SocketAddress listenAddress) {
 	
-	}
+  private String localNick;
+    private InetSocketAddress localAddress;
+    private boolean isBusy;
+    private String remoteNick, remoteAddress;
+    private ServerSocket serverSocket;
 
-	public SocketAddress getLocalAddress() {
-		return localAddress;
-	}
+    public CallListener(){
+        this("Untitled");
+    }
 
-	public void setLocalAddress(SocketAddress localAddress) {
-		this.localAddress = localAddress;
-	}
+    public CallListener(String localNick){
+        this.localNick = localNick;
+        try {
+            serverSocket = new ServerSocket(Constants.PORT);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
-	public Boolean isStatusBusy() {
-		return statusBusy;
-	}
+    public CallListener(String localNick, String localIP){
+        this(localNick);
+        this.localAddress = new InetSocketAddress(localIP, Constants.PORT);
+    }
 
-	public void setStatus(Boolean statusBusy) {
-		this.statusBusy = statusBusy;
-	}
+    private String receiveRemoteNick(Connection connection) throws IOException{
+        Command c = connection.receive();
+        return c.toString().substring((Constants.ChatApp_VERSION + " user ").length());
+    }
 
-	public SocketAddress getRemoteAddress() {
-		return remoteAddress;
-	}
+    public Connection getConnection () throws IOException{
+        Socket socket = serverSocket.accept();
+        remoteAddress = serverSocket.getInetAddress().getCanonicalHostName();
+        System.out.println("Accepted");
+        Connection connection = new Connection(socket);
+        System.out.println("Connection OK");
 
-	public String getRemoteNick() {
-		return remoteNick;
-	}
+        if (isBusy)
+        {
+            connection.sendNickBusy(localNick);
+            System.out.println("Local nick " + localNick);
+            remoteNick = receiveRemoteNick(connection);
+            return null;
+        }
+        else
+        {
+            isBusy = true;
+            connection.sendNickHello(localNick);
+            remoteNick = receiveRemoteNick(connection);
+            return connection;
+        }
+    }
 
-	public void setRemoteNick(String remoteNick) {
-		this.remoteNick = remoteNick;
-	}
+    public String getLocalNick(){
+        return localNick;
+    }
 
-	@Override
-	public String toString() {
-		return "CallListener [localNick=" + localNick + ", IP=" + IP + "]";
-	}
+    public boolean isBusy(){
+        return isBusy;
+    }
 
-	public void setRemoteAddress(SocketAddress remoteAddress) {
-		this.remoteAddress = remoteAddress;
-	}
+    public void setBusy(boolean isBusy){
+        this.isBusy = isBusy;
+    }
 
-	public int getLocalPort() {
-		return localPort;
-	}
+    public SocketAddress getListenAddress (){
+        return localAddress;
+    }
+
+    public void setLocalNick(String localNick){
+        this.localNick = localNick;
+    }
+
+    public void setListenAddress(InetSocketAddress listenAddress){
+        localAddress = listenAddress;
+    }
+
+    public String toString(){
+        return localNick + " " + localAddress.getHostString();
+    }
+
+    public String getRemoteNick(){
+        return remoteNick;
+    }
+
+    public String getRemoteAddress(){
+        return remoteAddress;
+    }
+
+    public static void main(String[] args) throws IOException {
         
+        CallListener c = new CallListener("12345");
+        c.getConnection();
+        System.out.println(c.getRemoteNick());
+    }      
         
 }
