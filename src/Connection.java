@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 
 public class Connection{
     private Socket s;
@@ -7,63 +8,59 @@ public class Connection{
     private final static String ENCODING = "UTF-8";
     private String nick;
     private OutputStream out;
-    private PrintWriter sout;
+    private DataOutputStream sout;
     private DataInputStream reader;
 
     public Connection(Socket s, String nick) throws IOException{
         this.s = s;
         out = this.s.getOutputStream();
-        sout = new PrintWriter(out);
+        sout = new DataOutputStream(out);
         reader = new DataInputStream(this.s.getInputStream());
         this.nick = nick;
-<<<<<<< HEAD
-=======
-        sendMessage(s.getInetAddress() + " connected. Type your message.");
->>>>>>> origin/master
     }
 
     public void sendMessage(String message) throws IOException{
-        sout.print("Message\n" + message + "\n");
+        sout.write(new StringBuilder("Message\n").append(message).append("\n").toString().getBytes());
         out.flush();
     }
 
     public void disconnect() throws IOException{
-        sout.print("Disconnect\n");
+        sout.write(new StringBuilder("Disconnect\n").toString().getBytes());
         out.close();
         reader.close();
         s.close();
     }
 
     public void sendNickHello(String nick) throws IOException {
-        sout.print("ChatApp 2015 user " + nick + "\n");
+        sout.write(new StringBuilder("ChatApp 2015 user ").append(nick).append("\n").toString().getBytes());
         out.flush();
     }
 
     public void sendNickBusy(String nick) throws IOException {
         if(s.isConnected()){
-            sout.print("ChatApp 2015 user " + nick + " busy\n");
+            sout.write(new StringBuilder("ChatApp 2015 user ").append(nick).append(" busy\n").toString().getBytes());
             out.flush();
         }
     }
 
     public void accept() throws IOException{
-        sout.print("Accepted\n");
+        sout.write(new StringBuilder("Accepted\n").toString().getBytes());
         out.flush();
     }
 
     public void reject() throws IOException {
-        sout.print("Rejected\n");
+        sout.write(new StringBuilder("Rejected\n").toString().getBytes());
         out.flush();
     }
 
-    public String testRecieve() throws IOException {
+    public void testRecieve() throws IOException {
+        PrintWriter w = new PrintWriter(s.getOutputStream());
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream(),"UTF-8"));
         String string;
-        while((string = reader.readLine())!=null) {
-            if (string.equalsIgnoreCase("\n")) break;
-            sout.println();
+        Scanner r = new Scanner(new InputStreamReader(s.getInputStream(),"UTF-8"));
+        while(r.hasNextLine()) {
+            System.out.println(r.nextLine());
         }
-        return string;
     }
 
     public Command recieve() throws IOException {
