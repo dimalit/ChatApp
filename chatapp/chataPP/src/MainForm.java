@@ -28,11 +28,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 
-public class Frame {
+public class MainForm {
 
 	private JFrame frame;
 
-	public Frame() {
+	public MainForm() {
 		start();
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setBackground(Color.BLUE);
@@ -340,6 +340,6 @@ else
 }
 
 	public static void main(String[] args) {
-		Frame b = new Frame();
+		MainForm b = new MainForm();
 	}
 }
