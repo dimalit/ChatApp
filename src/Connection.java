@@ -60,8 +60,8 @@ public class Connection {
 	public void disconnect() throws IOException {
 		outStream.write(("Disconnect" + EOL).getBytes(ENCODING));
 		outStream.flush();
-		outStream.close();
-		socket.close();
+//		outStream.close();
+//		socket.close();
 	}
 
 	public Command receive() throws IOException {
