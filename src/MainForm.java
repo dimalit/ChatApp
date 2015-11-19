@@ -297,24 +297,31 @@ System.out.println("testif");
 				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
 				if (lastCommand instanceof MessageCommand) {
-					textArea.getModel().addMessage(remoteLogiField.getText(), new Date(),
+					model.addMessage(remoteLogiField.getText(), new Date(),
 							commandLT.getLastCommand().toString());
+					textArea.update(model, new Object());
 				} else if (lastCommand instanceof NickCommand) {
 					
 					remoteLogiField.setText(lastCommand.toString());
 				} else {
 					switch (lastCommand.type) {
 					case ACCEPT: {
-						textArea.append("User is accepted");
+						model.addMessage(remoteLogiField.getText(), new Date(),
+								" is accepted");
+						textArea.update(model, new Object());
 						break;
 					}
 					case REJECT: {
-						textArea.append("rejected");
+						model.addMessage(remoteLogiField.getText(), new Date(),
+								" was rejected");
+						textArea.update(model, new Object());
 						forDisconnect();
 						break;
 					}
 					case DISCONNECT: {
-						textArea.append("User was disconnected");
+						model.addMessage(remoteLogiField.getText(), new Date(),
+								" was disconnected");
+						textArea.update(model, new Object());
 						forDisconnect();
 						break;
 					}
