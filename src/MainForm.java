@@ -3,6 +3,7 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -45,7 +46,8 @@ import java.awt.Color;
 
 public class MainForm {
 
-	private JFrame frame;
+	private JFrame frame, f;
+
 	private JTextField textField;
 	private JTextField nickField;
 	private JTextField remoteLogiField;
@@ -61,6 +63,7 @@ public class MainForm {
 	private CallListenerThread callLT;
 	private HistoryModel model;
 	private CommandListenerThread commandLT;
+	private int isPressed;
 
 	/**
 	 * Launch the application.
@@ -155,9 +158,10 @@ public class MainForm {
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		textArea.setRows(10);
-		main_panel.add(textArea);
+		JScrollPane scroll = new JScrollPane(textArea);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		main_panel.add(scroll);
 		frame.getContentPane().add(bot_panel);
-
 		messageArea = new JTextArea();
 		messageArea.setMinimumSize(new Dimension(16, 4));
 		messageArea.setMaximumSize(new Dimension(800, 100));
@@ -171,16 +175,6 @@ public class MainForm {
 		send.setAlignmentX(Component.CENTER_ALIGNMENT);
 		send.setEnabled(false);
 		bot_panel.add(send);
-		// frame.pack();
-		// remoteAddrField.addKeyListener(new KeyAdapter() {
-		//
-		// public void keyPressed(KeyEvent e) {
-		// if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-		// connectButt.setEnabled(true);
-		// }
-		// }
-		//
-		// });
 		discButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -261,7 +255,7 @@ public class MainForm {
 					callLT.start();
 					commandLT = new CommandListenerThread();
 					ThreadOfCall();
-					ThreadOfCommand();
+					// ThreadOfCommand();
 
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -280,12 +274,30 @@ public class MainForm {
 				commandLT.start();
 				long t1 = System.currentTimeMillis();
 				long t2 = System.currentTimeMillis();
-				boolean b=false;
-				while (((t2 - t1) <= 100000)&&(b==false)) {
+				boolean b = false;
+				while (((t2 - t1) <= 100000) && (b == false)) {
 					Command command = commandLT.getLastCommand();
 					if (command instanceof NickCommand) {
-						b=true;
-						formForConnect(true, command.toString());
+						b = true;
+						
+						//formForConnect(true, command.toString());
+						
+						if (isPressed==0) {
+						
+							try {
+								
+								connection.accept();
+								connection.sendNickHello(nickField.getText());
+								forConnect();
+								remoteLogiField.setText(command.toString();
+								remoteAddrField.setText(callLT.getRemoteAddress().toString());
+								ThreadOfCommand();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						}
 					} else {
 						t2 = System.currentTimeMillis();
 					}
@@ -323,29 +335,32 @@ public class MainForm {
 					textArea.update(model, new Object());
 				} else if (lastCommand instanceof NickCommand) {
 
-					remoteLogiField.setText(lastCommand.toString());
+					// remoteLogiField.setText(lastCommand.toString());
 				} else if (lastCommand != null) {
 					switch (lastCommand.type) {
 					case ACCEPT: {
-						model.addMessage(remoteLogiField.getText(), new Date(), " is accepted");
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
 						textArea.update(model, new Object());
 						break;
 					}
 					case REJECT: {
-						model.addMessage(remoteLogiField.getText(), new Date(), " was rejected");
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
 						textArea.update(model, new Object());
+						commandLT.stop();
 						forDisconnect();
 						break;
 					}
 					case DISCONNECT: {
-						model.addMessage(remoteLogiField.getText(), new Date(), " was disconnected");
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
 						textArea.update(model, new Object());
+						commandLT.stop();
 						forDisconnect();
 						break;
 					}
 					}
 
 				}
+
 			}
 
 		});
@@ -356,6 +371,7 @@ public class MainForm {
 		remoteLogiField.setText("");
 		messageArea.setEnabled(false);
 		discButton.setEnabled(false);
+		connectButt.setEnabled(true);
 		remoteAddrField.setText("");
 		remoteAddrField.setEnabled(true);
 	}
@@ -379,19 +395,24 @@ public class MainForm {
 		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
 		JButton yes = new JButton("Yes");
 		JButton no = new JButton("No");
+		text.setSize(500, 60);
+		text.setLocation(20, 20);
+		yes.setSize(90, 25);
+		yes.setLocation(70, 95);
+		no.setSize(90, 25);
+		no.setLocation(220, 95);
+		
+
+		f.setContentPane(cp);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					connection.accept();
-					remoteAddrField.setText(callListener.getRemoteAddress().toString());
-					remoteLogiField.setText(nick);
-					ThreadOfCommand();
-					forConnect();
-					f.setVisible(!b);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+			
+			
+					isPressed = 1;
+					f.setVisible(false);
+					//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+				
 
 			}
 		});
@@ -400,7 +421,8 @@ public class MainForm {
 				try {
 					connection.reject();
 					forDisconnect();
-					f.setVisible(!b);
+					f.setVisible(false);
+					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -408,16 +430,11 @@ public class MainForm {
 
 			}
 		});
-		text.setSize(500, 60);
-		text.setLocation(20, 20);
-		yes.setSize(90, 25);
-		yes.setLocation(70, 95);
-		no.setSize(90, 25);
-		no.setLocation(220, 95);
-		cp.add(text);
 		cp.add(yes);
 		cp.add(no);
+		cp.add(text);
 		f.setContentPane(cp);
+
 	}
 
 	public void formForNewTalk(boolean b, String nick) {

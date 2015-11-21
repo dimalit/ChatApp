@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Connection {
 
-	private Socket socket;
+	public Socket socket;
 	public static final int PORT = 28411;
 	public static final String ENCODING = "UTF-8";
 	public static final char EOL = '\n';
@@ -48,7 +48,6 @@ public class Connection {
 		outStream.write(("Rejected" + EOL).getBytes());
 		outStream.flush();
 		outStream.close();
-		socket.close();
 	}
 
 	public void sendMessage(final String message) throws UnsupportedEncodingException, IOException {

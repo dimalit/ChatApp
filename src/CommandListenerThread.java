@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.Observable;
 
 public class CommandListenerThread extends Observable implements Runnable {
@@ -34,22 +33,14 @@ public class CommandListenerThread extends Observable implements Runnable {
 		while (!disconnected) {
 			try {
 				synchronized (this) {
-					try{
 					this.lastCommand = con.receive();
-					}catch (SocketException e2){
-						System.out.println("Except socket");
-						disconnected=true;
-					}
-					try{
-					System.out.printf("%s %s\n", lastCommand.getClass(), lastCommand.toString());}
-					catch(NullPointerException e1){
-						System.out.println("Wrong command");
-					}
+					//System.out.printf("%s %s\n", lastCommand.getClass(), lastCommand.toString());
 					if (lastCommand != null)
 						if ((lastCommand.type == (Command.CommandType.DISCONNECT)
-								|| (lastCommand.type == (Command.CommandType.REJECT)))) {
+								|| (lastCommand.type.toString().equals ("Rejected")))) {
 							disconnected = true;
 							System.out.println("test");
+					
 						}
 					setChanged();
 					notifyObservers();
