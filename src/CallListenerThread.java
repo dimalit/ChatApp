@@ -2,6 +2,7 @@
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 
 public class CallListenerThread extends Observable implements Runnable {
 	private CallListener callListener;
@@ -13,7 +14,7 @@ public class CallListenerThread extends Observable implements Runnable {
 	public CallListenerThread() throws IOException {
 		callListener = new CallListener();
 	}
-
+	
 	public CallListenerThread(String localNick) throws IOException {
 		callListener = new CallListener(localNick);
 	}
@@ -42,9 +43,6 @@ public class CallListenerThread extends Observable implements Runnable {
 		return connection;
 	}
 
-	public String getRemoteNick() {
-		return callListener.getRemoteNick();
-	}
 
 	public boolean isBusy() {
 		return callListener.isBusy();
@@ -73,9 +71,6 @@ public class CallListenerThread extends Observable implements Runnable {
 		callListener.setBusy(busy);
 	}
 
-	public void setListenAddress(SocketAddress listenAddress) {
-		callListener.setListenAddress(listenAddress);
-	}
 
 	public void setLocalNick(String localNick) {
 		callListener.setLocalNick(localNick);
@@ -83,7 +78,7 @@ public class CallListenerThread extends Observable implements Runnable {
 
 	public void start() {
 		this.isOpen = true;
-		Thread t = new Thread();
+		Thread t = new Thread(this);
 		t.start();
 	};
 

@@ -3,6 +3,7 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -19,6 +20,7 @@ import java.rmi.UnexpectedException;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -44,7 +46,8 @@ import java.awt.Color;
 
 public class MainForm {
 
-	private JFrame frame;
+	private JFrame frame, f;
+
 	private JTextField textField;
 	private JTextField nickField;
 	private JTextField remoteLogiField;
@@ -60,6 +63,7 @@ public class MainForm {
 	private CallListenerThread callLT;
 	private HistoryModel model;
 	private CommandListenerThread commandLT;
+	private int isPressed;
 
 	/**
 	 * Launch the application.
@@ -140,7 +144,6 @@ public class MainForm {
 		remoteAddrField.setToolTipText("You must press Enter to continue");
 		connectButt = new JButton("Connect");
 		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
-		connectButt.setEnabled(false);
 		panel_connection.add(connectButt);
 
 		JPanel main_panel = new JPanel();
@@ -155,9 +158,10 @@ public class MainForm {
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		textArea.setRows(10);
-		main_panel.add(textArea);
+		JScrollPane scroll = new JScrollPane(textArea);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		main_panel.add(scroll);
 		frame.getContentPane().add(bot_panel);
-
 		messageArea = new JTextArea();
 		messageArea.setMinimumSize(new Dimension(16, 4));
 		messageArea.setMaximumSize(new Dimension(800, 100));
@@ -171,23 +175,13 @@ public class MainForm {
 		send.setAlignmentX(Component.CENTER_ALIGNMENT);
 		send.setEnabled(false);
 		bot_panel.add(send);
-		// frame.pack();
-		remoteAddrField.addKeyListener(new KeyAdapter() {
-
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					connectButt.setEnabled(true);
-				}
-			}
-
-		});
 		discButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 
 				try {
 					if (connection != null) {
-						
+
 						connection.disconnect();
 						forDisconnect();
 					}
@@ -213,7 +207,7 @@ public class MainForm {
 						if (connection != null) {
 							connection.sendNickHello(nickField.getText());
 							forConnect();
-							commandLT=new CommandListenerThread(connection);
+							commandLT = new CommandListenerThread(connection);
 							commandLT.start();
 						}
 					} catch (InterruptedException e1) {
@@ -261,7 +255,8 @@ public class MainForm {
 					callLT.start();
 					commandLT = new CommandListenerThread();
 					ThreadOfCall();
-					
+					// ThreadOfCommand();
+
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -273,19 +268,56 @@ public class MainForm {
 
 	public void ThreadOfCall() throws IOException {
 		callLT.addObserver(new Observer() {
-
 			public void update(Observable arg0, Object arg1) {
+				connection = callLT.getConnection();
+				commandLT.setConnection(connection);
+				commandLT.start();
+				long t1 = System.currentTimeMillis();
+				long t2 = System.currentTimeMillis();
+				boolean b = false;
+				while (((t2 - t1) <= 100000) && (b == false)) {
+					Command command = commandLT.getLastCommand();
+					if (command instanceof NickCommand) {
+						b = true;
+						
+						//formForConnect(true, command.toString());
+						
+						if (isPressed==0) {
+						
+							try {
+								
+								connection.accept();
+								connection.sendNickHello(nickField.getText());
+								forConnect();
+								remoteLogiField.setText(command.toString());
+								remoteAddrField.setText(callLT.getRemoteAddress().toString());
+								ThreadOfCommand();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+						}
+					} else {
+						t2 = System.currentTimeMillis();
+					}
+				}
+				if (!b) {
 					try {
-						connection = callLT.getConnection();
-						commandLT.setConnection(connection);
-						commandLT.start();
-						forConnect();
-						connection.sendNickHello(nickField.getText());
-						ThreadOfCommand();
+						connection.disconnect();
+						commandLT.stop();
 					} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+				} else {
+					try {
+						forConnect();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 
 		});
@@ -293,34 +325,42 @@ public class MainForm {
 	}
 
 	public void ThreadOfCommand() {
-
+		System.out.println("testif");
 		commandLT.addObserver(new Observer() {
-			public void update(Observable ob, Object obj) {
+			public void update(Observable arg0, Object arg1) {
+				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
 				if (lastCommand instanceof MessageCommand) {
-					textArea.getModel().addMessage(remoteLogiField.getText(), new Date(),
-							commandLT.getLastCommand().toString());
+					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+					textArea.update(model, new Object());
 				} else if (lastCommand instanceof NickCommand) {
-					remoteLogiField.setText(lastCommand.toString());
-				} else {
+
+					// remoteLogiField.setText(lastCommand.toString());
+				} else if (lastCommand != null) {
 					switch (lastCommand.type) {
 					case ACCEPT: {
-						textArea.append("User is accepted");
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+						textArea.update(model, new Object());
 						break;
 					}
 					case REJECT: {
-						textArea.append("rejected");
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+						textArea.update(model, new Object());
+						commandLT.stop();
 						forDisconnect();
 						break;
 					}
 					case DISCONNECT: {
-						textArea.append("User was disconnected");
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+						textArea.update(model, new Object());
+						commandLT.stop();
 						forDisconnect();
 						break;
 					}
 					}
 
 				}
+
 			}
 
 		});
@@ -331,11 +371,12 @@ public class MainForm {
 		remoteLogiField.setText("");
 		messageArea.setEnabled(false);
 		discButton.setEnabled(false);
+		connectButt.setEnabled(true);
 		remoteAddrField.setText("");
 		remoteAddrField.setEnabled(true);
 	}
 
-	void forConnect() {
+	void forConnect() throws IOException {
 		send.setEnabled(true);
 		connectButt.setEnabled(false);
 		messageArea.setEnabled(true);
@@ -354,22 +395,24 @@ public class MainForm {
 		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
 		JButton yes = new JButton("Yes");
 		JButton no = new JButton("No");
+		text.setSize(500, 60);
+		text.setLocation(20, 20);
+		yes.setSize(90, 25);
+		yes.setLocation(70, 95);
+		no.setSize(90, 25);
+		no.setLocation(220, 95);
+		
+
+		f.setContentPane(cp);
 		yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					connection.accept();
-					remoteAddrField.setText(callListener.getRemoteAddress().toString());
-					Command command = connection.receive();
-					if (command instanceof NickCommand)
-						remoteLogiField.setText(command.toString());
+			
+			
+					isPressed = 1;
+					f.setVisible(false);
+					//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-					ThreadOfCommand();
-					forConnect();
-					f.setVisible(!b);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				
 
 			}
 		});
@@ -378,7 +421,8 @@ public class MainForm {
 				try {
 					connection.reject();
 					forDisconnect();
-					f.setVisible(!b);
+					f.setVisible(false);
+					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -386,16 +430,11 @@ public class MainForm {
 
 			}
 		});
-		text.setSize(500, 60);
-		text.setLocation(20, 20);
-		yes.setSize(90, 25);
-		yes.setLocation(70, 95);
-		no.setSize(90, 25);
-		no.setLocation(220, 95);
-		cp.add(text);
 		cp.add(yes);
 		cp.add(no);
+		cp.add(text);
 		f.setContentPane(cp);
+
 	}
 
 	public void formForNewTalk(boolean b, String nick) {

@@ -1,6 +1,6 @@
 public class Command {
 
-	protected CommandType type;
+	CommandType type;
 
 	public static enum CommandType {
 		ACCEPT {
