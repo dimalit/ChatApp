@@ -7,3 +7,4 @@ while cmd != '':
     s.send(cmd.encode())
     cmd = f.readline()
 s.close()
+f.close()
