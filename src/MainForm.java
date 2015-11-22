@@ -29,6 +29,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import java.awt.Dimension;
 import java.awt.Component;
@@ -46,7 +47,7 @@ import java.awt.Color;
 
 public class MainForm {
 
-	private JFrame frame, f;
+	private JFrame frame;
 
 	private JTextField textField;
 	private JTextField nickField;
@@ -274,29 +275,31 @@ public class MainForm {
 				commandLT.start();
 				long t1 = System.currentTimeMillis();
 				long t2 = System.currentTimeMillis();
-				boolean b = false;
+				boolean b=false;
 				while (((t2 - t1) <= 100000) && (b == false)) {
 					Command command = commandLT.getLastCommand();
 					if (command instanceof NickCommand) {
-						b = true;
-						
-						//formForConnect(true, command.toString());
-						
-						if (isPressed==0) {
-						
-							try {
-								
+						int reply = JOptionPane.showConfirmDialog(null,
+								"Do you want to accept incoming connection from user ".concat(command.toString()), "",
+								JOptionPane.YES_NO_OPTION);
+
+						try {
+							if (reply == JOptionPane.YES_OPTION) {
 								connection.accept();
 								connection.sendNickHello(nickField.getText());
-								forConnect();
-								remoteLogiField.setText(command.toString());
 								remoteAddrField.setText(callLT.getRemoteAddress().toString());
+								remoteLogiField.setText(command.toString());
+								forConnect();
 								ThreadOfCommand();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							} else {
+								connection.reject();
+								commandLT.stop();
+								forDisconnect();
 							}
 
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					} else {
 						t2 = System.currentTimeMillis();
@@ -384,58 +387,7 @@ public class MainForm {
 		remoteAddrField.setEnabled(false);
 	}
 
-	void formForConnect(boolean b, String nick) {
-		JFrame f = new JFrame();
-		Container cp = f.getContentPane();
-		f.setSize(400, 175);
-		f.setLocation(200, 200);
-		f.setVisible(b);
-		JPanel panel = new JPanel();
-		cp.setLayout(null);
-		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
-		JButton yes = new JButton("Yes");
-		JButton no = new JButton("No");
-		text.setSize(500, 60);
-		text.setLocation(20, 20);
-		yes.setSize(90, 25);
-		yes.setLocation(70, 95);
-		no.setSize(90, 25);
-		no.setLocation(220, 95);
-		
-
-		f.setContentPane(cp);
-		yes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			
-			
-					isPressed = 1;
-					f.setVisible(false);
-					//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-				
-
-			}
-		});
-		no.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					connection.reject();
-					forDisconnect();
-					f.setVisible(false);
-					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-		});
-		cp.add(yes);
-		cp.add(no);
-		cp.add(text);
-		f.setContentPane(cp);
-
-	}
+	
 
 	public void formForNewTalk(boolean b, String nick) {
 		JFrame f = new JFrame();

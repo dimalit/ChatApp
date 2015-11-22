@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Connection {
 
-	public Socket socket;
+	private Socket socket;
 	public static final int PORT = 28411;
 	public static final String ENCODING = "UTF-8";
 	public static final char EOL = '\n';
