@@ -289,7 +289,7 @@ public class MainForm {
 								connection.accept();
 								connection.sendNickHello(nickField.getText());
 								forConnect();
-								remoteLogiField.setText(command.toString();
+								remoteLogiField.setText(command.toString());
 								remoteAddrField.setText(callLT.getRemoteAddress().toString());
 								ThreadOfCommand();
 							} catch (IOException e) {
