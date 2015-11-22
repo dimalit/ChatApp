@@ -45,6 +45,7 @@ import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
 
 import java.awt.Color;
 
+@SuppressWarnings("unused")
 public class MainForm {
 
 	private JFrame frame;
@@ -330,6 +331,7 @@ public class MainForm {
 	public void ThreadOfCommand() {
 		System.out.println("testif");
 		commandLT.addObserver(new Observer() {
+			@SuppressWarnings("incomplete-switch")
 			public void update(Observable arg0, Object arg1) {
 				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
