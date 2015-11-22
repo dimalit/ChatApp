@@ -276,8 +276,8 @@ public class MainForm {
 				commandLT.start();
 				long t1 = System.currentTimeMillis();
 				long t2 = System.currentTimeMillis();
-				boolean b=false;
-				while (((t2 - t1) <= 100000) && (b == false)) {
+				boolean b = false;
+				while (((t2 - t1) <= 100000) && !b) {
 					Command command = commandLT.getLastCommand();
 					if (command instanceof NickCommand) {
 						int reply = JOptionPane.showConfirmDialog(null,
@@ -329,11 +329,9 @@ public class MainForm {
 	}
 
 	public void ThreadOfCommand() {
-		System.out.println("testif");
 		commandLT.addObserver(new Observer() {
 			@SuppressWarnings("incomplete-switch")
 			public void update(Observable arg0, Object arg1) {
-				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
 				if (lastCommand instanceof MessageCommand) {
 					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
@@ -388,8 +386,6 @@ public class MainForm {
 		discButton.setEnabled(true);
 		remoteAddrField.setEnabled(false);
 	}
-
-	
 
 	public void formForNewTalk(boolean b, String nick) {
 		JFrame f = new JFrame();
