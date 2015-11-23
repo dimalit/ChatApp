@@ -286,8 +286,8 @@ public class MainForm {
 
 						try {
 							if (reply == JOptionPane.YES_OPTION) {
-								connection.accept();
 								connection.sendNickHello(nickField.getText());
+								connection.accept();
 								remoteAddrField.setText(callLT.getRemoteAddress().toString());
 								remoteLogiField.setText(command.toString());
 								forConnect();
