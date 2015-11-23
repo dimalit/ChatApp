@@ -34,7 +34,7 @@ public class CommandListenerThread extends Observable implements Runnable {
 			try {
 				synchronized (this) {
 					this.lastCommand = con.receive();
-					//System.out.printf("%s %s\n", lastCommand.getClass(), lastCommand.toString());
+					System.out.printf("%s %s\n", lastCommand.getClass(), lastCommand.toString());
 					if (lastCommand != null)
 						if ((lastCommand.type == (Command.CommandType.DISCONNECT)
 								|| (lastCommand.type.toString().equals ("Rejected")))) {

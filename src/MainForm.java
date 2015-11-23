@@ -328,11 +328,14 @@ public class MainForm {
 
 	}
 
-	public void ThreadOfCommand() {
+	public void ThreadOfCommand() {	
+System.out.println("gotovo");
 		commandLT.addObserver(new Observer() {
-			@SuppressWarnings("incomplete-switch")
+		
 			public void update(Observable arg0, Object arg1) {
+				System.out.println("gotovo");
 				Command lastCommand = commandLT.getLastCommand();
+				System.out.println("test");
 				if (lastCommand instanceof MessageCommand) {
 					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
 					textArea.update(model, new Object());
