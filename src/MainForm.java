@@ -279,7 +279,6 @@ public class MainForm {
 				boolean b = false;
 				while (((t2 - t1) <= 100000) && !b) {
 					Command command = commandLT.getLastCommand();
-					
 					if (command instanceof NickCommand) {
 						int reply = JOptionPane.showConfirmDialog(null,
 								"Do you want to accept incoming connection from user ".concat(command.toString()), "",
@@ -287,20 +286,16 @@ public class MainForm {
 
 						try {
 							if (reply == JOptionPane.YES_OPTION) {
-								b=true;
-								connection.sendNickHello(nickField.getText());
 								connection.accept();
+								connection.sendNickHello(nickField.getText());
 								remoteAddrField.setText(callLT.getRemoteAddress().toString());
 								remoteLogiField.setText(command.toString());
 								forConnect();
 								ThreadOfCommand();
-								break;
 							} else {
-								b=true;
 								connection.reject();
 								commandLT.stop();
 								forDisconnect();
-								break;
 							}
 
 						} catch (IOException e) {
@@ -336,17 +331,15 @@ public class MainForm {
 	public void ThreadOfCommand() {	
 System.out.println("gotovo");
 		commandLT.addObserver(new Observer() {
+		
 			public void update(Observable arg0, Object arg1) {
 				System.out.println("gotovo");
 				Command lastCommand = commandLT.getLastCommand();
 				System.out.println("test");
-				
-				if (lastCommand!=null)
-				{System.out.println(commandLT.getLastCommand().toString());
 				if (lastCommand instanceof MessageCommand) {
 					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-					textArea.append(remoteLogiField.getText()+":"+commandLT.getLastCommand().toString());
-				} else{ if (lastCommand instanceof NickCommand) {
+					textArea.update(model, new Object());
+				} else if (lastCommand instanceof NickCommand) {
 
 					// remoteLogiField.setText(lastCommand.toString());
 				} else if (lastCommand != null) {
@@ -371,11 +364,10 @@ System.out.println("gotovo");
 						break;
 					}
 					}
-				}
 
 				}
 
-			}}
+			}
 
 		});
 	}
