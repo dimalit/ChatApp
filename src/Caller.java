@@ -34,7 +34,9 @@ public class Caller {
         if (nickCommand.isBusy()){
             lastCommand = connection.recieve();
             connection.disconnect();
+            UltimateGUI busyGUI = new UltimateGUI(remoteNick);
             lastError="User is busy";
+            remoteNick=null;
             return null;
         }
 
@@ -45,7 +47,9 @@ public class Caller {
         //Если Accept - вернуть connection
         if (lastCommand.type==CommandType.ACCEPT) return connection;
         else{
+            UltimateGUI ultimateGUI = new UltimateGUI("Failed to connect");
             lastError="User rejected your call";
+            connection.disconnect();
             return null;
         }
 

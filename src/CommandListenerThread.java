@@ -16,6 +16,7 @@ public class CommandListenerThread  implements Runnable {
     public void run() {
         while (!stop) {
             lastCommand = connection.recieve();
+            if (lastCommand==null) continue;
             if (lastCommand.type==CommandType.MESSAGE){
                 MessageCommand mc = (MessageCommand) lastCommand;
                 logic.addMessage(mc.message);

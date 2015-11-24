@@ -10,7 +10,13 @@ public class Command {
     }
 
     public static Command getCommand(Scanner in){
-        String string = in.nextLine();
+        String string ="";
+        if (in.hasNextLine()) {
+            string = in.nextLine();
+        }
+        else{
+            return null;
+        }
         if (string.contains(Protocol.ACCEPTED)) return new Command(CommandType.ACCEPT);
         if (string.contains(Protocol.DISCONNECT)) return new Command(CommandType.DISCONNECT);
         if (string.contains(Protocol.REJECTED)) return new Command(CommandType.REJECT);

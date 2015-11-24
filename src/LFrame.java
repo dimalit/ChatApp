@@ -1,30 +1,22 @@
 import java.awt.Color;
-import java.awt.Component;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 
-import java.util.Vector;
 
-import javax.swing.AbstractButton;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+
 import javax.swing.border.LineBorder;
-import javax.swing.border.SoftBevelBorder;
+
 
 
 public class LFrame extends JFrame {
 	JPanel panel = new JPanel();
     Logic logic;
+
+    private static final int Height = 600;
+    private static final int Widht = 800;
 	
 	JButton Send;
 	JButton Apply;
@@ -83,11 +75,16 @@ public class LFrame extends JFrame {
 		ForMass.setLineWrap(true);		  
 		ForMass.setWrapStyleWord(true);  
 		mass.setBounds(10, 480, 650, 75);
-		
+
+
 		smth = new HistoryView(logic.getHistoryViewModel());
 		smth.setLocation(10, 140);
 		smth.setSize(740,300);
-		smth.setBorder(linebord);
+
+        JScrollPane scrollPane = new JScrollPane(smth);
+        scrollPane.setLocation(10, 140);
+        scrollPane.setSize(740,300);
+        scrollPane.setBorder(linebord);
 		
 		Apply = new JButton("Apply");
 		Apply.setLocation(80, 80);
@@ -104,6 +101,12 @@ public class LFrame extends JFrame {
 		Disconnect.setLocation(600,80);
 		Disconnect.setSize(130,30);
 		Disconnect.setFont(font);
+        Disconnect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logic.disconnect();
+            }
+        });
 		
 	    Connect  = new JButton("Connect");
 	    Connect.setLocation(450,80);
@@ -113,7 +116,14 @@ public class LFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 logic.setRemoteIP(EnterIp.getText());
-                logic.call();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        logic.getHistoryViewModel().clearView();
+                        logic.call();
+
+                    }
+                });
             }
         });
 
@@ -127,6 +137,7 @@ public class LFrame extends JFrame {
         		text = mass.getText();
                 logic.sendMessage(text);
             	logic.getHistoryViewModel().addLocalMessage(text);
+                mass.setText("");
             	
 
         		
@@ -137,18 +148,49 @@ public class LFrame extends JFrame {
 		panel.add(login);
 		panel.add(textfieldlogin);
 		panel.add(mass);
-		panel.add(smth);
+		panel.add(scrollPane);
 		panel.add(EnterIp);
 		panel.add(addr);
 		panel.add(Send);
 		panel.add(Apply);
 		panel.add(Disconnect);
-		panel.add(Connect);
+        panel.add(Connect);
 
-		
-		this.add(panel);
+
+        this.add(panel);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(Widht, Height);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setTitle("ChatApp");
+        setConnected(false);
+        setVisible(true);
 		
 	
 	}
+
+    public void setBusy(Boolean busy){
+
+    }
+
+    public void setConnected(boolean b){
+        if (b){
+            Connect.setEnabled(false);
+            Apply.setEnabled(false);
+            Send.setEnabled(true);
+            Disconnect.setEnabled(true);
+            textfieldlogin.setEditable(false);
+            EnterIp.setEditable(false);
+        }
+        else {
+            Connect.setEnabled(true);
+            Apply.setEnabled(true);
+            Send.setEnabled(false);
+            Disconnect.setEnabled(false);
+            textfieldlogin.setEditable(true);
+            EnterIp.setEditable(true);
+        }
+    }
 
 }

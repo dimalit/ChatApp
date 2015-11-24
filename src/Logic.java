@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class Logic{
-    private MainGui mainGui;
+    private LFrame mainGui;
     private String localNick = "default",remoteNick,remoteIP;
     private boolean isBusy;
     private Connection connection;
@@ -18,11 +18,12 @@ public class Logic{
         callListenerThread = new CallListenerThread(localNick,isBusy,this);
         callThread = new Thread(callListenerThread);
         callThread.start();
-        mainGui = new MainGui(this);
+        mainGui = new LFrame(this);
     }
 
     public void setLocalNick(String nick){
-        localNick=nick;
+    	localNick=nick;
+    	callListenerThread.setNick(localNick);
     }
 
 
@@ -37,7 +38,7 @@ public class Logic{
     public void setBusy(boolean isBusy) {
         this.isBusy = isBusy;
         callListenerThread.setBusy(isBusy);
-
+        mainGui.setBusy(isBusy);
     }
 
     public void accept(Connection connection){
@@ -47,7 +48,10 @@ public class Logic{
         Thread thread = new Thread(commandListenerThread);
         thread.start();
         setBusy(true);
+        historyViewModel.addSystemMessage("Connected to "+remoteNick);
         System.out.println("GOT CONNECTION, YEY!");
+        mainGui.setConnected(true);
+
 
     }
 
@@ -61,20 +65,27 @@ public class Logic{
     }
 
     public void call(){
+        mainGui.setConnected(true);
+        setBusy(true);
         //блокировка кнопок Apply, Connect
         caller = new Caller(localNick,remoteIP);
         try {
             connection = caller.call();
         } catch (IOException e) {
-            //не удалось дозвониться по какой-то причине
+
         }
         if (connection!=null){
             remoteNick=caller.getRemoteNick();
             commandListenerThread = new CommandListenerThread(connection,this);
             Thread comThread = new Thread(commandListenerThread);
             comThread.start();
-            setBusy(true);
+            historyViewModel.addSystemMessage("Connected to "+remoteNick);
             System.out.println("CONNECTED, YEY");
+        }
+        else{
+            mainGui.setConnected(false);
+            setBusy(false);
+            UltimateGUI ultimateGUI = new UltimateGUI("Failed to connect");
         }
     }
 
@@ -86,11 +97,15 @@ public class Logic{
         setBusy(false);
         //разблокировка всякого
         //
+        historyViewModel.addSystemMessage("Disconnected");
+        historyViewModel.writeHistoryFile();
         remoteNick=null;
         remoteIP=null;
         commandListenerThread.kill();
         connection.disconnect();
-        historyViewModel.addSystemMessage("Disconnected");
+        mainGui.setConnected(false);
+        setBusy(false);
+
     }
 
     public void updateGUI(){

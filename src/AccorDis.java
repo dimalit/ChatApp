@@ -29,22 +29,22 @@ public class AccorDis extends JFrame {
         dispose();
     }
 	
-	String username = "Artem";
 
-	AccorDis(final Connection connection, final Logic logic){
+
+	AccorDis(final Connection connection, final Logic logic, String username){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(Widht, Height);
         setResizable(false);
         setAlwaysOnTop(true);
         setLocationRelativeTo(null);
-        setTitle("hop-hey-la-lay");
+        setTitle("Incoming call");
 
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.pink);
 		
-		NickName = new JLabel("User wants " +username+ " to speak");
+		NickName = new JLabel(username+ " is calling");
 		NickName.setLocation(60, 10);
 		NickName.setSize(200,54);
 	
@@ -60,7 +60,7 @@ public class AccorDis extends JFrame {
             }
         });
 		
-		Dismiss = new JButton("Dismiss");
+		Dismiss = new JButton("Reject");
 		Dismiss.setLocation(150,80);
 		Dismiss.setSize(130,30);
         Dismiss.addActionListener(new ActionListener() {

@@ -7,6 +7,8 @@ public class HistoryView extends JTextArea{
     public HistoryView(HistoryViewModel historyViewModel){
         this.historyViewModel=historyViewModel;
         historyViewModel.setHistoryView(this);
+        setEditable(false);
+        setAutoscrolls(true);
     }
 
     public void updateYourself(){
@@ -15,5 +17,10 @@ public class HistoryView extends JTextArea{
             this.setText(new StringBuilder(this.getText()).append(historyViewModel.get(i)).append("\n").toString());
         }
         currentSize=tmp;
+    }
+
+    public void clear(){
+        currentSize=0;
+        setText("");
     }
 }

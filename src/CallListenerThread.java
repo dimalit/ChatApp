@@ -28,12 +28,9 @@ public class CallListenerThread implements Runnable {
                 remoteConnection = callListener.getConnection();
                 if (remoteConnection == null) continue;
                 remoteNick=callListener.getRemoteNick();
-                form = new AccorDis(remoteConnection,logic);
+                form = new AccorDis(remoteConnection,logic,remoteNick);
                 System.out.println("AZAZA");
                 logic.setRemoteNick(remoteNick);
-
-
-
             }
         }
             catch(IOException e){
@@ -51,6 +48,11 @@ public class CallListenerThread implements Runnable {
     public void setBusy(Boolean isBusy){
         this.isBusy=isBusy;
         callListener.setBusy(isBusy);
+    }
+    
+    public void setNick(String nick){
+    	localNick=nick;
+    	callListener.setNick(localNick);
     }
 
 

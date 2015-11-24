@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,7 +9,7 @@ public class HistoryViewModel {
     Logic logic;
     List<String> Messagelist = new ArrayList<String>();
     HistoryView historyView;
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[kk:mm:ss dd.MM.YY]");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[kk:mm:ss dd.MM.yy]");
 
     public HistoryViewModel(){
 
@@ -50,6 +52,28 @@ public class HistoryViewModel {
 
     public void setHistoryView(HistoryView historyView){
         this.historyView = historyView;
+    }
+
+    public void writeHistoryFile(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[kk.mm.ss dd.MM.yy]");
+        FileWriter out = null;
+        try {
+            out = new FileWriter(new StringBuilder(simpleDateFormat.format(
+                    new Date(System.currentTimeMillis()))).append(logic.getRemoteNick()).append(".txt").toString());
+            for (String string : Messagelist){
+                out.write(string+"\n");
+                out.flush();
+            }
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void clearView(){
+        Messagelist = new ArrayList<String>();
+        historyView.clear();
     }
 
 

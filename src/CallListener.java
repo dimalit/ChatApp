@@ -46,6 +46,10 @@ public class CallListener {
     public void setBusy(boolean isBusy) {
         this.isBusy = isBusy;
     }
+    
+    public void setNick(String nick){
+    	localNick=nick;
+    }
 
     public boolean getBusy(){
         return isBusy;
