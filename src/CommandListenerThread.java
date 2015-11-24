@@ -32,8 +32,6 @@ public class CommandListenerThread extends Observable implements Runnable {
 	public void run() {
 		while (!disconnected) {
 			try {
-			
-				
 					this.lastCommand = con.receive();
 					
 					if (lastCommand != null)

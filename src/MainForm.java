@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
@@ -41,6 +42,7 @@ import javax.swing.border.LineBorder;
 import org.omg.CORBA.portable.UnknownException;
 
 import com.sun.glass.events.MouseEvent;
+import com.sun.glass.events.WindowEvent;
 import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
 
 import java.awt.Color;
@@ -61,7 +63,7 @@ public class MainForm {
 	private CallListener callListener;
 	private JButton connectButt;
 	private Caller caller;
-	private Connection connection;
+	private Connection connection, connection1;
 	private CallListenerThread callLT;
 	private HistoryModel model;
 	private CommandListenerThread commandLT;
@@ -78,6 +80,7 @@ public class MainForm {
 				try {
 					MainForm window = new MainForm();
 					window.frame.setVisible(true);
+					window.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -93,7 +96,7 @@ public class MainForm {
 	public MainForm() throws IOException {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 481, 243);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 		JPanel top_panel = new JPanel();
 		top_panel.setLayout(new BoxLayout(top_panel, BoxLayout.X_AXIS));
@@ -177,6 +180,23 @@ public class MainForm {
 		send.setAlignmentX(Component.CENTER_ALIGNMENT);
 		send.setEnabled(false);
 		bot_panel.add(send);
+		//frame.addWindowListener(new WindowAdapter() {
+			
+		//	public void windowClosing(WindowEvent ev) throws IOException {
+		//		 int result = JOptionPane.showConfirmDialog(null, "Are you sure?");
+	    //            if(result == JOptionPane.YES_OPTION)
+	    //            {
+	    //                frame.dispose();
+	    //            if(    connection != null) {
+		//			
+		//			connection.disconnect();
+		//			commandLT.stop();
+	    //            }
+	    //            }
+
+		//	}
+
+		//});
 		discButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -186,6 +206,8 @@ public class MainForm {
 
 						connection.disconnect();
 						forDisconnect();
+						connection = null;
+						commandLT.stop();
 					}
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -226,6 +248,25 @@ public class MainForm {
 				}
 			}
 		});
+		messageArea.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					try {
+						connection.sendMessage(messageArea.getText());
+						model.addMessage(nickField.getText(), new Date(), messageArea.getText());
+						textArea.update(model, new Object());
+						messageArea.setText("");
+					} catch (UnsupportedEncodingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
+			}
+		});
 		send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -258,7 +299,7 @@ public class MainForm {
 					commandLT = new CommandListenerThread();
 					ThreadOfCall();
 					// ThreadOfCommand();
-
+					nickApplyButton.setEnabled(false);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -271,111 +312,136 @@ public class MainForm {
 	public void ThreadOfCall() throws IOException {
 		callLT.addObserver(new Observer() {
 			public void update(Observable arg0, Object arg1) {
-				connection = callLT.getConnection();
-				commandLT.setConnection(connection);
-				commandLT.start();
-				long t1 = System.currentTimeMillis();
-				long t2 = System.currentTimeMillis();
-				boolean b = false;
-				while (((t2 - t1) <= 100000) && !b) {
-					Command command = commandLT.getLastCommand();
-					
-					if (command instanceof NickCommand) {
-						int reply = JOptionPane.showConfirmDialog(null,
-								"Do you want to accept incoming connection from user ".concat(command.toString()), "",
-								JOptionPane.YES_NO_OPTION);
+				System.out.println("update listener");
+				if (connection == null) {
+					System.out.println("update listener");
+					connection = callLT.getConnection();
+					commandLT.setConnection(connection);
+					commandLT.start();
+					long t1 = System.currentTimeMillis();
+					long t2 = System.currentTimeMillis();
+					boolean b = false;
+					while (((t2 - t1) <= 100000) && !b) {
+						Command command = commandLT.getLastCommand();
 
-						try {
-							if (reply == JOptionPane.YES_OPTION) {
-								b=true;
-								connection.sendNickHello(nickField.getText());
-								connection.accept();
-								remoteAddrField.setText(callLT.getRemoteAddress().toString());
-								remoteLogiField.setText(command.toString());
-								forConnect();
-								ThreadOfCommand();
-								break;
-							} else {
-								b=true;
-								connection.reject();
-								commandLT.stop();
-								forDisconnect();
-								break;
+						if (command instanceof NickCommand) {
+							int reply = JOptionPane.showConfirmDialog(null,
+									"Do you want to accept incoming connection from user ".concat(command.toString()),
+									"", JOptionPane.YES_NO_OPTION);
+
+							try {
+								if (reply == JOptionPane.YES_OPTION) {
+									b = true;
+									connection.sendNickHello(nickField.getText());
+									connection.accept();
+									remoteAddrField.setText(callLT.getRemoteAddress().toString());
+									remoteLogiField.setText(command.toString());
+									forConnect();
+									ThreadOfCommand();
+									break;
+								} else {
+									b = true;
+									connection.reject();
+									commandLT.stop();
+									connection = null;
+									forDisconnect();
+									break;
+								}
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-
+						} else {
+							t2 = System.currentTimeMillis();
+						}
+					}
+					if (!b) {
+						try {
+							connection.disconnect();
+							commandLT.stop();
+							connection = null;
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					} else {
-						t2 = System.currentTimeMillis();
+						try {
+							forConnect();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
-				if (!b) {
+
+				else {
+					connection1 = callLT.getConnection();
 					try {
-						connection.disconnect();
-						commandLT.stop();
-					} catch (IOException e) {
+						connection1.sendNickBusy(nickField.getText());
+					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
-				} else {
-					try {
-						forConnect();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
-
 		});
 
 	}
 
-	public void ThreadOfCommand() {	
-System.out.println("gotovo");
+	public void ThreadOfCommand() {
+		System.out.println("gotovo");
 		commandLT.addObserver(new Observer() {
 			public void update(Observable arg0, Object arg1) {
 				System.out.println("gotovo");
 				Command lastCommand = commandLT.getLastCommand();
 				System.out.println("test");
-				
-				if (lastCommand!=null)
-				{System.out.println(commandLT.getLastCommand().toString());
-				if (lastCommand instanceof MessageCommand) {
-					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-					textArea.append(remoteLogiField.getText()+":"+commandLT.getLastCommand().toString());
-				} else{ if (lastCommand instanceof NickCommand) {
-					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-					textArea.update(model, new Object());
-				} else if (lastCommand != null) {
-					switch (lastCommand.type) {
-					case ACCEPT: {
+
+				if (lastCommand != null) {
+					System.out.println(commandLT.getLastCommand().toString());
+					if (lastCommand instanceof MessageCommand) {
 						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-						textArea.update(model, new Object());
-						break;
+						textArea.append(remoteLogiField.getText() + ":" + commandLT.getLastCommand().toString());
+					} else {
+						if (lastCommand instanceof NickCommand) {
+
+							// remoteLogiField.setText(lastCommand.toString());
+						} else if (lastCommand != null) {
+							switch (lastCommand.type) {
+							case ACCEPT: {
+								model.addMessage(remoteLogiField.getText(), new Date(),
+										commandLT.getLastCommand().toString());
+								textArea.update(model, new Object());
+								break;
+							}
+							case REJECT: {
+								model.addMessage(remoteLogiField.getText(), new Date(),
+										commandLT.getLastCommand().toString());
+								textArea.update(model, new Object());
+								commandLT.stop();
+								connection = null;
+								forDisconnect();
+								break;
+							}
+							case DISCONNECT: {
+								model.addMessage(remoteLogiField.getText(), new Date(),
+										commandLT.getLastCommand().toString());
+								textArea.update(model, new Object());
+								commandLT.stop();
+								connection = null;
+								forDisconnect();
+								break;
+							}
+							}
+						}
+
 					}
-					case REJECT: {
-						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-						textArea.update(model, new Object());
-						commandLT.stop();
-						forDisconnect();
-						break;
-					}
-					case DISCONNECT: {
-						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-						textArea.update(model, new Object());
-						commandLT.stop();
-						forDisconnect();
-						break;
-					}
-					}
-				}
 
 				}
-
-			}}
+			}
 
 		});
 	}
