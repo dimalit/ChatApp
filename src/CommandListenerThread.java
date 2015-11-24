@@ -32,20 +32,25 @@ public class CommandListenerThread extends Observable implements Runnable {
 	public void run() {
 		while (!disconnected) {
 			try {
-				synchronized (this) {
+			
+				
 					this.lastCommand = con.receive();
-					System.out.printf("%s %s\n", lastCommand.getClass(), lastCommand.toString());
+					
 					if (lastCommand != null)
+					{System.out.println( lastCommand.getClass()+ lastCommand.toString());
 						if ((lastCommand.type == (Command.CommandType.DISCONNECT)
 								|| (lastCommand.type.toString().equals ("Rejected")))) {
 							disconnected = true;
 							System.out.println("test");
 					
 						}
-					setChanged();
-					notifyObservers();
+					}
+						
+					this.setChanged();
+					this.notifyObservers();
 				
-				}
+				
+				
 			} catch (IOException e) {
 
 				e.printStackTrace();
