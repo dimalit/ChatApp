@@ -1,3 +1,4 @@
+
 public class Command {
 
 	CommandType type;
@@ -9,7 +10,7 @@ public class Command {
 				return "ACCEPTED";
 			}
 		},
-		DISCONNECT, MESSAGE, NICK, REJECT {
+	DISCONNECT, MESSAGE, NICK, REJECT {
 			@Override
 			public String toString() {
 				return "REJECTED";
@@ -24,5 +25,9 @@ public class Command {
 	@Override
 	public String toString() {
 		return type.toString();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(new Command(Command.CommandType.valueOf("REJECT")).getClass());
 	}
 }

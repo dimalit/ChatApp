@@ -59,8 +59,8 @@ public class Connection {
 	public void disconnect() throws IOException {
 		outStream.write(("Disconnect" + EOL).getBytes(ENCODING));
 		outStream.flush();
-//		outStream.close();
-//		socket.close();
+		// outStream.close();
+		// socket.close();
 	}
 
 	public Command receive() throws IOException {
@@ -69,6 +69,7 @@ public class Connection {
 		while ((c = (char) inStream.read()) != EOL)
 			sb.append(c);
 		String str = sb.toString();
+		System.out.println(str);
 		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
@@ -78,61 +79,25 @@ public class Connection {
 			while ((c = (char) inStream.read()) != EOL)
 				sb.append(c);
 			return new MessageCommand(sb.toString());
-		} else if (str.toUpperCase().lastIndexOf("ED") > -1)
-			str = str.toUpperCase().replace("ED", "");
-		return 0 == sb.length() | !isCorrectCommand(str) ? null : new Command(Command.CommandType.valueOf(str));
+		} else {
+			str = str.toUpperCase().replaceAll("[\r\n]","");
+			for (Command.CommandType cc : Command.CommandType.values())
+				if (cc.toString().equals(str))
+					return new Command(Command.CommandType.valueOf(str.replaceAll("ED", "")));
+		}
+		return null;
 	}
 
-	// TODO:Write a function that will verify the correctness of the
-	// string(protocol)
-	private boolean isCorrectCommand(final String s) {
-		boolean c = false;
-		Command.CommandType [] a = Command.CommandType.values();
-		for (int i = 0; i < a.length; i++) {
-			if ((a[i].toString().toLowerCase().equals("reject"))
-					|| (a[i].toString().toLowerCase().equals("accept"))) {
-					c = true;
-					break;
-			} else {
-				if (a[i].toString().equals(s)) {
-					c = true;
-					break;
-				}
-			}
-	}
-		return c;
-	}
+	public static void main(String[] args) throws IOException {
+		ServerSocket ss = new ServerSocket(Connection.PORT);
+		Socket s = ss.accept();
+		Connection c = new Connection(s, "max");
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		// Test receive
-		int i = 2;
-		switch (i) {
-		case 1: {
-			ServerSocket ss = new ServerSocket(Connection.PORT);
-			Socket s = ss.accept();
-			Connection c = new Connection(s, "max");
-			while (true) {
-				Command cc = c.receive();
-				System.out.printf("%s : %s\n", cc.getClass(), cc);
-			}
-			// break;
-		}
-		case 2: {
-			Socket s = new Socket("127.0.0.1", Connection.PORT);
-			Connection c = new Connection(s, "test");
-			c.sendNickBusy("nickBusyTest");
-			TimeUnit.SECONDS.sleep(1);
-			c.sendNickHello("nickTest");
-			TimeUnit.SECONDS.sleep(1);
-			c.sendMessage("MyMessage");
-			TimeUnit.SECONDS.sleep(1);
-			c.accept();
-			TimeUnit.SECONDS.sleep(1);
-			c.reject();
-			TimeUnit.SECONDS.sleep(1);
-			break;
-		}
-		}
+		Command cc = c.receive();
+		System.out.printf("%s : %s\n", cc.getClass(), cc);
+		cc = c.receive();
+		System.out.printf("%s : %s\n", cc.getClass(), cc);
 
 	}
+
 }
