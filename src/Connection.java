@@ -69,7 +69,6 @@ public class Connection {
 		while ((c = (char) inStream.read()) != EOL)
 			sb.append(c);
 		String str = sb.toString();
-		System.out.println(str);
 		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
@@ -80,7 +79,7 @@ public class Connection {
 				sb.append(c);
 			return new MessageCommand(sb.toString());
 		} else {
-			str = str.toUpperCase().replaceAll("[\r\n]","");
+			str = str.toUpperCase().replaceAll("[\r\n]", "");
 			for (Command.CommandType cc : Command.CommandType.values())
 				if (cc.toString().equals(str))
 					return new Command(Command.CommandType.valueOf(str.replaceAll("ED", "")));
@@ -92,11 +91,10 @@ public class Connection {
 		ServerSocket ss = new ServerSocket(Connection.PORT);
 		Socket s = ss.accept();
 		Connection c = new Connection(s, "max");
-
-		Command cc = c.receive();
-		System.out.printf("%s : %s\n", cc.getClass(), cc);
-		cc = c.receive();
-		System.out.printf("%s : %s\n", cc.getClass(), cc);
+		while (true) {
+			Command cc = c.receive();
+			System.out.printf("%s : %s\n", cc.getClass(), cc);
+		}
 
 	}
 
