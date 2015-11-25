@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -20,10 +21,13 @@ public class MainForm {
 	private JButton connect;
 	private JButton disconnect;
 	private JButton send;
+	private JButton add;
+	private JButton delete;
 	private JLabel login;
 	private JLabel remoteLogin;
 	private JLabel remoteAddr;
 	private JLabel time;
+	private JLabel friends;
 	private JTextArea textLogin;
 	private JTextArea textRLogin;
 	private JTextArea textRAddr;
@@ -34,6 +38,7 @@ public class MainForm {
 	private JScrollPane scrollBar3;
 	private JScrollPane scrollBar4;
 	private JScrollPane scrollBar5;
+	private JScrollPane scrollBar6;
 	
 	public MainForm() {
 		start();
@@ -115,11 +120,10 @@ public class MainForm {
 		top.add(ltop);
 		top.add(rtop);
 		
-		JPanel bot = new JPanel(new GridLayout(1,2,100,0));
+		JPanel bot = new JPanel(new GridLayout(1,2,10,0));
 		
 		send = new JButton("Send");
-		send.setPreferredSize(new Dimension(70, 25));
-		
+		send.setPreferredSize(new Dimension(30, 20));
 		
 		textMess = new JTextArea(3,5);
 		textMess.setEditable(true);
@@ -137,6 +141,33 @@ public class MainForm {
 		scrollBar5 = new JScrollPane(messArea);
 		scrollBar5.setViewportView(messArea);
 		
+		JPanel frend = new JPanel(new BorderLayout());
+		JPanel but = new JPanel(new GridLayout(1,2,25,0));
+		
+		friends = new JLabel();
+		friends.setText("Friends");
+		friends.setBorder(new LineBorder(Color.BLACK, 1));
+		friends.setHorizontalAlignment(JLabel.CENTER);
+		friends.setPreferredSize(new Dimension(30, 40));
+		
+		String[] elements = {"FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS"};
+		JList northList = new JList(elements);
+        northList.setLayoutOrientation(JList.VERTICAL);
+        scrollBar6 = new JScrollPane(northList);
+		scrollBar6.setViewportView(northList);
+		
+		add = new JButton("Add");
+		delete = new JButton("Delete");
+		add.setPreferredSize(new Dimension(30, 25));
+		
+		but.add(add);
+		but.add(delete);
+		
+		frend.add(friends,BorderLayout.NORTH);
+		frend.add(scrollBar6,BorderLayout.CENTER);
+		frend.add(but,BorderLayout.SOUTH);
+	
+		frame.add(frend,BorderLayout.EAST);
 		frame.add(scrollBar5, BorderLayout.CENTER);
 		frame.add(top, BorderLayout.NORTH);
 		frame.add(bot, BorderLayout.SOUTH);
