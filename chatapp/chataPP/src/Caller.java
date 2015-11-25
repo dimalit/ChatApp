@@ -35,14 +35,14 @@ public class Caller
             remoteNick = ((NickCommand)command).getNick();
 
             if(((NickCommand)command).isBusy()) {
-                status = CALL_STATUS_HASH_MAP.get(Const.ChatApp_VERSION);
+                status = CALL_STATUS.get(Const.ChatApp_VERSION);
             } else {
                 command = connection.receive();             
-                status = CALL_STATUS_HASH_MAP.get(command.toString());
+                status = CALL_STATUS.get(command.toString());
             }
 
             if(status.equals(CallStatus.OK)) {                
-                System.out.println("Success connection");
+                System.out.println("Good");
 
                 CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
 //                commandListenerThread.addObserver(MainForm.window);
@@ -57,7 +57,7 @@ public class Caller
         }
     }
 
-    static final HashMap<String, CallStatus> CALL_STATUS_HASH_MAP = new HashMap<String, CallStatus>(){{
+    static final HashMap<String, CallStatus> CALL_STATUS= new HashMap<String, CallStatus>(){{
         put(Const.ChatApp_VERSION, CallStatus.BUSY);
         put(Command.CommandType.ACCEPT.toString(), CallStatus.OK);
         put(Command.CommandType.REJECT.toString(), CallStatus.REJECTED);
