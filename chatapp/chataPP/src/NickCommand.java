@@ -18,6 +18,7 @@ public class NickCommand extends Command {
         return nick;
     }
 
+    @Override
     public String toString (){
         if (isBusy)
             return version + " user " + nick + " busy";
