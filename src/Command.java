@@ -15,11 +15,15 @@ public class Command {
 			public String toString() {
 				return "REJECTED";
 			}
-		}
+		}, NULL
 	}
 
 	public Command(CommandType type) {
 		this.type = type;
+	}
+
+	public Command() {
+		type = CommandType.NULL;
 	}
 
 	@Override
@@ -27,7 +31,4 @@ public class Command {
 		return type.toString();
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(new Command(Command.CommandType.valueOf("REJECT")).getClass());
-	}
 }

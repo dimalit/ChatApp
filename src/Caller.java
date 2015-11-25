@@ -15,7 +15,7 @@ public class Caller {
 	public static enum CallStatus {
 		BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
 	}
-
+____
 	// TODO:why so many constructors?
 	public Caller() {
 		this("NickName", "127.0.0.1");
@@ -40,13 +40,13 @@ public class Caller {
 	public Connection call() throws InterruptedException {
 		String ip = remoteAddress.toString(); // "/ip:port"
 		try {
-			Socket s = new Socket(ip.substring(1, ip.indexOf(':')), Connection.PORT);
-			TimeUnit.SECONDS.sleep(1);
-			return s.isConnected() ? new Connection(s, localNick) : null;
+			Socket s = new Socket();
+			s.connect(remoteAddress, 1000);
+			return  new Connection(s, localNick);
 		} catch (IOException e) {
 			System.out.println("Not connected");
+			return null;
 		}
-		return null;
 	}
 
 	public String getLocalNick() {
@@ -81,22 +81,5 @@ public class Caller {
 	public CallStatus getStatus() {
 		return null;
 	}
-	public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, IOException {
-		Caller c = new Caller("max", "192.168.0.100");
-		Connection connection = c.call();
-//		connection.sendNickHello("max");
-//		TimeUnit.SECONDS.sleep(1);
-//		connection.sendMessage("Hello, world!");
-		connection.sendNickBusy("nickBusyTest");
-		TimeUnit.SECONDS.sleep(1);
-		connection.sendNickHello("nickTest");
-		TimeUnit.SECONDS.sleep(1);
-		connection.sendMessage("MyMessage");
-		TimeUnit.SECONDS.sleep(1);
-		connection.accept();
-		TimeUnit.SECONDS.sleep(1);
-		connection.reject();
-		TimeUnit.SECONDS.sleep(1);
-		
-	}
+
 }
