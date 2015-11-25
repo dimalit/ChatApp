@@ -40,7 +40,7 @@ private CallListener listener;
     }
 
     public SocketAddress getRemoteAddress(){
-        return null; //where it take?
+        return null;
     }
 
     public boolean isBusy (){
@@ -62,13 +62,10 @@ private CallListener listener;
     public void run() {
         while (!isClose) {
             try {
-                System.out.println("Before");
+          
                 Connection connection = call.getConnection();
-                System.out.println("Get");
                 myObservable.notifyObservers(call);
                 waitAnswer();
-                System.out.println("continued");
-
                 if (!isReceive) {
                     call.setBusy(false);
                     System.out.println("False");
@@ -76,13 +73,13 @@ private CallListener listener;
                         callStatus = Caller.CallStatus.BUSY;
                     }
                     else {
-                        callStatus = Caller.CallStatus.REJECTED;  //Sey observers: you are busy
+                        callStatus = Caller.CallStatus.REJECTED; 
                         connection.reject();
                     }
                 }
                 else{
                     System.out.println("OK");
-                    callStatus = Caller.CallStatus.OK;        //Success connection
+                    callStatus = Caller.CallStatus.OK;        
 
                     connection.accept();
                     myObservable.notifyObservers(connection);
@@ -92,7 +89,7 @@ private CallListener listener;
                 }
 
             } catch (IOException e) {
-                callStatus = Caller.CallStatus.NOT_ACCESSIBLE;  //Say observers about crashed connection?? I`m not sure
+                callStatus = Caller.CallStatus.NOT_ACCESSIBLE;
             }
         }
     }
@@ -114,7 +111,7 @@ private CallListener listener;
             try {
                 wait();
             } catch (InterruptedException e) {
-                System.out.println(t + " Thread interrupted: " + e);
+                System.out.println("Bad");
             }
         }
     }
