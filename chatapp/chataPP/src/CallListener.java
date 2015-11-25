@@ -3,23 +3,15 @@ import java.net.*;
 
 public class CallListener 
 {
-   
- public String localNick, remoteNick;
-	
-  private String localNick;
     private InetSocketAddress localAddress;
     private boolean isBusy;
-    private String remoteNick, remoteAddress;
+    private String remoteNick, remoteAddress,localNick;
     private ServerSocket serverSocket;
-
-    public CallListener(){
-        this("Untitled");
-    }
 
     public CallListener(String localNick){
         this.localNick = localNick;
         try {
-            serverSocket = new ServerSocket(Constants.PORT);
+            serverSocket = new ServerSocket(Const.PORT);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -27,12 +19,12 @@ public class CallListener
 
     public CallListener(String localNick, String localIP){
         this(localNick);
-        this.localAddress = new InetSocketAddress(localIP, Constants.PORT);
+        this.localAddress = new InetSocketAddress(localIP, Const.PORT);
     }
 
     private String receiveRemoteNick(Connection connection) throws IOException{
         Command c = connection.receive();
-        return c.toString().substring((Constants.ChatApp_VERSION + " user ").length());
+        return c.toString().substring((Const.ChatApp_VERSION + " user ").length());
     }
 
     public Connection getConnection () throws IOException{
@@ -82,8 +74,9 @@ public class CallListener
         localAddress = listenAddress;
     }
 
+    @Override
     public String toString(){
-        return localNick + " " + localAddress.getHostString();
+        return localNick + " " + localAddress.getHostString(); //Don`t sure
     }
 
     public String getRemoteNick(){
@@ -93,12 +86,5 @@ public class CallListener
     public String getRemoteAddress(){
         return remoteAddress;
     }
-
-    public static void main(String[] args) throws IOException {
-        
-        CallListener c = new CallListener("12345");
-        c.getConnection();
-        System.out.println(c.getRemoteNick());
-    }      
         
 }
