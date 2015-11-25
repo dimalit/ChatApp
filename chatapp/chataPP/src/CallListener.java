@@ -32,7 +32,7 @@ public class CallListener
         remoteAddress = serverSocket.getInetAddress().getCanonicalHostName();
         System.out.println("Accepted");
         Connection connection = new Connection(socket);
-        System.out.println("Connection OK");
+        System.out.println("OK");
 
         if (isBusy)
         {
@@ -76,7 +76,7 @@ public class CallListener
 
     @Override
     public String toString(){
-        return localNick + " " + localAddress.getHostString(); //Don`t sure
+        return localNick + " " + localAddress.getHostString();
     }
 
     public String getRemoteNick(){
