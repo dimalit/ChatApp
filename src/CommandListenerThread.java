@@ -1,44 +1,51 @@
 import java.util.*;
 import java.io.*;
 
-public class CommandListenerThread implements Runnable {
+public class CommandListenerThread extends Observable implements Runnable {
     private Connection connection;
-    private Command lastCommand;
-    private boolean flag;
-    private HashMap<CommandTypes, CommandObserver> observers;
-    /*private поле с объектом формочки*/
+    private volatile Command lastCommand;
+    private volatile boolean disconnected;
 
-    public CommandListenerThread(Connection connection, /*здесь должен быть объект работающей формочки*/) {
-        this.connection = connection;
-        /*this.формочка = формочка*/
+    public void start() {
+        this.disconnected = false;
+        Thread t = new Thread(this);
+        t.start();
     }
 
-    public void addCommandObserver(CommandObserver commandObserver) {
-        observers.put(CommandObserver.getType(),commandObserver);
-    }
-
-    public void removeCommandObserver(CommandObserver commandObserver) {
-        observers.remove(CommandObserver.getType());
+    public boolean isDisconnected() {
+        return disconnected;
     }
 
     public void stop() {
-        flag = true;
+        disconnected = true;
     }
 
+    public Connection getConnection(){
+        return this.connection;
+    }
+
+    public CommandListenerThread(Connection connection) {
+        this.connection = connection;
+    }
+
+    public Command getLastCommand() {
+        return lastCommand;
+    }
+
+    @Override
     public void run() {
-        try {
-            while (!flag) {
-                lastCommand = connection.recieve();
-                if (lastCommand.commandTypes == CommandTypes.message) {
-                    MessageCommand messageCommand = (MessageCommand) lastCommand;
-                    /*формочка добавляет сообщение*/
-                }
-                if (lastCommand.commandTypes == CommandTypes.disconnect) {
-                    /*формочка дисконектится*/
+        while (isDisconnected() != true) {
+            synchronized (this) {
+                try {
+                    this.lastCommand = connection.recieve();
+                    notifyObservers(connection.recieve());
+                    this.addObserver(ChatWindow.observer);
+                    setChanged();
+                    this.notifyObservers(lastCommand);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

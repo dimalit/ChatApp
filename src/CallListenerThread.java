@@ -1,48 +1,54 @@
 import java.io.*;
+import java.util.*;
+import java.net.*;
 
-public class CallListenerThread implements Runnable {
-    private String nick;
-    private String lastAction;
-    private String ip;
-    private String remoteNick;
-    private boolean isBusy;
-    private Connection remoteConnection;
+public class CallListenerThread extends Observable implements Runnable {
     private CallListener callListener;
-    private boolean flag;
-    private IncomingConnection IC;
-    /*private поле с объектом формочки*/
+    private String nick;
+    private Socket socket;
+    private ServerSocket serverSocket;
+    private volatile boolean disconnected;
 
-    public CallListenerThread(String nick,/*адресс типо*/ /*здесь должен быть объект работающей формочки*/) {
-        callListener = CallListener(nick, /*адресс типо*/);
-        /*this.формочка = формочка*/
+    public void start() {
+        this.disconnected = false;
+        Thread t = new Thread(this);
+        t.start();
     }
 
-    public Connection getRemoteConection() {
-        return remoteConnection;
+    public boolean isDisconnected() {
+        return disconnected;
     }
 
-    public void Stop() {
-        flag = true;
+    public void stop() {
+        disconnected = true;
     }
 
-    public void run() {
-        try {
-            while (!flag) {
-                remoteConnection = callListener.getConnection();
-                if (remoteConnection == null) {
-                    continue;
-                }
-                remoteNick = callListener.getRemoteNick();
-                IC = new IncomingConnection(remoteConnection, /*формочка*/);
-                /*формочка.setRemoteNick(remoteNick)*/
-
-                /*в этой форме будет метод
-                public void setRemoteNick(String nick){
-                    remoteNick = nick;
-                } */
-
+    public Connection getConnection(){
+        if(socket!=null){
+            try {
+                return new Connection(socket, nick);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e){
+        }
+        return null;
+    }
+
+    @Override
+    public  void run(){
+        try {
+            serverSocket = new ServerSocket(Protocol.PORT);
+            while (true){
+                socket = serverSocket.accept();
+                Connection connection = new Connection(socket, nick);
+                if (connection!=null) {
+                    CommandListenerThread clt = new CommandListenerThread(connection);
+                    clt.addObserver(ChatWindow.observer);
+                    clt.start();
+                    connection.sendNickHello(Protocol.nickname);
+                }
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

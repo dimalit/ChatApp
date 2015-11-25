@@ -10,11 +10,12 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class ChatWindow extends JFrame implements Observer {
-
 	private CallListenerThread callt;
 	private CommandListenerThread comt;
+	public static Observer observer;
 
 	public ChatWindow() {
+		observer = this;
 		this.setSize(650, 500);
 		this.setTitle("This is CHAT ");
 		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");

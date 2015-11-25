@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+
 public class Caller {
     private Socket s;
     private String nick;

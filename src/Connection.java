@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Connection{
     private Socket s;
-    private final static int PORT = 28411;
-    private final static String ENCODING = "UTF-8";
     private String nick;
     private OutputStream out;
     private DataOutputStream sout;
