@@ -38,16 +38,13 @@ public class CommandListenerThread implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Run command listener");
         while (!isDisconnected){
             try {
                 lastCommand = connection.receive();
             } catch (IOException e) {
-                    System.out.println("Command listener Thread stopped");
                     lastCommand = new Command(Command.CommandType.REJECT);
             }
             catch (NoSuchElementException e){
-                System.out.println("Command listener Thread stopped");
                 lastCommand = new Command(Command.CommandType.DISCONNECT);
             }
 
