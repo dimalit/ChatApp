@@ -56,14 +56,14 @@ public class LFrame extends JFrame {
 		login = new JLabel("login:");
 		login.setFont(font);
 		login.setBounds(35, 40, 60, 30);
-		textfieldlogin = new JTextField();
+		textfieldlogin = new JTextField(logic.getLocalNick());
 		textfieldlogin.setBounds(80, 40, 115, 30);
 		textfieldlogin.setBorder(linebord);
 		
 		addr = new JLabel("remote addr");
 		addr.setFont(font);
 		addr.setBounds(400,35,100,50);
-		EnterIp = new JTextField();
+		EnterIp = new JTextField("files.litvinov.in.ua");
 		EnterIp.setBounds(500,40,150,30);
 		EnterIp.setBorder(linebord);
        

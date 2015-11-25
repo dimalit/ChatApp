@@ -1,4 +1,6 @@
-import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Logic{
@@ -12,20 +14,28 @@ public class Logic{
     private HistoryViewModel historyViewModel = new HistoryViewModel(this);
     private CommandListenerThread commandListenerThread;
 
-
-
     public Logic(){
+        String tmp = getNickFromFile();
+        if (tmp!=null) localNick=tmp;
+        else localNick="default";
         callListenerThread = new CallListenerThread(localNick,isBusy,this);
         callThread = new Thread(callListenerThread);
         callThread.start();
         mainGui = new LFrame(this);
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void setLocalNick(String nick){
     	localNick=nick;
     	callListenerThread.setNick(localNick);
+        writeNickToFile();
     }
-
 
     public void setRemoteNick(String nick){
         remoteNick = nick;
@@ -48,6 +58,7 @@ public class Logic{
         Thread thread = new Thread(commandListenerThread);
         thread.start();
         setBusy(true);
+        historyViewModel.clearView();
         historyViewModel.addSystemMessage("Connected to "+remoteNick);
         System.out.println("GOT CONNECTION, YEY!");
         mainGui.setConnected(true);
@@ -67,12 +78,11 @@ public class Logic{
     public void call(){
         mainGui.setConnected(true);
         setBusy(true);
-        //блокировка кнопок Apply, Connect
-        caller = new Caller(localNick,remoteIP);
+        caller = new Caller(localNick,remoteIP,this);
         try {
             connection = caller.call();
         } catch (IOException e) {
-
+            UltimateGUI ultimateGUI = new UltimateGUI("Failed to connect");
         }
         if (connection!=null){
             remoteNick=caller.getRemoteNick();
@@ -85,7 +95,7 @@ public class Logic{
         else{
             mainGui.setConnected(false);
             setBusy(false);
-            UltimateGUI ultimateGUI = new UltimateGUI("Failed to connect");
+
         }
     }
 
@@ -124,16 +134,43 @@ public class Logic{
         return historyViewModel;
     }
 
+    public LFrame getMainGui(){
+        return mainGui;
+    }
+
+    public void writeNickToFile(){
+        FileWriter out = null;
+        try {
+            out = new FileWriter("nick.txt");
+            out.write(localNick);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Could not create nick.txt");
+        }
+
+    }
+
+    public String getNickFromFile(){
+        BufferedReader in = null;
+        try{
+            in = new BufferedReader(new FileReader("nick.txt"));
+            String nick = in.readLine();
+            in.close();
+            if (nick!=null){
+                return nick;
+            }
+            else {
+                return null;
+            }
+
+        } catch (IOException e){
+            System.out.println("Failed to find a file nick.txt");
+            return null;
+        }
+
+    }
+
     public static void main(String[] args) {
         Logic logic = new Logic();
     }
-
-
-
-
-
-
-
-
-
 }
