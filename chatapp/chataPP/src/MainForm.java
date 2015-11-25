@@ -1,18 +1,30 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.util.Observable;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.text.BadLocationException;
 
 public class MainForm {
 
@@ -28,17 +40,20 @@ public class MainForm {
 	private JLabel remoteAddr;
 	private JLabel time;
 	private JLabel friends;
+	private JList list;
 	private JTextArea textLogin;
 	private JTextArea textRLogin;
 	private JTextArea textRAddr;
-	private JTextArea messArea;
 	private JTextArea textMess;
 	private JScrollPane scrollBar1;
 	private JScrollPane scrollBar2;
 	private JScrollPane scrollBar3;
 	private JScrollPane scrollBar4;
-	private JScrollPane scrollBar5;
 	private JScrollPane scrollBar6;
+	private DefaultListModel dlm;
+        private CallListenerThread callListenerThread;
+        private Connection connection;
+        public static MainForm main;
 	
 	public MainForm() {
 		start();
@@ -135,11 +150,10 @@ public class MainForm {
 		bot.add(scrollBar4);
 		bot.add(send);
 		
-		messArea = new JTextArea();
-		messArea.setEditable(false);
-		messArea.setBorder(new LineBorder(Color.BLACK, 1));
-		scrollBar5 = new JScrollPane(messArea);
-		scrollBar5.setViewportView(messArea);
+		JScrollPane scrollPane = new JScrollPane();
+
+		list = new JList();
+		scrollPane.setViewportView(list);
 		
 		JPanel frend = new JPanel(new BorderLayout());
 		JPanel but = new JPanel(new GridLayout(1,2,25,0));
@@ -150,7 +164,7 @@ public class MainForm {
 		friends.setHorizontalAlignment(JLabel.CENTER);
 		friends.setPreferredSize(new Dimension(30, 40));
 		
-		String[] elements = {"FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS"};
+		String[] elements = {"FRIENDSFRIENDSFRIENDSFRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS"};
 		JList northList = new JList(elements);
         northList.setLayoutOrientation(JList.VERTICAL);
         scrollBar6 = new JScrollPane(northList);
@@ -168,13 +182,191 @@ public class MainForm {
 		frend.add(but,BorderLayout.SOUTH);
 	
 		frame.add(frend,BorderLayout.EAST);
-		frame.add(scrollBar5, BorderLayout.CENTER);
+		frame.add(scrollPane, BorderLayout.CENTER);
 		frame.add(top, BorderLayout.NORTH);
 		frame.add(bot, BorderLayout.SOUTH);
+		
+		dlm = new DefaultListModel();
+		send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if ((login.getText().equals("")) || (remoteLogin.getText().equals("")) || (remoteAddr.getText().equals(""))){
+					JOptionPane.showMessageDialog(frame, "Not enough data for sending the message");
+				}
+				else {
+					String name = new String();
+					if (login.getText().length()>10){
+						try {
+							name = login.getText();
+						} catch (BadLocationException ignore) {}
+						name = name + "...";
+					}
+					else name = login.getText();
+					long date = System.currentTimeMillis();
+					dlm.addElement("<html>" + name + " " + new Date(date).toLocaleString() + ":<br>" + textMess.getText() + " </span></html>");
+					list.setModel(dlm);
 
+					try {
+						connection.sendMessage(textMess.getText());
+						System.out.println("Sended");
+					} catch (IOException ex){
+						System.out.println("No internet connection");
+					}
+
+				}
+				textMess.setText("");
+				textMess.requestFocus();
+			}
+		});
+		
+		textMess.addKeyListener(new KeyListener(){
+
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER){
+					send.doClick();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		
+		apply.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (callListenerThread == null) {
+                    System.out.println("Added obs");
+                    callListenerThread = new CallListenerThread(new CallListener(login.getText()));
+                    callListenerThread.addObserver(main);
+                }
+				else {
+					callListenerThread.setLocalNick(login.getText());
+				}
+			}
+		});
+
+		connect.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Caller caller = new Caller(login.getText() ,remoteAddr.getText());
+					new Thread (new Runnable() {
+						@Override
+						public void run() {
+							try {
+								connection = caller.call();
+
+								if(caller.getStatus().toString().equals("OK"))
+									remoteAddr.setText(caller.getRemoteNick());
+								else
+								 if (caller.getStatus().toString().equals("BUSY")){
+									 JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " is busy");
+								 }
+								else
+								{
+									JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " has declined your call.");
+									connection = null;
+								}
+
+							} catch (IOException ex) {                   
+								JOptionPane.showMessageDialog(frame, "Connection error. User with ip does not exist or there is no Internet connection");
+								connection = null;
+							}
+						}
+					}).start();
+			}
+
+
+		});
+		
+		disconnect.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				remoteLogin.setText("");
+				try {
+					connection.disconnect();
+					callListenerThread.setBusy(false);
+				} catch (IOException ex){
+
+				}
+				catch (NullPointerException ex){
+					System.out.println("Already disconnect");               
+				}
+			}
+		});
+		
+	}
+	
+	public boolean question (String nick, String remoteAddress){
+		Object[] options = {"Receive","Reject"};
+		int dialogResult = JOptionPane.showOptionDialog(frame,"User "+ nick + " with ip " + remoteAddress +
+						" is trying to connect with you","Recive connection",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,options,options[0]);
+		if(dialogResult == JOptionPane.YES_OPTION) {
+			System.out.println("Receive");
+			remoteLogin.setText(nick);
+			remoteAddr.setText(remoteAddress);
+			return true; 
+		}
+		System.out.println("Rejected");
+			return false; 
+
+	}
+	
+	public void update(Observable o, Object arg) {
+		if(arg instanceof CallListener)
+		{
+			CallListener c = (CallListener) arg;
+			callListenerThread.suspend();
+			callListenerThread.setReceive(question(c.getRemoteNick(), c.getRemoteAddress()));
+			callListenerThread.resume();
+		}
+		else
+			if (arg instanceof Connection){
+				connection = (Connection) arg;
+				System.out.println("Output connection created");
+			}
+		else
+		{
+			System.out.println("Receive message");
+			System.out.println(arg.toString());
+			Command command = (Command) arg;
+
+			if (command instanceof MessageCommand) {
+				dlm.addElement("<html>" + remoteLogin.getText() + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + arg.toString() + " </span></html>");
+				list.setModel(dlm);
+			}
+			else {
+				Command check = new Command(Command.CommandType.DISCONNECT);
+				if (command.toString().equals("DISCONNECT") || command.toString().equals("REJECTED")){
+					JOptionPane.showMessageDialog(frame, "User " + remoteLogin.getText() + " was disconnected");
+					callListenerThread.setBusy(false);
+					remoteLogin.setText("");
+					remoteAddr.setText("");
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {
-		MainForm b = new MainForm();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+                                     main = new MainForm();
+                                     main.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }
