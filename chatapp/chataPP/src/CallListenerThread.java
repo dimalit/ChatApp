@@ -1,89 +1,135 @@
 import java.io.IOException;
-import java.net.SocketAddress;
-import java.util.Observable;
-public class CallListenerThread extends Observable implements Runnable
+import java.net.*;
+import java.util.*;
+public class CallListenerThread implements Runnable
 {
 
 private CallListener listener;
-	private boolean isAvailable;
-	private Thread thread;
-	private Caller.CallStatus callStatus;
-	
-	public CallListenerThread() {
-		listener = new CallListener();
-		thread =  new Thread(this);
-		thread.start();
-	}
+	private CallListener call;
+    private volatile boolean isClose;
+    private Caller.CallStatus callStatus;
+    private Thread t;
+    private volatile boolean  isReceive, flag;
 
-	public CallListenerThread(String localNick) {
-		listener = new CallListener(localNick);
-		thread =  new Thread(this);
-		thread.start();
-	}
+    private Observable myObservable = new Observable(){
+        public void notifyObservers(Object arg) {
+            setChanged();
+            super.notifyObservers(arg);
+        }
+    };
 
-	public CallListenerThread(String localNick, String localIP) {
-		listener = new CallListener(localNick, localIP);
-		thread =  new Thread(this);
-		thread.start();
-	}
-
-	public String getLocalNick() {
-		return listener.getLocalNick();
-	}
-
-	public String getRemoteNick() {
-		return listener.getRemoteNick();
-	}
-
-	public SocketAddress getListenAddress() throws IOException {
-		return listener.getListenAddress();
-	}
-
-	public SocketAddress getRemoteAddress() throws IOException {
-		return listener.getRemoteAddress();
-	}
-
-	public boolean isBusy() {
-		return listener.isStatusBusy();
-	}
-
-	public void setBusy(boolean busy) {
-		listener.setStatus(busy);
-	}
-
-	public void setLocalNick(String localNick) {
-		listener.setLocalNick(localNick);
-	}
-    
-    public void setListenAddress(SocketAddress listenAddress){
-    	listener.setListenAddress(listenAddress);
+    public CallListenerThread(){
+        t = new Thread(this);
+        isClose = false;
+        t.start();
     }
-	
-	public void run() {
-		while (!isAvailable) {
-			try {
-				Connection connection=listener.getConnection();
-				if (connection == null) 
-					callStatus = Caller.CallStatus.valueOf("BUSY"); 
-					else 
-					callStatus = Caller.CallStatus.valueOf("OK"); 
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			setChanged();
-			notifyObservers();
-		}
 
-	}
+    public CallListenerThread(CallListener call){
+        this.call = call;
+        t = new Thread(this);
+        isClose = false;
+        t.start();
+    }
 
-	public void start() {
-		this.isAvailable = true;
-		run();
-	}
+    public SocketAddress getListenAddress(){
+        return call.getListenAddress();
+    }
 
-	public void stop() {
-		this.isAvailable = false;
-	}
-    
+    public String getLocalNick (){
+        return call.getLocalNick();
+    }
+
+    public SocketAddress getRemoteAddress(){
+        return null; //where it take?
+    }
+
+    public boolean isBusy (){
+        return call.isBusy();
+    }
+
+    public void setBusy (boolean isBusy){
+        call.setBusy(isBusy);
+    }
+
+    public void setListenAddress(InetSocketAddress newAddress){
+        call.setListenAddress(newAddress);
+    }
+
+    public void setLocalNick (String newNick){
+        call.setLocalNick(newNick);
+    }
+
+    public void run() {
+        while (!isClose) {
+            try {
+                System.out.println("Before");
+                Connection connection = call.getConnection();
+                System.out.println("Get");
+                myObservable.notifyObservers(call);
+                waitAnswer();
+                System.out.println("continued");
+
+                if (!isReceive) {
+                    call.setBusy(false);
+                    System.out.println("False");
+                    if (connection == null) {
+                        callStatus = Caller.CallStatus.BUSY;
+                    }
+                    else {
+                        callStatus = Caller.CallStatus.REJECTED;  //Sey observers: you are busy
+                        connection.reject();
+                    }
+                }
+                else{
+                    System.out.println("OK");
+                    callStatus = Caller.CallStatus.OK;        //Success connection
+
+                    connection.accept();
+                    myObservable.notifyObservers(connection);
+
+                    CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
+//                    commandListenerThread.addObserver(MainForm.window);
+                }
+
+            } catch (IOException e) {
+                callStatus = Caller.CallStatus.NOT_ACCESSIBLE;  //Say observers about crashed connection?? I`m not sure
+            }
+        }
+    }
+
+    public void stop(){
+        isClose = true;
+    }
+
+    public void setReceive(boolean isReceive){
+        this.isReceive = isReceive;
+    }
+
+    public void suspend(){
+        flag = false;
+    }
+
+    private synchronized void waitAnswer(){
+        if (!flag) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.out.println(t + " Thread interrupted: " + e);
+            }
+        }
+    }
+
+    public synchronized void resume(){
+        flag = true;
+        notify();
+    }
+
+    public void addObserver(Observer observer){
+        myObservable.addObserver(observer);
+    }
+
+    public String getRemoteNick (){
+        return call.getRemoteNick();
+    }
     
 }
