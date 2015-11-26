@@ -41,7 +41,7 @@ public class Connection {
         socket.getOutputStream().write("Disconnect\n".getBytes(Const.CHARSET_NAME));
         socket.getOutputStream().flush();
     }
-    
+
     public Command receive() throws IOException {
         Scanner in = new Scanner(new BufferedInputStream(socket.getInputStream()));
         String line = in.nextLine();
@@ -58,7 +58,7 @@ public class Connection {
 
             return new NickCommand(Const.ChatApp_VERSION, nick, isBusy);
 
-        } else if(COMMAND.containsKey(line.toLowerCase())) {
+        } else if(COMMAND_HASH_MAP.containsKey(line.toLowerCase())) {
 
             if(line.toUpperCase().equals(Command.CommandType.MESSAGE.toString())) {
 
@@ -66,20 +66,18 @@ public class Connection {
                 return new MessageCommand(line);
 
             } else
-                return COMMAND.get(line.toLowerCase());
+                return COMMAND_HASH_MAP.get(line.toLowerCase());
 
         } else return null;
 
     }
 
-     final HashMap<String, Command> COMMAND = new HashMap<String, Command>(){{
+    static final HashMap<String, Command> COMMAND_HASH_MAP = new HashMap<String, Command>(){{
         put("accepted", new Command(Command.CommandType.ACCEPT));
         put("disconnect", new Command(Command.CommandType.DISCONNECT));
         put("message", new Command(Command.CommandType.MESSAGE));
         put(Const.ChatApp_VERSION, new Command(Command.CommandType.NICK));
         put("rejected", new Command(Command.CommandType.REJECT));
     }};
-    
-    
 }
 
