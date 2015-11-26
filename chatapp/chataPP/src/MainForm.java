@@ -1,228 +1,292 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.util.Observable;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import java.awt.GridBagLayout;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+import java.io.IOException;
+import java.sql.Date;
+import java.awt.GridBagConstraints;
+import java.awt.Color;
+import javax.swing.text.BadLocationException;
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+/*import org.eclipse.wb.swing.FocusTraversalOnArray;*/
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
-import javax.swing.border.LineBorder;
-import javax.swing.text.BadLocationException;
+import javax.swing.border.EmptyBorder;
 
-public class MainForm {
+public class MainForm implements Observer{
 
 	private JFrame frame;
-	private JButton apply;
-	private JButton connect;
-	private JButton disconnect;
-	private JButton send;
-	private JButton add;
-	private JButton delete;
-	private JLabel login;
-	private JLabel remoteLogin;
-	private JLabel remoteAddr;
-	private JLabel time;
-	private JLabel friends;
-	private JList list;
-	private JTextArea textLogin;
-	private JTextArea textRLogin;
-	private JTextArea textRAddr;
-	private JTextArea textMess;
-	private JScrollPane scrollBar1;
-	private JScrollPane scrollBar2;
-	private JScrollPane scrollBar3;
-	private JScrollPane scrollBar4;
-	private JScrollPane scrollBar6;
+	private JTextField loclog;
+	private JTextField remlog;
+	private JTextField remadr;
+	private JTextField msg;
+	private CallListenerThread callListenerThread;
+        public static MainForm window;
 	private DefaultListModel dlm;
-        private CallListenerThread callListenerThread;
-        private Connection connection;
-        public static MainForm main;
-	
-	public MainForm() {
-		start();
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+	private JList list;
+	private Connection connection;
+
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					window = new MainForm();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
-	public void start() {
+	public MainForm() {
+		initialize();
+	}
+
+	private void initialize() {
 		frame = new JFrame();
-		Toolkit kit = Toolkit.getDefaultToolkit();
-		Dimension screen = kit.getScreenSize();
-		int w = screen.width;
-		int h = screen.height;
-		frame = new JFrame("ChatApp");
-		frame.setSize(w / 2, h / 2);
-		frame.setLocation(w / 4, h / 4);
-		
-		JPanel top = new JPanel(new GridLayout(1,2,50,0));
-		JPanel ltop = new JPanel(new GridLayout(2,2));
-		JPanel rtop = new JPanel(new GridLayout(2,3));
-		
-		login = new JLabel();
-		login.setText("Local Login");
-		login.setHorizontalAlignment(JLabel.CENTER);
-		login.setOpaque(true);
-		login.setPreferredSize(new Dimension(70, 25));
-		
-		textLogin = new JTextArea(2,0);
-		textLogin.setEditable(true);
-		scrollBar1 = new JScrollPane(textLogin);
-		scrollBar1.setViewportView(textLogin);
-		
-		apply = new JButton("Apply");
-		
-		time = new JLabel();
-		time.setText("Time: 00:00:00");
-		time.setOpaque(true);
-		time.setPreferredSize(new Dimension(70, 25));
-		
-		ltop.add(login);
-		ltop.add(scrollBar1);
-		ltop.add(apply);
-		ltop.add(time);
-		
-		remoteLogin = new JLabel();
-		remoteLogin.setText("Remote Login");
-		remoteLogin.setHorizontalAlignment(JLabel.CENTER);
-		remoteLogin.setOpaque(true);
-		remoteLogin.setPreferredSize(new Dimension(70, 25));
-		
-		textRLogin = new JTextArea(2,0);
-		textRLogin.setEditable(true);
-		scrollBar2 = new JScrollPane(textRLogin);
-		scrollBar2.setViewportView(textRLogin);
-		
-		connect = new JButton("Connect");
-		
-		remoteAddr = new JLabel();
-		remoteAddr.setText("Remote Addr");
-		remoteAddr.setHorizontalAlignment(JLabel.CENTER);
-		remoteAddr.setOpaque(true);
-		remoteAddr.setPreferredSize(new Dimension(70, 25));
-		
-		textRAddr = new JTextArea(2,0);
-		textRAddr.setEditable(true);
-		scrollBar3 = new JScrollPane(textRAddr);
-		scrollBar3.setViewportView(textRAddr);
-		
-		disconnect = new JButton("Disconnect");
-		
-		rtop.add(remoteLogin);
-		rtop.add(scrollBar2);
-		rtop.add(connect);
-		rtop.add(remoteAddr);
-		rtop.add(scrollBar3);
-		rtop.add(disconnect);
-		
-		top.setBackground(Color.LIGHT_GRAY);
-		top.add(ltop);
-		top.add(rtop);
-		
-		JPanel bot = new JPanel(new GridLayout(1,2,10,0));
-		
-		send = new JButton("Send");
-		send.setPreferredSize(new Dimension(30, 20));
-		
-		textMess = new JTextArea(3,5);
-		textMess.setEditable(true);
-		textMess.setLineWrap(true);
-		scrollBar4 = new JScrollPane(textMess);
-		scrollBar4.setViewportView(textMess);
-		
-		bot.setBackground(Color.LIGHT_GRAY);
-		bot.add(scrollBar4);
-		bot.add(send);
-		
+		frame.getContentPane().setMinimumSize(new Dimension(454, 432));
+		frame.setMinimumSize(new Dimension(470, 470));
+		frame.setBounds(100, 100, 470, 470);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+
+		JPanel panel = new JPanel();
+		panel.setName("panel");
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setOpaque(false);
+		panel.setBounds(25, 25, 404, 382);
+		frame.getContentPane().add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setOpaque(false);
+		panel.add(panel_1, BorderLayout.NORTH);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[]{75, 75, 13, 80, 75, 75, 0};
+		gbl_panel_1.rowHeights = new int[]{20, 20, 0};
+		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		panel_1.setLayout(gbl_panel_1);
+
+		JLabel lblNewLabel = new JLabel("local login");
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 0;
+		panel_1.add(lblNewLabel, gbc_lblNewLabel);
+
+		loclog = new JTextField();
+		GridBagConstraints gbc_loclog = new GridBagConstraints();
+		gbc_loclog.fill = GridBagConstraints.BOTH;
+		gbc_loclog.insets = new Insets(0, 0, 5, 5);
+		gbc_loclog.gridx = 1;
+		gbc_loclog.gridy = 0;
+		panel_1.add(loclog, gbc_loclog);
+		loclog.setColumns(10);
+
+		JLabel lblNewLabel_1 = new JLabel("Remote login");
+		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_1.gridx = 3;
+		gbc_lblNewLabel_1.gridy = 0;
+		panel_1.add(lblNewLabel_1, gbc_lblNewLabel_1);
+
+		remlog = new JTextField();
+		GridBagConstraints gbc_remlog = new GridBagConstraints();
+		gbc_remlog.fill = GridBagConstraints.BOTH;
+		gbc_remlog.insets = new Insets(0, 0, 5, 5);
+		gbc_remlog.gridx = 4;
+		gbc_remlog.gridy = 0;
+		panel_1.add(remlog, gbc_remlog);
+		remlog.setColumns(10);
+
+		JButton DisconBut = new JButton("Disconnect");
+		GridBagConstraints gbc_DisconBut = new GridBagConstraints();
+		gbc_DisconBut.fill = GridBagConstraints.BOTH;
+		gbc_DisconBut.insets = new Insets(0, 0, 5, 0);
+		gbc_DisconBut.gridx = 5;
+		gbc_DisconBut.gridy = 0;
+		panel_1.add(DisconBut, gbc_DisconBut);
+
+		JButton ApplyBut = new JButton("Apply");
+		GridBagConstraints gbc_ApplyBut = new GridBagConstraints();
+		gbc_ApplyBut.fill = GridBagConstraints.BOTH;
+		gbc_ApplyBut.insets = new Insets(0, 0, 0, 5);
+		gbc_ApplyBut.gridx = 0;
+		gbc_ApplyBut.gridy = 1;
+		panel_1.add(ApplyBut, gbc_ApplyBut);
+
+		JLabel lblNewLabel_2 = new JLabel("Address");
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 0, 5);
+		gbc_lblNewLabel_2.gridx = 3;
+		gbc_lblNewLabel_2.gridy = 1;
+		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
+
+		remadr = new JTextField();
+		GridBagConstraints gbc_remadr = new GridBagConstraints();
+		gbc_remadr.insets = new Insets(0, 0, 0, 5);
+		gbc_remadr.fill = GridBagConstraints.BOTH;
+		gbc_remadr.gridx = 4;
+		gbc_remadr.gridy = 1;
+		panel_1.add(remadr, gbc_remadr);
+		remadr.setColumns(10);
+
+		JButton ConBut = new JButton("Connect");
+		GridBagConstraints gbc_ConBut = new GridBagConstraints();
+		gbc_ConBut.fill = GridBagConstraints.BOTH;
+		gbc_ConBut.gridx = 5;
+		gbc_ConBut.gridy = 1;
+		panel_1.add(ConBut, gbc_ConBut);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setOpaque(false);
+		panel.add(panel_2, BorderLayout.SOUTH);
+		GridBagLayout gbl_panel_2 = new GridBagLayout();
+		gbl_panel_2.columnWidths = new int[]{331, 75, 0};
+		gbl_panel_2.rowHeights = new int[]{23, 0};
+		gbl_panel_2.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		panel_2.setLayout(gbl_panel_2);
+
+		msg = new JTextField();
+		GridBagConstraints gbc_msg = new GridBagConstraints();
+		gbc_msg.fill = GridBagConstraints.BOTH;
+		gbc_msg.insets = new Insets(0, 0, 0, 5);
+		gbc_msg.gridx = 0;
+		gbc_msg.gridy = 0;
+		panel_2.add(msg, gbc_msg);
+		msg.setColumns(10);
+
+		JButton SendBut = new JButton("Send");
+		GridBagConstraints gbc_SendBut = new GridBagConstraints();
+		gbc_SendBut.fill = GridBagConstraints.BOTH;
+		gbc_SendBut.gridx = 1;
+		gbc_SendBut.gridy = 0;
+		panel_2.add(SendBut, gbc_SendBut);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setOpaque(false);
+		panel_3.setBorder(new EmptyBorder(5, 0, 5, 0));
+		panel.add(panel_3, BorderLayout.CENTER);
+		panel_3.setLayout(new BorderLayout(0, 0));
+
 		JScrollPane scrollPane = new JScrollPane();
+		panel_3.add(scrollPane, BorderLayout.CENTER);
 
 		list = new JList();
 		scrollPane.setViewportView(list);
-		
-		JPanel frend = new JPanel(new BorderLayout());
-		JPanel but = new JPanel(new GridLayout(1,2,25,0));
-		
-		friends = new JLabel();
-		friends.setText("Friends");
-		friends.setBorder(new LineBorder(Color.BLACK, 1));
-		friends.setHorizontalAlignment(JLabel.CENTER);
-		friends.setPreferredSize(new Dimension(30, 40));
-		
-		String[] elements = {"FRIENDSFRIENDSFRIENDSFRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS","FRIENDS"};
-		JList northList = new JList(elements);
-        northList.setLayoutOrientation(JList.VERTICAL);
-        scrollBar6 = new JScrollPane(northList);
-		scrollBar6.setViewportView(northList);
-		
-		add = new JButton("Add");
-		delete = new JButton("Delete");
-		add.setPreferredSize(new Dimension(30, 25));
-		
-		but.add(add);
-		but.add(delete);
-		
-		frend.add(friends,BorderLayout.NORTH);
-		frend.add(scrollBar6,BorderLayout.CENTER);
-		frend.add(but,BorderLayout.SOUTH);
-	
-		frame.add(frend,BorderLayout.EAST);
-		frame.add(scrollPane, BorderLayout.CENTER);
-		frame.add(top, BorderLayout.NORTH);
-		frame.add(bot, BorderLayout.SOUTH);
-		
+
+		JPanel fonpanel = new JPanel();
+		fonpanel.setName("fonpanel");
+		fonpanel.setBackground(new Color(204, 255, 153));
+		fonpanel.setBounds(0, 0, 454, 432);
+//		frame.getContentPane().add(fonpanel);
+		fonpanel.setLayout(new BorderLayout(0, 0));
+
+		JLabel label = new JLabel("");
+		fonpanel.add(label, BorderLayout.SOUTH);
+
+		JLayeredPane work = new JLayeredPane();
+		work.setBounds(0, 0, 10, 10);
+
+
+
+		frame.getContentPane().addComponentListener(new ComponentListener() {
+
+				@Override
+				public void componentResized(ComponentEvent e) {
+					fonpanel.setSize(frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
+					panel.setSize(frame.getContentPane().getWidth()-50, frame.getContentPane().getHeight()-50);
+
+				}
+
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void componentShown(ComponentEvent e) {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void componentHidden(ComponentEvent e) {
+					// TODO Auto-generated method stub
+
+				}
+	        });
+
+		frame.addWindowStateListener(new WindowStateListener(){
+
+			@Override
+			public void windowStateChanged(WindowEvent e) {
+				fonpanel.setSize(frame.getWidth()-16, frame.getHeight()-38);
+				panel.setSize(frame.getWidth()-66, frame.getHeight() - 88);
+			}
+
+		});
+
 		dlm = new DefaultListModel();
-		send.addActionListener(new ActionListener() {
+		SendBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((login.getText().equals("")) || (remoteLogin.getText().equals("")) || (remoteAddr.getText().equals(""))){
+				if ((loclog.getText().equals("")) || (remlog.getText().equals("")) || (remadr.getText().equals(""))){
 					JOptionPane.showMessageDialog(frame, "Not enough data for sending the message");
 				}
 				else {
 					String name = new String();
-					if (login.getText().length()>10){
+					if (loclog.getText().length()>10){
 						try {
-							name = login.getText();
+							name = loclog.getText(0, 10);
 						} catch (BadLocationException ignore) {}
 						name = name + "...";
 					}
-					else name = login.getText();
+					else name = loclog.getText();
 					long date = System.currentTimeMillis();
-					dlm.addElement("<html>" + name + " " + new Date(date).toLocaleString() + ":<br>" + textMess.getText() + " </span></html>");
+					dlm.addElement("<html>" + name + " " + new Date(date).toLocaleString() + ":<br>" + msg.getText() + " </span></html>");
 					list.setModel(dlm);
 
 					try {
-						connection.sendMessage(textMess.getText());
+						connection.sendMessage(msg.getText());
 						System.out.println("Sended");
 					} catch (IOException ex){
 						System.out.println("No internet connection");
 					}
 
 				}
-				textMess.setText("");
-				textMess.requestFocus();
+				msg.setText("");
+				msg.requestFocus();
 			}
 		});
-		
-		textMess.addKeyListener(new KeyListener(){
+
+		msg.addKeyListener(new KeyListener(){
 
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER){
-					send.doClick();
+					SendBut.doClick();
 				}
 			}
 
@@ -238,25 +302,25 @@ public class MainForm {
 
 			}
 		});
-		
-		apply.addActionListener(new ActionListener() {
+
+		ApplyBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (callListenerThread == null) {
                     System.out.println("Added obs");
-                    callListenerThread = new CallListenerThread(new CallListener(login.getText()));
-                    callListenerThread.addObserver(main);
+                    callListenerThread = new CallListenerThread(new CallListener(loclog.getText()));
+                    callListenerThread.addObserver(window);
                 }
 				else {
-					callListenerThread.setLocalNick(login.getText());
+					callListenerThread.setLocalNick(loclog.getText());
 				}
 			}
 		});
 
-		connect.addActionListener(new ActionListener() {
+		ConBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Caller caller = new Caller(login.getText() ,remoteAddr.getText());
+				Caller caller = new Caller(loclog.getText() ,remadr.getText());
 					new Thread (new Runnable() {
 						@Override
 						public void run() {
@@ -264,7 +328,7 @@ public class MainForm {
 								connection = caller.call();
 
 								if(caller.getStatus().toString().equals("OK"))
-									remoteAddr.setText(caller.getRemoteNick());
+									remlog.setText(caller.getRemoteNick());
 								else
 								 if (caller.getStatus().toString().equals("BUSY")){
 									 JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " is busy");
@@ -275,7 +339,7 @@ public class MainForm {
 									connection = null;
 								}
 
-							} catch (IOException ex) {                   
+							} catch (IOException ex) {                    //Show message that remote user is offline or wrong ip
 								JOptionPane.showMessageDialog(frame, "Connection error. User with ip does not exist or there is no Internet connection");
 								connection = null;
 							}
@@ -285,25 +349,8 @@ public class MainForm {
 
 
 		});
-		
-		disconnect.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				remoteLogin.setText("");
-				try {
-					connection.disconnect();
-					callListenerThread.setBusy(false);
-				} catch (IOException ex){
-
-				}
-				catch (NullPointerException ex){
-					System.out.println("Already disconnect");               
-				}
-			}
-		});
-		
 	}
-	
+
 	public boolean question (String nick, String remoteAddress){
 		Object[] options = {"Receive","Reject"};
 		int dialogResult = JOptionPane.showOptionDialog(frame,"User "+ nick + " with ip " + remoteAddress +
@@ -313,15 +360,16 @@ public class MainForm {
 				null,options,options[0]);
 		if(dialogResult == JOptionPane.YES_OPTION) {
 			System.out.println("Receive");
-			remoteLogin.setText(nick);
-			remoteAddr.setText(remoteAddress);
-			return true; 
+			remlog.setText(nick);
+			remadr.setText(remoteAddress);
+			return true; // Receive
 		}
 		System.out.println("Rejected");
-			return false; 
+			return false; //Reject
 
 	}
-	
+
+	@Override
 	public void update(Observable o, Object arg) {
 		if(arg instanceof CallListener)
 		{
@@ -342,31 +390,9 @@ public class MainForm {
 			Command command = (Command) arg;
 
 			if (command instanceof MessageCommand) {
-				dlm.addElement("<html>" + remoteLogin.getText() + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + arg.toString() + " </span></html>");
+				dlm.addElement("<html>" + remlog.getText() + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + arg.toString() + " </span></html>");
 				list.setModel(dlm);
 			}
-			else {
-				Command check = new Command(Command.CommandType.DISCONNECT);
-				if (command.toString().equals("DISCONNECT") || command.toString().equals("REJECTED")){
-					JOptionPane.showMessageDialog(frame, "User " + remoteLogin.getText() + " was disconnected");
-					callListenerThread.setBusy(false);
-					remoteLogin.setText("");
-					remoteAddr.setText("");
-				}
-			}
 		}
-	}
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-                                     main = new MainForm();
-                                     main.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 	}
 }
