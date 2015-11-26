@@ -5,7 +5,7 @@ public class CallListenerThread implements Runnable
 {
 
 private CallListener listener;
-	private CallListener call;
+        private CallListener call;
     private volatile boolean isClose;
     private Caller.CallStatus callStatus;
     private Thread t;
@@ -40,7 +40,7 @@ private CallListener listener;
     }
 
     public SocketAddress getRemoteAddress(){
-        return null;
+        return null; //where it take?
     }
 
     public boolean isBusy (){
@@ -62,10 +62,13 @@ private CallListener listener;
     public void run() {
         while (!isClose) {
             try {
-          
+                System.out.println("Before");
                 Connection connection = call.getConnection();
+                System.out.println("Get");
                 myObservable.notifyObservers(call);
                 waitAnswer();
+                System.out.println("continued");
+
                 if (!isReceive) {
                     call.setBusy(false);
                     System.out.println("False");
@@ -73,7 +76,7 @@ private CallListener listener;
                         callStatus = Caller.CallStatus.BUSY;
                     }
                     else {
-                        callStatus = Caller.CallStatus.REJECTED; 
+                        callStatus = Caller.CallStatus.REJECTED;  
                         connection.reject();
                     }
                 }
@@ -85,11 +88,11 @@ private CallListener listener;
                     myObservable.notifyObservers(connection);
 
                     CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-//                    commandListenerThread.addObserver(MainForm.window);
+                    commandListenerThread.addObserver(MainForm.window);
                 }
 
             } catch (IOException e) {
-                callStatus = Caller.CallStatus.NOT_ACCESSIBLE;
+                callStatus = Caller.CallStatus.NOT_ACCESSIBLE;  
             }
         }
     }
@@ -111,7 +114,7 @@ private CallListener listener;
             try {
                 wait();
             } catch (InterruptedException e) {
-                System.out.println("Bad");
+                System.out.println(t + " Thread interrupted: " + e);
             }
         }
     }
@@ -128,5 +131,5 @@ private CallListener listener;
     public String getRemoteNick (){
         return call.getRemoteNick();
     }
-    
 }
+
