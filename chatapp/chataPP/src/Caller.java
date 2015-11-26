@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.HashMap;
 public class Caller 
 {
-    private String localNick;
+private String localNick;
     private InetSocketAddress remoteAddress;
     private String remoteNick;
     private CallStatus status;
@@ -11,6 +11,10 @@ public class Caller
 
     public Caller (String localNick){
         this.localNick = localNick;
+    }
+
+    public Caller(){
+        this("Untitled");          
     }
 
     public Caller (String localNick, String ip){
@@ -30,22 +34,22 @@ public class Caller
         Command command = connection.receive();            
         System.out.println("Command = " + command.toString());
 
-        if(command.getClass().equals(NickCommand.class)){  
+        if(command.getClass().equals(NickCommand.class)){   
 
             remoteNick = ((NickCommand)command).getNick();
 
             if(((NickCommand)command).isBusy()) {
-                status = CALL_STATUS.get(Const.ChatApp_VERSION);
+                status = CALL_STATUS_HASH_MAP.get(Const.ChatApp_VERSION);
             } else {
                 command = connection.receive();             
-                status = CALL_STATUS.get(command.toString());
+                status = CALL_STATUS_HASH_MAP.get(command.toString());
             }
 
-            if(status.equals(CallStatus.OK)) {                
-                System.out.println("Good");
+            if(status.equals(CallStatus.OK)) {               
+                System.out.println("Success connection");
 
                 CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-//                commandListenerThread.addObserver(MainForm.window);
+                commandListenerThread.addObserver(MainForm.window);
 
                 return connection;
             }
@@ -57,13 +61,6 @@ public class Caller
         }
     }
 
-    static final HashMap<String, CallStatus> CALL_STATUS= new HashMap<String, CallStatus>(){{
-        put(Const.ChatApp_VERSION, CallStatus.BUSY);
-        put(Command.CommandType.ACCEPT.toString(), CallStatus.OK);
-        put(Command.CommandType.REJECT.toString(), CallStatus.REJECTED);
-    }};
-    
-    
     public void setLocalNick(String localNick) {
         this.localNick = localNick;
     }
@@ -89,11 +86,24 @@ public class Caller
     }
 
     public String toString(){
-        return String.valueOf(status);                    
+        return String.valueOf(status);                     
     }
 
     static enum CallStatus {
         BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
     }
-  
+
+    
+    static final HashMap<String, CallStatus> CALL_STATUS_HASH_MAP = new HashMap<String, CallStatus>(){{
+        put(Const.ChatApp_VERSION, CallStatus.BUSY);
+        put(Command.CommandType.ACCEPT.toString(), CallStatus.OK);
+        put(Command.CommandType.REJECT.toString(), CallStatus.REJECTED);
+    }};
+
+    public static void main(String[] args) throws IOException, InterruptedException{
+        Caller c = new Caller("Lammer", "localhost");
+        Connection connection = c.call();
+        connection.receive();
+    }
+    
 }
