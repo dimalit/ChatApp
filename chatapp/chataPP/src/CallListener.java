@@ -3,10 +3,12 @@ import java.net.*;
 
 public class CallListener 
 {
+    private String localNick;
     private InetSocketAddress localAddress;
     private boolean isBusy;
-    private String remoteNick, remoteAddress,localNick;
+    private String remoteNick, remoteAddress;
     private ServerSocket serverSocket;
+
 
     public CallListener(String localNick){
         this.localNick = localNick;
@@ -32,7 +34,7 @@ public class CallListener
         remoteAddress = serverSocket.getInetAddress().getCanonicalHostName();
         System.out.println("Accepted");
         Connection connection = new Connection(socket);
-        System.out.println("OK");
+        System.out.println("Connection OK");
 
         if (isBusy)
         {
@@ -74,7 +76,6 @@ public class CallListener
         localAddress = listenAddress;
     }
 
-    @Override
     public String toString(){
         return localNick + " " + localAddress.getHostString();
     }
@@ -86,5 +87,12 @@ public class CallListener
     public String getRemoteAddress(){
         return remoteAddress;
     }
-        
+
+    public static void main(String[] args) throws IOException {
+       
+        CallListener c = new CallListener("Lammer");
+        c.getConnection();
+        System.out.println(c.getRemoteNick());
+    }
+    
 }
