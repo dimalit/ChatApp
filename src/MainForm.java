@@ -42,13 +42,11 @@ import javax.swing.border.LineBorder;
 import org.omg.CORBA.portable.UnknownException;
 
 import com.sun.glass.events.MouseEvent;
-import com.sun.glass.events.WindowEvent;
 import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
 
 import java.awt.Color;
 
-@SuppressWarnings("unused")
-public class MainForm {
+public class MainForm<JForm> {
 
 	private JFrame frame;
 
@@ -63,11 +61,12 @@ public class MainForm {
 	private CallListener callListener;
 	private JButton connectButt;
 	private Caller caller;
-	private Connection connection, connection1;
+	private Connection connection;
 	private CallListenerThread callLT;
 	private HistoryModel model;
 	private CommandListenerThread commandLT;
 	private int isPressed;
+	private boolean forAccept;
 
 	/**
 	 * Launch the application.
@@ -180,23 +179,7 @@ public class MainForm {
 		send.setAlignmentX(Component.CENTER_ALIGNMENT);
 		send.setEnabled(false);
 		bot_panel.add(send);
-		// frame.addWindowListener(new WindowAdapter() {
-
-		// public void windowClosing(WindowEvent ev) throws IOException {
-		// int result = JOptionPane.showConfirmDialog(null, "Are you sure?");
-		// if(result == JOptionPane.YES_OPTION)
-		// {
-		// frame.dispose();
-		// if( connection != null) {
-		//
-		// connection.disconnect();
-		// commandLT.stop();
-		// }
-		// }
-
-		// }
-
-		// });
+		
 		discButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -233,7 +216,7 @@ public class MainForm {
 							commandLT.start();
 							connection.sendNickHello(nickField.getText());
 							forConnect();
-							
+
 						}
 					} catch (InterruptedException e1) {
 
@@ -316,7 +299,15 @@ public class MainForm {
 				//TODO:Thread, TimeOut;
 				System.out.println("update listener");
 				connection = callLT.getConnection();
-				System.out.println("Connection getted");
+				try {
+					connection.sendNickHello(nickField.getText());
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				commandLT.setConnection(connection);
 				commandLT.start();
 				System.out.println("CLT started");
@@ -324,7 +315,6 @@ public class MainForm {
 				long t2 = System.currentTimeMillis();
 				boolean b = false;
 				while (((t2 - t1) <= 100000) && !b) {
-					System.out.println("start while");
 					Command command = commandLT.getLastCommand();
 					try {
 						System.out.println(command.getClass() + command.toString());
@@ -335,9 +325,10 @@ public class MainForm {
 						int reply = JOptionPane.showConfirmDialog(null,
 								"Do you want to accept incoming connection from user ".concat(command.toString()), "",
 								JOptionPane.YES_NO_OPTION);
+						System.out.println(reply);
 
 						try {
-							if (reply == JOptionPane.YES_OPTION) {
+							if (reply == 0) {
 								b = true;
 								connection.sendNickHello(nickField.getText());
 								connection.accept();
@@ -380,60 +371,56 @@ public class MainForm {
 						e.printStackTrace();
 					}
 				}
+				System.out.println("Connection getted");
 			}
 		});
 
 	}
 
 	public void ThreadOfCommand() {
-		System.out.println("gotovo");
+		System.out.println("testif");
 		commandLT.addObserver(new Observer() {
 			public void update(Observable arg0, Object arg1) {
-				System.out.println("gotovo");
+				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
-				System.out.println("test");
-
-				if (lastCommand != null) {
-					System.out.println(commandLT.getLastCommand().toString());
-					if (lastCommand instanceof MessageCommand) {
+				System.out.println(lastCommand.getClass()+" "+lastCommand.toString());
+				if (lastCommand instanceof MessageCommand) {
+					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+					textArea.update(model, new Object());
+				} else if (lastCommand instanceof NickCommand) {
+					if (!forAccept){
+						EventQueue.invokeLater(new Runnable(){
+							public void run(){
+								formForConnect(true,lastCommand.toString());
+							}
+						});
+					}
+						
+				} else if (lastCommand != null) {
+					switch (lastCommand.type) {
+					case ACCEPT: {
 						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
-						textArea.append(remoteLogiField.getText() + ":" + commandLT.getLastCommand().toString());
-					} else {
-						if (lastCommand instanceof NickCommand) {
-
-							// remoteLogiField.setText(lastCommand.toString());
-						} else if (lastCommand != null) {
-							switch (lastCommand.type) {
-							case ACCEPT: {
-								model.addMessage(remoteLogiField.getText(), new Date(),
-										commandLT.getLastCommand().toString());
-								textArea.update(model, new Object());
-								break;
-							}
-							case REJECT: {
-								model.addMessage(remoteLogiField.getText(), new Date(),
-										commandLT.getLastCommand().toString());
-								textArea.update(model, new Object());
-								commandLT.stop();
-								connection = null;
-								forDisconnect();
-								break;
-							}
-							case DISCONNECT: {
-								model.addMessage(remoteLogiField.getText(), new Date(),
-										commandLT.getLastCommand().toString());
-								textArea.update(model, new Object());
-								commandLT.stop();
-								connection = null;
-								forDisconnect();
-								break;
-							}
-							}
-						}
-
+						textArea.update(model, new Object());
+						break;
+					}
+					case REJECT: {
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+						textArea.update(model, new Object());
+						commandLT.stop();
+						forDisconnect();
+						break;
+					}
+					case DISCONNECT: {
+						model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
+						textArea.update(model, new Object());
+						commandLT.stop();
+						forDisconnect();
+						break;
+					}
 					}
 
 				}
+
 			}
 
 		});
@@ -456,6 +443,71 @@ public class MainForm {
 		discButton.setEnabled(true);
 		remoteAddrField.setEnabled(false);
 	}
+
+ 	boolean formForConnect(boolean b, String nick) {
+ 		boolean isconnect=false;
+ 		JFrame f = new JFrame();
+ 		Container cp = f.getContentPane();
+ 		f.setSize(400, 175);
+ 		f.setLocation(200, 200);
+ 		f.setVisible(b);
+ 		JPanel panel = new JPanel();
+ 		cp.setLayout(null);
+ 		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
+ 		JButton yes = new JButton("Yes");
+ 		JButton no = new JButton("No");
+		text.setSize(500, 60);
+		text.setLocation(20, 20);
+		yes.setSize(90, 25);
+		yes.setLocation(70, 95);
+		no.setSize(90, 25);
+		no.setLocation(220, 95);
+		f.setContentPane(cp);
+ 		yes.addActionListener(new ActionListener() {
+ 			public void actionPerformed(ActionEvent e) {
+				try {
+					connection.accept();
+					connection.sendNickHello(nickField.getText());
+					remoteAddrField.setText(callListener.getRemoteAddress().toString());
+					remoteLogiField.setText(nick);
+					forConnect();
+					f.setVisible(false);
+					f.dispose();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}			
+ 
+ 			}
+ 		});
+ 		no.addActionListener(new ActionListener() {
+ 			public void actionPerformed(ActionEvent e) {
+ 				try {
+ 					connection.reject();
+ 					forDisconnect();
+					f.setVisible(false);
+					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					f.dispose();
+ 				} catch (IOException e1) {
+ 					// TODO Auto-generated catch block
+ 					e1.printStackTrace();
+ 				}
+ 
+ 			}
+ 		});
+		text.setSize(500, 60);
+		text.setLocation(20, 20);
+		yes.setSize(90, 25);
+		yes.setLocation(70, 95);
+		no.setSize(90, 25);
+		no.setLocation(220, 95);
+		cp.add(text);
+ 		cp.add(yes);
+ 		cp.add(no);
+ 		f.setContentPane(cp);
+ 		return isconnect;
+
+ 	}
 
 	public void formForNewTalk(boolean b, String nick) {
 		JFrame f = new JFrame();
@@ -490,11 +542,11 @@ public class MainForm {
 		Container cp = f.getContentPane();
 		f.setSize(400, 175);
 		f.setLocation(200, 200);
-		f.setTitle("         Óñòàíîâêà èñõîäÿùåãî ñîåäèíåíèÿ");
+		f.setTitle("         Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¸ÑÑ…Ð¾Ð´ÑÑ‰ÐµÐ³Ð¾ ÑÐ¾ÐµÐ´Ð¸Ð½ÐµÐ½Ð¸Ñ");
 		f.setVisible(b);
 		JPanel panel = new JPanel();
 		cp.setLayout(null);
-		JButton v = new JButton("Ïðåðâàòü ");
+		JButton v = new JButton("ÐŸÑ€ÐµÑ€Ð²Ð°Ñ‚ÑŒ ");
 		v.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -510,7 +562,7 @@ public class MainForm {
 			}
 		});
 
-		JLabel text = new JLabel("Îæèäàíèå ïîäòâåðæäåíèÿ çàïðîñà..");
+		JLabel text = new JLabel("ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð¿Ð¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´ÐµÐ½Ð¸Ñ Ð·Ð°Ð¿Ñ€Ð¾ÑÐ°..");
 		text.setSize(230, 60);
 		text.setLocation(95, 20);
 		v.setSize(150, 25);
