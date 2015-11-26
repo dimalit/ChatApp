@@ -59,8 +59,8 @@ public class Connection {
 	public void disconnect() throws IOException {
 		outStream.write(("Disconnect" + EOL).getBytes(ENCODING));
 		outStream.flush();
-		// outStream.close();
-		// socket.close();
+		outStream.close();
+		socket.close();
 	}
 
 	public Command receive() throws IOException {
@@ -74,7 +74,7 @@ public class Connection {
 			Scanner in = new Scanner(str);
 			in.next();
 			return new NickCommand(in.next(), in.skip(" [a-z,A-Z]{4} ").next(), str.toUpperCase().endsWith(" BUSY"));
-		} else if ("MESSAGE".equalsIgnoreCase(str)) {
+		} else if (str.toUpperCase().equals("MESSAGE")) {
 			sb = new StringBuffer();
 			while ((c = (char) inStream.read()) != EOL)
 				sb.append(c);
@@ -85,19 +85,7 @@ public class Connection {
 				if (cc.toString().equals(str))
 					return new Command(Command.CommandType.valueOf(str.replaceAll("ED", "")));
 		}
-		return null;
-	}
-
-	public static void main(String[] args) throws IOException {
-		ServerSocket ss = new ServerSocket(Connection.PORT);
-		Socket s = ss.accept();
-		Connection c = new Connection(s, "max");
-
-		Command cc = c.receive();
-		System.out.printf("%s : %s\n", cc.getClass(), cc);
-		cc = c.receive();
-		System.out.printf("%s : %s\n", cc.getClass(), cc);
-
+		return new Command(Command.CommandType.NULL);
 	}
 
 }
