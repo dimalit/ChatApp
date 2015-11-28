@@ -5,16 +5,16 @@ public class Caller {
     private Socket s;
     private String nick;
     private final static int port = 28411;
-    private InetAddress IP;
+    private String IP;
     private String distNick;
 
-    public Caller(InetAddress ip, int port) throws IOException{
+    public Caller(String ip) throws IOException{
         this.IP = ip;
         s = new Socket(IP,port);
     }
 
-    public Connection call(InetAddress ip, int port,String nick) throws IOException {
-        Connection c = new Connection(new Socket(ip,port),nick);
+    public Connection call() throws IOException {
+        Connection c = new Connection(new Socket(IP,port),Protocol.nickname);
         c.sendNickHello(nick);
         return c;
     }
@@ -29,14 +29,6 @@ public class Caller {
 
     public int getPort() {
         return port;
-    }
-
-    public InetAddress getIP() {
-        return IP;
-    }
-
-    public void setIP(InetAddress IP) {
-        this.IP = IP;
     }
 
     public String getDistNick() {

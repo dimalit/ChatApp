@@ -8,7 +8,6 @@ public class Connection{
     private OutputStream out;
     private DataOutputStream sout;
     private DataInputStream reader;
-    private CommandTypes lastCommand;
 
     public Connection(Socket s, String nick) throws IOException{
         this.s = s;
@@ -52,9 +51,6 @@ public class Connection{
         out.flush();
     }
 
-    public CommandTypes getLastCommand() {
-        return lastCommand;
-    }
 
     public void testRecieve() throws IOException {
         PrintWriter w = new PrintWriter(s.getOutputStream());
@@ -69,11 +65,7 @@ public class Connection{
     public Command recieve() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream(),"UTF-8"));
         String s = reader.readLine();
-        if(s.contains("Accepted")) return new Command(CommandTypes.accept);
-        if(s.contains("Rejected")) return new Command(CommandTypes.reject);
-        if(s.contains("ChatApp 2015")) return new NickCommand(CommandTypes.nickname);
-        if(s.contains("Disconnect")) return new Command(CommandTypes.disconnect);
-        if(s.contains("Message")) return new MessageCommand(CommandTypes.message);
-        else return null;
+        Command command = Command.createCommand(s);
+        return command;
     }
 }

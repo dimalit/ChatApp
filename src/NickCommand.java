@@ -10,4 +10,8 @@ public class NickCommand extends Command{
         super(ctp);
         this.nick = nick;
     }
+    public String intoString() {
+        String s = "Connected to: " + this.nick + "\n";
+        return s;
+    }
 }

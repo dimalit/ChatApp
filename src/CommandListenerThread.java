@@ -34,12 +34,11 @@ public class CommandListenerThread extends Observable implements Runnable {
 
     @Override
     public void run() {
-        while (isDisconnected() != true) {
+        this.addObserver(ChatWindow.observer);
+        while (!isDisconnected()) {
             synchronized (this) {
                 try {
                     this.lastCommand = connection.recieve();
-                    notifyObservers(connection.recieve());
-                    this.addObserver(ChatWindow.observer);
                     setChanged();
                     this.notifyObservers(lastCommand);
                 } catch (IOException e) {
