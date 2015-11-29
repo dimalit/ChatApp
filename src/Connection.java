@@ -63,7 +63,7 @@ class Connection {
 	}
 	
 	
-	void userGreeting(String NickName){
+	void chatApp2015(String NickName){
 		try {
 			out.writeUTF(new StringBuffer("ChatApp 2015").append(NickName).toString());
 		} catch (IOException e) {
@@ -73,7 +73,7 @@ class Connection {
 	}
 	
 	
-	void userBusy(String NickName){
+	void userIsBusy(String NickName){
 		try {
 			out.writeUTF(new StringBuffer("ChatApp 2015").append(NickName).append("is busy").toString());
 		} catch (IOException e) {
