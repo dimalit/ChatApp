@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 
 public class Command {
 	
@@ -9,6 +11,8 @@ public class Command {
 	
 	
 	public static Command callCommand(String s){
+		String str="";
+		Scanner in=new Scanner(System.in);
 		if(s.contains("Accepted")) {
 			return new Command(CommandType.ACCEPT);
 		}
@@ -19,10 +23,10 @@ public class Command {
 			return new Command(CommandType.DISCONNECT);
 		}
 		if(s.contains("ChatApp 2015")) {
-			return new NickCommand(CommandType.NICK);
+			return new NickCommand(str);
 		}
 		if(s.contains("Message")) {
-			return new MessageCommand(CommandType.MESSAGE);
+			return new MessageCommand(in.nextLine().replace(":&:","\n"));
 		}
 		return null;
 	}

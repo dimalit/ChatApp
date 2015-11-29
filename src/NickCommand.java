@@ -5,7 +5,7 @@ public class NickCommand extends Command {
 	boolean busy;
 	
 	
-	NickCommand(CommandType type){
+	NickCommand(){
 		super(CommandType.NICK);
 	}
 	
@@ -14,7 +14,10 @@ public class NickCommand extends Command {
 		super(CommandType.NICK);
 		if(s.contains("busy")){
 			busy=true;
+			s=s.replace(" busy", "");
 		}
+		s=s.replace("ChatApp 2015", "");
+		NickName=s;
 	}
 	
 	

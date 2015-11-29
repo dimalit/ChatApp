@@ -5,13 +5,13 @@ public class MessageCommand extends Command {
 	String message;
 	
 	
-	MessageCommand(CommandType type){
-		super(type);
+	MessageCommand(){
+		super(CommandType.MESSAGE);
 	}
 	
 	
-	MessageCommand(CommandType type, String message){
-		super(type);
+	MessageCommand(String message){
+		super(CommandType.MESSAGE);
 		this.message=message;
 	}
 	
