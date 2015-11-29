@@ -6,49 +6,49 @@ public class Connection{
     private Socket s;
     private String nick;
     private OutputStream out;
-    private DataOutputStream sout;
+    private PrintWriter sout;
     private DataInputStream reader;
 
     public Connection(Socket s, String nick) throws IOException{
         this.s = s;
         out = this.s.getOutputStream();
-        sout = new DataOutputStream(out);
+        sout = new PrintWriter(out,true);
         reader = new DataInputStream(this.s.getInputStream());
         this.nick = nick;
     }
 
     public void sendMessage(String message) throws IOException{
-        sout.write(new StringBuilder("Message\n").append(message).append("\n").toString().getBytes());
-        out.flush();
+        sout.print("Message\n"+message+"\n");
+        sout.flush();
     }
 
     public void disconnect() throws IOException{
-        sout.write(new StringBuilder("Disconnect\n").toString().getBytes());
+        sout.print("Disconnect\n");
         out.close();
         reader.close();
         s.close();
     }
 
     public void sendNickHello(String nick) throws IOException {
-        sout.write(new StringBuilder("ChatApp 2015 user ").append(nick).append("\n").toString().getBytes());
-        out.flush();
+        sout.print("ChatApp 2015 user "+nick+"\n");
+        sout.flush();
     }
 
     public void sendNickBusy(String nick) throws IOException {
         if(s.isConnected()){
-            sout.write(new StringBuilder("ChatApp 2015 user ").append(nick).append(" busy\n").toString().getBytes());
-            out.flush();
+            sout.print("ChatApp 2015 user "+nick+" busy\n");
+            sout.flush();
         }
     }
 
     public void accept() throws IOException{
-        sout.write(new StringBuilder("Accepted\n").toString().getBytes());
-        out.flush();
+        sout.print("Accepted\n");
+        sout.flush();
     }
 
     public void reject() throws IOException {
-        sout.write(new StringBuilder("Rejected\n").toString().getBytes());
-        out.flush();
+        sout.print("Rejected\n");
+        sout.flush();
     }
 
 

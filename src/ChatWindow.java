@@ -120,13 +120,14 @@ public class ChatWindow extends JFrame implements Observer {
 			public void actionPerformed(ActionEvent event) {
 				message = textmess.getText();
 				try {
-					//if(comt!=null){
+					if(comt!=null) {
+						mess.append("Message:\n" + message + "\n");
 						comt.getConnection().sendMessage(message);
-					//else{
-						//callt.getConnection().sendMessage(message);
-					//}
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					}else{
+						callt.getConnection().sendMessage(message);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 				textmess.setText("");
 			}
@@ -165,7 +166,7 @@ public class ChatWindow extends JFrame implements Observer {
 
 					}
 				}catch (IOException e){}
-				//connect
+
 			}
 		}
 		class DisconnectAction implements ActionListener {
