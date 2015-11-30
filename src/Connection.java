@@ -58,13 +58,14 @@ public class Connection {
 		socket.close();
 	}
 
+
 	public Command receive() throws IOException {
 		String str;
 		str=inStream.nextLine();
 		if (str.toUpperCase().startsWith("CHATAPP 2015 USER")) {
 			Scanner in = new Scanner(str);
 			in.next();
-			return new NickCommand(in.next(), in.skip(" [a-z,A-Z]{4} ").next(), str.toUpperCase().endsWith(" BUSY"));
+			return new NickCommand(in.next(), in.skip(" [a-z,A-Z]{4} ").nextLine().replaceAll(" BUSY",""), str.toUpperCase().endsWith(" BUSY"));
 		} else if (str.toUpperCase().equals("MESSAGE")) {
 				str=inStream.nextLine();
 			return new MessageCommand(str);
