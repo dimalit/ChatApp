@@ -218,6 +218,9 @@ public class MainForm<JForm> {
 							//ThreadOfCommand();
 							connection.sendNickHello(nickField.getText());
 							forConnect();
+						} else{
+							JOptionPane.showMessageDialog(null,
+									"Couldn't connect this ip ");
 						}
 					} catch (InterruptedException e1) {
 
@@ -338,11 +341,11 @@ public class MainForm<JForm> {
 								forConnect();
 								break;
 							} else {
+								forDisconnect();
 								b = true;
 								connection.reject();
 								commandLT.stop();
 								connection = null;
-								forDisconnect();
 								break;
 							}
 
@@ -352,23 +355,6 @@ public class MainForm<JForm> {
 						}
 					} else {
 						t2 = System.currentTimeMillis();
-					}
-				}
-				if (!b) {
-					try {
-						connection.disconnect();
-						commandLT.stop();
-						connection = null;
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else {
-					try {
-						forConnect();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				}
 				System.out.println("Connection getted");
