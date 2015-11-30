@@ -220,10 +220,6 @@ public class MainForm<JForm> {
 		forButton.add(save);
 		save.setEnabled(false);
 		frame.getContentPane().add(mainPanel);
-
-		list.setSelectionBackground(Color.YELLOW);
-
-		contactsPanel.add(list, BorderLayout.CENTER);
 		update.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
