@@ -278,9 +278,20 @@ public class MainForm<JForm> {
 				String login;
 				if (nickField.getText().equals("")) {
 					login = "unnamed";
-					nickField.setText(login);
 				} else
 					login = nickField.getText();
+				boolean isCorrectLogin=false;
+				for (int i=0; i<login.toCharArray().length;i++)
+					if (login.toCharArray()[i]!=' '){
+							isCorrectLogin=true;
+							break;
+					}
+				if (!isCorrectLogin){
+					login ="unnamed";
+				}
+				while (login.charAt(0)==' ')
+					login=login.substring(1);
+				nickField.setText(login);
 				nickField.setEnabled(false);
 				try {
 					callLT = new CallListenerThread();
