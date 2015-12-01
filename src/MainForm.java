@@ -87,15 +87,16 @@ public class MainForm<JForm> {
 	 * Launch the application.
 	 * 
 	 * @throws IOException
+	 * @throws ClassNotFoundException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainForm window = new MainForm();
 					window.frame.setVisible(true);
 					window.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					Class.forName("com.mysql.jdbc.Driver");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -359,8 +360,7 @@ public class MainForm<JForm> {
 				nickField.setText(login);
 				nickField.setEnabled(false);
 				try {
-					InetAddress addr = InetAddress.getLocalHost();
-					server = new ServerConnection(addr.toString(), login);
+					server = new ServerConnection(login);
 					server.connect();
 					server.goOnline();
 					callLT = new CallListenerThread();
