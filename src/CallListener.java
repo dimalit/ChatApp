@@ -22,7 +22,13 @@ public class CallListener {
 	
 	Connection getConnection() throws IOException{
 		Connection c=new Connection(ss.accept());
-		if(!isBusy){
+		if(isBusy){
+			
+			c.userIsBusy(NickName);
+			c.disconnect();
+			return null;
+			
+		}else{
 			c.chatApp2015(NickName);
 			this.c=c.recieve();
 			
@@ -32,11 +38,7 @@ public class CallListener {
 			}else{
 				return null;
 			}
-			
-		}else{
-			c.userIsBusy(NickName);
-			c.disconnect();
-			return null;
+			/**/
 		}
 	}
 
