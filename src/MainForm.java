@@ -397,7 +397,6 @@ public class MainForm<JForm> {
 					ThreadOfCall();
 					ThreadOfCommand();
 					nickApplyButton.setEnabled(false);
-
 					save.setEnabled(true);
 					update.setEnabled(true);
 					forDisconnect();
@@ -486,11 +485,29 @@ public class MainForm<JForm> {
 							connection.sendNickHello(nickField.getText());
 							Command command= commandLT.getLastCommand();
 							if (command instanceof NickCommand) {
-								connection.accept();
-								remoteAddrField.setText(callLT.getRemoteAddress().toString());
-								remoteLogiField.setText(command.toString());
-								forConnect();
+								int reply1 = JOptionPane.showConfirmDialog(null,
+										"Do you want to accept incoming connection from user ".concat(command.toString()),
+										"", JOptionPane.YES_NO_OPTION);
 
+								try {
+									if (reply1 == 0) {
+									
+										connection.accept();
+										remoteAddrField.setText(callLT.getRemoteAddress().toString());
+										remoteLogiField.setText(command.toString());
+										forConnect();
+									
+									} else {
+										forDisconnect();
+										connection.reject();
+										commandLT.stop();
+										connection = null;
+									}
+
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 						} else {
 							connection1.sendNickBusy(nickField.getText());
