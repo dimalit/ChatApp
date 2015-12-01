@@ -484,7 +484,7 @@ public class MainForm<JForm> {
 							commandLT.setConnection(connection);
 							commandLT.start();
 							connection.sendNickHello(nickField.getText());
-							Command command = commandLT.getLastCommand();
+							Command command= commandLT.getLastCommand();
 							if (command instanceof NickCommand) {
 								connection.accept();
 								remoteAddrField.setText(callLT.getRemoteAddress().toString());
