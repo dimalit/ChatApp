@@ -29,7 +29,7 @@ public class AccorDis extends JFrame {
 
 
 	AccorDis(final Connection connection, final Logic logic, String username){
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(Widht, Height);
         setResizable(false);
         setAlwaysOnTop(true);
