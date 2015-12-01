@@ -65,7 +65,7 @@ class Connection {
 	
 	void chatApp2015(String NickName){
 		try {
-			out.writeUTF(new StringBuffer("ChatApp 2015 ").append(NickName).toString());
+			out.writeUTF(new StringBuffer("ChatApp 2015").append(NickName).toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,7 +75,7 @@ class Connection {
 	
 	void userIsBusy(String NickName){
 		try {
-			out.writeUTF(new StringBuffer("ChatApp 2015 ").append(NickName).append(" is busy").toString());
+			out.writeUTF(new StringBuffer("ChatApp 2015").append(NickName).append("is busy").toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,7 +85,7 @@ class Connection {
 	
 	void sendMessage(String message){
 		try {
-			out.writeUTF(new StringBuffer("Message: ").append("\n").append(message).toString());
+			out.writeUTF(new StringBuffer("Message").append("\n").append(message).toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
