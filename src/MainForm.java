@@ -73,7 +73,7 @@ public class MainForm<JForm> {
 	private CallListener callListener;
 	private JButton connectButt;
 	private Caller caller;
-	private Connection connection;
+	private Connection connection, connection1;
 	private CallListenerThread callLT;
 	private HistoryModel model;
 	private CommandListenerThread commandLT;
@@ -87,15 +87,17 @@ public class MainForm<JForm> {
 	 * Launch the application.
 	 * 
 	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver");
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainForm window = new MainForm();
 					window.frame.setVisible(true);
 					window.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					Class.forName("com.mysql.jdbc.Driver");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -164,7 +166,6 @@ public class MainForm<JForm> {
 		remoteAddrField.setMaximumSize(new Dimension(150, 20));
 		panel_connection.add(remoteAddrField);
 		remoteAddrField.setColumns(10);
-		remoteAddrField.setToolTipText("You must press Enter to continue");
 		connectButt = new JButton("Connect");
 		connectButt.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_connection.add(connectButt);
@@ -214,9 +215,12 @@ public class MainForm<JForm> {
 		contactsPanel.setBorder(BorderFactory.createEtchedBorder());
 		forButton.add(update);
 		contactsPanel.add(forButton, BorderLayout.WEST);
-		JPanel forButton1 = new JPanel();
-		JButton save = new JButton("Save to");
+		JButton save = new JButton("Save..");
 		update.setEnabled(true);
+
+		update.setMaximumSize(new Dimension(75, 25));
+
+		save.setMaximumSize(new Dimension(75, 25));
 		forButton.add(save);
 		save.setEnabled(false);
 		frame.getContentPane().add(mainPanel);
@@ -240,8 +244,8 @@ public class MainForm<JForm> {
 				fileOpen.setFileFilter(filter);
 				if (fileOpen.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					try (FileWriter fw = new FileWriter(fileOpen.getSelectedFile())) {
-						for (int i = 0; i < friends.getStr().length; i++)
-							fw.write(friends.getStr()[i] + "\n");
+						for (int i = 0; i < server.getAllNicks().length; i++)
+							fw.write(server.getAllNicks()[i] + "\n");
 					} catch (IOException e1) {
 
 					}
@@ -283,18 +287,17 @@ public class MainForm<JForm> {
 							ThreadOfCommand();
 							connection.sendNickHello(nickField.getText());
 							forConnect();
-						} else{
-							JOptionPane.showMessageDialog(null,
-									"Couldn't connect this ip ");
+						} else {
+							JOptionPane.showMessageDialog(null, "Couldn't connect this ip ");
 						}
 					} catch (InterruptedException e1) {
-
+						JOptionPane.showMessageDialog(null, "Couldn't connect this ip ");
 						e1.printStackTrace();
 					} catch (UnsupportedEncodingException e1) {
-
+						JOptionPane.showMessageDialog(null, "Couldn't connect this ip ");
 						e1.printStackTrace();
 					} catch (IOException e1) {
-
+						JOptionPane.showMessageDialog(null, "Couldn't connect this ip ");
 						e1.printStackTrace();
 					}
 
@@ -345,45 +348,59 @@ public class MainForm<JForm> {
 					login = "unnamed";
 				} else
 					login = nickField.getText();
-				boolean isCorrectLogin=false;
-				for (int i=0; i<login.toCharArray().length;i++)
-					if (login.toCharArray()[i]!=' '){
-							isCorrectLogin=true;
-							break;
+				boolean isCorrectLogin = false;
+				for (int i = 0; i < login.toCharArray().length; i++)
+					if (login.toCharArray()[i] != ' ') {
+						isCorrectLogin = true;
+						break;
 					}
-				if (!isCorrectLogin){
-					login ="unnamed";
+				if (!isCorrectLogin) {
+					login = "unnamed";
 				}
-				while (login.charAt(0)==' ')
-					login=login.substring(1);
+				while (login.charAt(0) == ' ')
+					login = login.substring(1);
 				nickField.setText(login);
 				nickField.setEnabled(false);
 				try {
-					InetAddress addr = InetAddress.getLocalHost();
-					server = new ServerConnection(addr.toString(), login);
+					server = new ServerConnection();
+
+					server.setServerAddress(
+							"jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
 					server.connect();
+					assert server.isConnected();
+					server.setLocalNick(nickField.getText());
+					System.out.println("Before: " + server.isNickOnline(nickField.getText()));
 					server.goOnline();
+					System.out.println("server");
+					list = new JList(server.getAllNicks());
+					JScrollPane cont = new JScrollPane(list);
+					System.out.println("server");
+					contactsPanel.add(cont, BorderLayout.CENTER);
+					frame.getContentPane().validate();
+					list.addListSelectionListener(new ListSelectionListener() {
+						public void valueChanged(ListSelectionEvent e) {
+							if (connection == null) {
+								if (server.isNickOnline(list.getSelectedValue().toString())) {
+									remoteLogiField.setText(list.getSelectedValue().toString());
+									remoteAddrField.setText(server.getIpForNick(list.getSelectedValue().toString()));
+								} else {
+									JOptionPane.showMessageDialog(null, "This user isn't online");
+								}
+							} else {
+								JOptionPane.showMessageDialog(null, "You must disconnect to choose");
+							}
+						}
+					});
 					callLT = new CallListenerThread();
 					callLT.start();
 					commandLT = new CommandListenerThread();
 					ThreadOfCall();
 					ThreadOfCommand();
 					nickApplyButton.setEnabled(false);
-					friends = new ContactsView(server);
-					list = new JList(friends);
-					contactsPanel.add(list, BorderLayout.CENTER);
-					list.addListSelectionListener(new ListSelectionListener() {
-						public void valueChanged(ListSelectionEvent e) {
-							if (connection == null) {
-								remoteLogiField.setText(list.getSelectedValue().toString());
-								remoteAddrField.setText(server.getIpForNick(list.getSelectedValue().toString()));
-							} else {
-								JOptionPane.showMessageDialog(null, "You must disconnect to choose");
-							}
-						}
-					});
+
 					save.setEnabled(true);
 					update.setEnabled(true);
+					forDisconnect();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -396,63 +413,94 @@ public class MainForm<JForm> {
 	public void ThreadOfCall() throws IOException {
 		callLT.addObserver(new Observer() {
 			public void update(Observable arg0, Object arg1) {
-				//TODO:Thread, TimeOut;
+				// TODO:Thread, TimeOut;
 				System.out.println("update listener");
-				connection = callLT.getConnection();
-				try {
-					connection.sendNickHello(nickField.getText());
-				} catch (UnsupportedEncodingException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				commandLT.setConnection(connection);
-				commandLT.start();
-				System.out.println("CLT started");
-				long t1 = System.currentTimeMillis();
-				long t2 = System.currentTimeMillis();
-				boolean b = false;
-				while (((t2 - t1) <= 100000) && !b) {
-					Command command = commandLT.getLastCommand();
+				if (connection == null) {
+					connection = callLT.getConnection();
 					try {
-						System.out.println(command.getClass() + command.toString());
-					} catch (NullPointerException e) {
-						System.out.println("null");
+						connection.sendNickHello(nickField.getText());
+					} catch (UnsupportedEncodingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-					if (command instanceof NickCommand) {
-						int reply = JOptionPane.showConfirmDialog(null,
-								"Do you want to accept incoming connection from user ".concat(command.toString()), "",
-								JOptionPane.YES_NO_OPTION);
-						System.out.println(reply);
-
+					commandLT.setConnection(connection);
+					commandLT.start();
+					System.out.println("CLT started");
+					long t1 = System.currentTimeMillis();
+					long t2 = System.currentTimeMillis();
+					boolean b = false;
+					while (((t2 - t1) <= 100000) && !b) {
+						Command command = commandLT.getLastCommand();
 						try {
-							if (reply == 0) {
-								b = true;
+							System.out.println(command.getClass() + command.toString());
+						} catch (NullPointerException e) {
+							System.out.println("null");
+						}
+						if (command instanceof NickCommand) {
+							int reply = JOptionPane.showConfirmDialog(null,
+									"Do you want to accept incoming connection from user ".concat(command.toString()),
+									"", JOptionPane.YES_NO_OPTION);
+							System.out.println(reply);
+
+							try {
+								if (reply == 0) {
+									b = true;
+									connection.accept();
+									remoteAddrField.setText(callLT.getRemoteAddress().toString());
+									remoteLogiField.setText(command.toString());
+									forConnect();
+									break;
+								} else {
+									forDisconnect();
+									b = true;
+									connection.reject();
+									commandLT.stop();
+									connection = null;
+									break;
+								}
+
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						} else {
+							t2 = System.currentTimeMillis();
+						}
+					}
+					System.out.println("Connection getted");
+				} else {
+					connection1 = callLT.getConnection();
+					int reply = JOptionPane.showConfirmDialog(null,
+							"New user want to talk with you.Do you want to reject current connection ", "",
+							JOptionPane.YES_NO_OPTION);
+
+					try {
+						if (reply == 0) {
+							connection = connection1;
+							connection.disconnect();
+							commandLT.setConnection(connection);
+							commandLT.start();
+							connection.sendNickHello(nickField.getText());
+							Command command = commandLT.getLastCommand();
+							if (command instanceof NickCommand) {
 								connection.accept();
 								remoteAddrField.setText(callLT.getRemoteAddress().toString());
 								remoteLogiField.setText(command.toString());
 								forConnect();
-								break;
-							} else {
-								forDisconnect();
-								b = true;
-								connection.reject();
-								commandLT.stop();
-								connection = null;
-								break;
-							}
 
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							}
+						} else {
+							connection1.sendNickBusy(nickField.getText());
 						}
-					} else {
-						t2 = System.currentTimeMillis();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+
 				}
-				System.out.println("Connection getted");
 			}
 		});
 
@@ -464,7 +512,7 @@ public class MainForm<JForm> {
 			public void update(Observable arg0, Object arg1) {
 				System.out.println("testobs");
 				Command lastCommand = commandLT.getLastCommand();
-				System.out.println(lastCommand.getClass()+" "+lastCommand.toString());
+				System.out.println(lastCommand.getClass() + " " + lastCommand.toString());
 				if (lastCommand instanceof MessageCommand) {
 					model.addMessage(remoteLogiField.getText(), new Date(), commandLT.getLastCommand().toString());
 					textArea.update(model, new Object());
@@ -518,18 +566,18 @@ public class MainForm<JForm> {
 		remoteAddrField.setEnabled(false);
 	}
 
- 	boolean formForConnect(boolean b, String nick) {
- 		boolean isconnect=false;
- 		JFrame f = new JFrame();
- 		Container cp = f.getContentPane();
- 		f.setSize(400, 175);
- 		f.setLocation(200, 200);
- 		f.setVisible(b);
- 		JPanel panel = new JPanel();
- 		cp.setLayout(null);
- 		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
- 		JButton yes = new JButton("Yes");
- 		JButton no = new JButton("No");
+	boolean formForConnect(boolean b, String nick) {
+		boolean isconnect = false;
+		JFrame f = new JFrame();
+		Container cp = f.getContentPane();
+		f.setSize(400, 175);
+		f.setLocation(200, 200);
+		f.setVisible(b);
+		JPanel panel = new JPanel();
+		cp.setLayout(null);
+		JLabel text = new JLabel("Do you want to accept incoming connection from user ".concat(nick));
+		JButton yes = new JButton("Yes");
+		JButton no = new JButton("No");
 		text.setSize(500, 60);
 		text.setLocation(20, 20);
 		yes.setSize(90, 25);
@@ -537,8 +585,8 @@ public class MainForm<JForm> {
 		no.setSize(90, 25);
 		no.setLocation(220, 95);
 		f.setContentPane(cp);
- 		yes.addActionListener(new ActionListener() {
- 			public void actionPerformed(ActionEvent e) {
+		yes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
 					connection.accept();
 					connection.sendNickHello(nickField.getText());
@@ -550,25 +598,25 @@ public class MainForm<JForm> {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}			
- 
- 			}
- 		});
- 		no.addActionListener(new ActionListener() {
- 			public void actionPerformed(ActionEvent e) {
- 				try {
- 					connection.reject();
- 					forDisconnect();
+				}
+
+			}
+		});
+		no.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					connection.reject();
+					forDisconnect();
 					f.setVisible(false);
 					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					f.dispose();
- 				} catch (IOException e1) {
- 					// TODO Auto-generated catch block
- 					e1.printStackTrace();
- 				}
- 
- 			}
- 		});
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
 		text.setSize(500, 60);
 		text.setLocation(20, 20);
 		yes.setSize(90, 25);
@@ -576,12 +624,12 @@ public class MainForm<JForm> {
 		no.setSize(90, 25);
 		no.setLocation(220, 95);
 		cp.add(text);
- 		cp.add(yes);
- 		cp.add(no);
- 		f.setContentPane(cp);
- 		return isconnect;
+		cp.add(yes);
+		cp.add(no);
+		f.setContentPane(cp);
+		return isconnect;
 
- 	}
+	}
 
 	public void formForNewTalk(boolean b, String nick) {
 		JFrame f = new JFrame();
