@@ -2,15 +2,12 @@
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
-import javax.swing.border.LineBorder;
-import javax.swing.border.SoftBevelBorder;
+
 
 
 public class AccorDis extends JFrame {
@@ -66,6 +63,13 @@ public class AccorDis extends JFrame {
         Dismiss.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                connection.reject();
+                close();
+            }
+        });
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 connection.reject();
                 close();
             }

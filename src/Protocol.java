@@ -10,6 +10,20 @@ public class Protocol {
         return string.replace("\n",":&:");
     }
 
+    public static boolean isNickValid(String nick){
+        if (nick.matches(".*[a-bA-B0-9_\\-].*")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isMessageValid(String message){
+        if (message.matches(".*\\S.*")) {
+            return true;
+        }
+        return false;
+    }
+
     public static String decode(String string){
         return string.replace(":&:","\n");
     }

@@ -1,14 +1,11 @@
 import java.awt.Color;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.*;
-
 import javax.swing.border.LineBorder;
-
 
 
 public class LFrame extends JFrame {
@@ -22,7 +19,6 @@ public class LFrame extends JFrame {
 	JButton Apply;
 	JButton Disconnect;
 	JButton Connect;
-
 	
 	JLabel login;
 	JLabel addr;
@@ -31,17 +27,10 @@ public class LFrame extends JFrame {
 	JTextField textfieldlogin;	
 	JTextField EnterIp;
     JTextField mass;
-	
-	String name = "";
 
-	String name1;
 	String text;
 	
-	int adress;
-	
 	Font font = new Font("Verdana", Font.BOLD, 13);
-	
-	
 
 	LineBorder linebord = new LineBorder(Color.BLACK, 1);
 
@@ -59,6 +48,25 @@ public class LFrame extends JFrame {
 		textfieldlogin = new JTextField(logic.getLocalNick());
 		textfieldlogin.setBounds(80, 40, 115, 30);
 		textfieldlogin.setBorder(linebord);
+        textfieldlogin.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_ENTER){
+                    applyNick();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
 		
 		addr = new JLabel("remote addr");
 		addr.setFont(font);
@@ -66,20 +74,61 @@ public class LFrame extends JFrame {
 		EnterIp = new JTextField("files.litvinov.in.ua");
 		EnterIp.setBounds(500,40,150,30);
 		EnterIp.setBorder(linebord);
+        EnterIp.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    logic.setRemoteIP(EnterIp.getText());
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            logic.getHistoryViewModel().clearView();
+                            logic.call();
+                        }
+                    });
+                }
+            }
+
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
        
 		mass = new JTextField();
 	    mass.setHorizontalAlignment(JTextField.LEFT);
 		mass.setBorder(linebord);
-		JTextArea ForMass = new JTextArea();
-		ForMass.setEditable(false);     
-		ForMass.setLineWrap(true);		  
-		ForMass.setWrapStyleWord(true);  
 		mass.setBounds(10, 480, 650, 75);
+        mass.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_ENTER){
+                    send();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
 
 
 		smth = new HistoryView(logic.getHistoryViewModel());
 		smth.setLocation(10, 140);
 		smth.setSize(740,300);
+
 
         JScrollPane scrollPane = new JScrollPane(smth);
         scrollPane.setLocation(10, 140);
@@ -93,7 +142,7 @@ public class LFrame extends JFrame {
         Apply.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logic.setLocalNick(textfieldlogin.getText());
+                applyNick();
             }
         });
 		
@@ -132,16 +181,27 @@ public class LFrame extends JFrame {
 		Send.setSize(100,30);
 		Send.addActionListener(new ActionListener( ) {
         	public void actionPerformed(ActionEvent ae) {
-        		int h=0;
-
-        		text = mass.getText();
-                logic.sendMessage(text);
-            	logic.getHistoryViewModel().addLocalMessage(text);
-                mass.setText("");
-            	
-
-        		
+        		send();
         	}
+        });
+
+        final JFrame frame = this;
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (logic.isConnected()){
+                    if (JOptionPane.showConfirmDialog(frame,
+                            "You have an established connection with another user.\n Are you sure you want to close the program?", "Warning",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        exit();
+                    }
+                }
+                else{
+                    exit();
+                }
+
+            }
         });
 		
 		
@@ -159,7 +219,7 @@ public class LFrame extends JFrame {
 
         this.add(panel);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(Widht, Height);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -170,8 +230,26 @@ public class LFrame extends JFrame {
 	
 	}
 
-    public void setBusy(Boolean busy){
+    public void exit(){
+        logic.exit();
+        System.exit(0);
+    }
 
+    public void send(){
+        text = mass.getText();
+        if (Protocol.isMessageValid(text)) {
+            logic.sendMessage(text);
+            logic.getHistoryViewModel().addLocalMessage(text);
+            mass.setText("");
+        }
+    }
+
+    public void applyNick(){
+        text=textfieldlogin.getText();
+        if (Protocol.isNickValid(text))logic.setLocalNick(text);
+        else {
+            UltimateGUI ultimateGUI = new UltimateGUI("Only latin, numbers and \"_\" \"-\" ");
+        }
     }
 
     public void setConnected(boolean b){

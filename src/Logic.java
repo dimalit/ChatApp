@@ -7,12 +7,13 @@ public class Logic{
     private LFrame mainGui;
     private String localNick = "default",remoteNick,remoteIP;
     private boolean isBusy;
-    private Connection connection;
+    private Connection connection = null;
     private Caller caller;
     private CallListenerThread callListenerThread;
     private Thread callThread;
     private HistoryViewModel historyViewModel = new HistoryViewModel(this);
     private CommandListenerThread commandListenerThread;
+    private ServerConnection serverConnection = new ServerConnection();
 
     public Logic(){
         String tmp = getNickFromFile();
@@ -22,18 +23,20 @@ public class Logic{
         callThread = new Thread(callListenerThread);
         callThread.start();
         mainGui = new LFrame(this);
-
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
+        serverConnection.connect();
+        serverConnection.goOnline();
     }
 
     public void setLocalNick(String nick){
     	localNick=nick;
     	callListenerThread.setNick(localNick);
+        serverConnection.setLocalNick(localNick);
         writeNickToFile();
     }
 
@@ -48,7 +51,6 @@ public class Logic{
     public void setBusy(boolean isBusy) {
         this.isBusy = isBusy;
         callListenerThread.setBusy(isBusy);
-        mainGui.setBusy(isBusy);
     }
 
     public void accept(Connection connection){
@@ -103,19 +105,23 @@ public class Logic{
         historyViewModel.addRemoteMessage(message);
     }
 
-    public void disconnect(){
-        setBusy(false);
-        //разблокировка всякого
-        //
-        historyViewModel.addSystemMessage("Disconnected");
-        historyViewModel.writeHistoryFile();
-        remoteNick=null;
-        remoteIP=null;
-        commandListenerThread.kill();
-        connection.disconnect();
-        mainGui.setConnected(false);
-        setBusy(false);
+    public void disconnect() {
+        if (isConnected()) {
+            setBusy(false);
+            historyViewModel.addSystemMessage("Disconnected");
+            historyViewModel.writeHistoryFile();
+            remoteNick = null;
+            remoteIP = null;
+            commandListenerThread.kill();
+            connection.disconnect();
+            connection = null;
+            mainGui.setConnected(false);
+        }
 
+    }
+
+    public boolean isBusy(){
+        return isBusy;
     }
 
     public void updateGUI(){
@@ -172,5 +178,16 @@ public class Logic{
 
     public static void main(String[] args) {
         Logic logic = new Logic();
+    }
+
+    public boolean isConnected(){
+        if (connection!=null) return true;
+        else return false;
+    }
+
+    public void exit(){
+        disconnect();
+        serverConnection.goOffline();
+        serverConnection.disconnect();
     }
 }
