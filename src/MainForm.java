@@ -472,7 +472,7 @@ public class MainForm<JForm> {
 					}
 					System.out.println("Connection getted");
 				} else {
-					connection1 = callLT.getConnection();
+					connection1=callLT.getConnection();
 					int reply = JOptionPane.showConfirmDialog(null,
 							"New user want to talk with you.Do you want to reject current connection ", "",
 							JOptionPane.YES_NO_OPTION);
