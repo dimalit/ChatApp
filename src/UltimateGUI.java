@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class UltimateGUI extends JFrame{
 
@@ -37,16 +39,30 @@ public class UltimateGUI extends JFrame{
                 exit();
             }
         });
+        okButton.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
 
-        ///panel.add(Box.createVerticalGlue());
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_ENTER)
+                    exit();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
         panel.add(label);
-        // panel.add(Box.createVerticalGlue());
         panel.add(okButton);
-        // panel.add(Box.createVerticalGlue());
-        //add(Box.createHorizontalGlue());
-
         add(panel);
-        //add(Box.createHorizontalGlue());
+
+
+
     }
 
     private void exit(){

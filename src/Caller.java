@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Caller {
     private String localNick;
@@ -19,7 +21,6 @@ public class Caller {
 
     public Connection call() throws IOException {
         Connection connection = new Connection(new Socket(remoteIP,Protocol.PORT_NUMBER));
-
         //Проверка, к тому ли мы подключились.
         lastCommand = connection.recieve();
         if (lastCommand.type==CommandType.NICK) {

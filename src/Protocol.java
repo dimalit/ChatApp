@@ -11,7 +11,7 @@ public class Protocol {
     }
 
     public static boolean isNickValid(String nick){
-        if (nick.matches(".*[a-bA-B0-9_\\-].*")) {
+        if (nick.matches(".*[a-zA-Z0-9_\\-].*")) {
             return true;
         }
         return false;

@@ -28,6 +28,8 @@ public class LFrame extends JFrame {
 	JTextField EnterIp;
     JTextField mass;
 
+    ContactsView contactsView;
+
 	String text;
 	
 	Font font = new Font("Verdana", Font.BOLD, 13);
@@ -67,7 +69,12 @@ public class LFrame extends JFrame {
 
             }
         });
-		
+
+        contactsView = new ContactsView(logic.getContactsViewModel());
+        // !!!!!!!!!
+        // ВОТ ТУТ ЕЁ ^ НОРМАЛЬНО РАСПОЛОЖИ И В НЕЙ САМОЙ МОЖЕШЬ МЕНЯТЬ РАЗМЕРЫ. НО ТОЛЬКО РАЗМЕРЫ ПО ДРУГОМУ ПОВОДУ - СПРАШИВАЙ
+        // !!!!!!!!!
+
 		addr = new JLabel("remote addr");
 		addr.setFont(font);
 		addr.setBounds(400,35,100,50);
@@ -156,6 +163,8 @@ public class LFrame extends JFrame {
                 logic.disconnect();
             }
         });
+
+
 		
 	    Connect  = new JButton("Connect");
 	    Connect.setLocation(450,80);
@@ -245,7 +254,9 @@ public class LFrame extends JFrame {
     }
 
     public void applyNick(){
-        text=textfieldlogin.getText();
+        text=textfieldlogin.getText().replaceAll("\\s+", "_").replaceAll("\\-+","-").replaceAll("_+","_");
+         if (text.endsWith("_")) text=text.substring(0,text.length()-1);
+        textfieldlogin.setText(text);
         if (Protocol.isNickValid(text))logic.setLocalNick(text);
         else {
             UltimateGUI ultimateGUI = new UltimateGUI("Only latin, numbers and \"_\" \"-\" ");
@@ -269,6 +280,10 @@ public class LFrame extends JFrame {
             textfieldlogin.setEditable(true);
             EnterIp.setEditable(true);
         }
+    }
+
+    public void changeEnterIp(String ip){
+        EnterIp.setText(ip);
     }
 
 }

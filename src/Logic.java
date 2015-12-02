@@ -14,6 +14,7 @@ public class Logic{
     private HistoryViewModel historyViewModel = new HistoryViewModel(this);
     private CommandListenerThread commandListenerThread;
     private ServerConnection serverConnection = new ServerConnection();
+    private ContactsViewModel contactsViewModel = new ContactsViewModel(this);
 
     public Logic(){
         String tmp = getNickFromFile();
@@ -30,6 +31,7 @@ public class Logic{
         }
         serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
         serverConnection.connect();
+        serverConnection.setLocalNick(localNick);
         serverConnection.goOnline();
     }
 
@@ -183,6 +185,10 @@ public class Logic{
     public boolean isConnected(){
         if (connection!=null) return true;
         else return false;
+    }
+
+    public ContactsViewModel getContactsViewModel(){
+        return contactsViewModel;
     }
 
     public void exit(){
