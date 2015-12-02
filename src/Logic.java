@@ -195,8 +195,10 @@ public class Logic{
 
     public void exit(){
         disconnect();
-        serverConnection.goOffline();
-        serverConnection.disconnect();
+        if (serverConnection.isConnected()) {
+            serverConnection.goOffline();
+            serverConnection.disconnect();
+        }
     }
 
     public ServerConnection getServerConnection(){
