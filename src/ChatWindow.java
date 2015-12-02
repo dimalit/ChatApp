@@ -140,7 +140,7 @@ public class ChatWindow extends JFrame implements Observer {
 
 			public void actionPerformed(ActionEvent event) {
 				text = text1.getText();
-				Protocol.nickname = text;
+				Protocol.localNick = text;
 			}
 		}
 

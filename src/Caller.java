@@ -14,7 +14,7 @@ public class Caller {
     }
 
     public Connection call() throws IOException {
-        Connection c = new Connection(new Socket(IP,port),Protocol.nickname);
+        Connection c = new Connection(new Socket(IP,port));
         c.sendNickHello(nick);
         return c;
     }

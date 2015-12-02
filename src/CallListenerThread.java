@@ -3,8 +3,6 @@ import java.util.*;
 import java.net.*;
 
 public class CallListenerThread extends Observable implements Runnable {
-    private CallListener callListener;
-    private String nick;
     private Socket socket;
     private ServerSocket serverSocket;
     private volatile boolean disconnected;
@@ -26,7 +24,7 @@ public class CallListenerThread extends Observable implements Runnable {
     public Connection getConnection(){
         if(socket!=null){
             try {
-                return new Connection(socket, nick);
+                return new Connection(socket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -40,12 +38,12 @@ public class CallListenerThread extends Observable implements Runnable {
             serverSocket = new ServerSocket(Protocol.PORT);
             while (true){
                 socket = serverSocket.accept();
-                Connection connection = new Connection(socket, nick);
+                Connection connection = new Connection(socket);
                 if (connection!=null) {
                     CommandListenerThread clt = new CommandListenerThread(connection);
                     clt.addObserver(ChatWindow.observer);
                     clt.start();
-                    connection.sendNickHello(Protocol.nickname);
+                    connection.sendNickHello(Protocol.localNick);
                 }
             }
         } catch (IOException e) {

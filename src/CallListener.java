@@ -2,10 +2,8 @@ import java.io.*;
 import java.net.*;
 
 public class CallListener {
-    private String localNick = "default";
     private String remoteNick;
     private Boolean isBusy;
-    private static final int localPort = 28411;
     private final static String IP = "localhost";
     private SocketAddress remoteAddress;
     private SocketAddress localAddress;
@@ -13,16 +11,16 @@ public class CallListener {
 
 
     public CallListener(String userName, String remoteAdress){
-        localNick = userName;
-        remoteAddress = new InetSocketAddress(IP, localPort);
+        Protocol.localNick = userName;
+        remoteAddress = new InetSocketAddress(IP, Protocol.PORT);
     }
 
     public Connection getConnection() throws IOException{
         if (StatusBusy()){
             return null;
         }else{
-            serverSocket = new ServerSocket(localPort);
-            return new Connection(serverSocket.accept(), localNick);
+            serverSocket = new ServerSocket(Protocol.PORT);
+            return new Connection(serverSocket.accept());
         }
     }
 
@@ -31,7 +29,7 @@ public class CallListener {
     }
 
     public String getLocalNick() {
-        return localNick;
+        return Protocol.localNick;
     }
 
     public SocketAddress getLocalAddress(){
@@ -55,7 +53,7 @@ public class CallListener {
     }
 
     public int getLocalPort(){
-        return localPort;
+        return Protocol.PORT;
     }
 
     public String getRemoteNick() {
