@@ -11,9 +11,8 @@ public class Caller {
 	String NickName;
 	
 	
-	Caller(String ip, String NickName) throws UnknownHostException{
+	Caller(String ip) throws UnknownHostException{
 		IP=InetAddress.getByName(ip);
-		this.NickName=NickName;
 	}
 	
 	

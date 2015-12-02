@@ -15,6 +15,7 @@ public class CallListener {
 	
 	CallListener(String NickName, boolean isBusy) throws IOException{
 		ss=new ServerSocket(Connection.port);
+
 		this.NickName=NickName;
 		this.isBusy=isBusy;
 	}
@@ -41,10 +42,18 @@ public class CallListener {
 			/**/
 		}
 	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	
+	
+	void setBusy(boolean isBusy){
+		this.isBusy=isBusy;
 	}
+	
+	
+	String getNickName(){
+		return NickName;
+	}
+	
+
+
 
 }

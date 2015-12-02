@@ -19,4 +19,8 @@ public class MessageCommand extends Command {
 	void setMessage(String message){
 		this.message=message;
 	}
+	
+	String getMessage(){
+		return message;
+	}
 }
