@@ -11,13 +11,15 @@ import javax.swing.border.*;
 
 
 public class LabelFrame extends JFrame implements Observer{
-	JPanel panel = new JPanel();	
+	JPanel panel = new JPanel();
+	
 	JTextArea textArea=new JTextArea();  
 	JTextArea textAreaMessage=new JTextArea();
-	JButton button1;
-	JButton button2;
-    JButton button3;
-    JButton button4;
+	
+	JButton button1;	//send
+	JButton button2;	//connect
+    JButton button3;	//apply
+    JButton button4;	//disconnect
 	
 	JLabel lable1;
 	JLabel lable2;
@@ -47,7 +49,7 @@ public class LabelFrame extends JFrame implements Observer{
 	CommandListenerThread comlt;
 	CallListenerThread clt;
 
-	public static Observer obj;
+	static Observer obj;
 	
 	
 	public static void main(String aggs[]){
@@ -55,7 +57,6 @@ public class LabelFrame extends JFrame implements Observer{
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				try {
 					new LabelFrame();
 				} catch (IOException e) {
@@ -69,8 +70,10 @@ public class LabelFrame extends JFrame implements Observer{
 	
 
 	LabelFrame() throws IOException{
+		obj=this;
 		
-		
+		clt=new CallListenerThread();
+		clt.start();		
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -143,12 +146,14 @@ public class LabelFrame extends JFrame implements Observer{
         panel.add(button2);
         panel.add(button3);
         panel.add(button4);
+        panel.add(Scroll);
 
 		this.add(panel);
 		
 		
-
-
+		Scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		panel.add(new JScrollPane(textArea));
+		textArea.setEditable(false);
 		
 		button1.addActionListener(new ActionListener(){
 
@@ -213,8 +218,7 @@ public class LabelFrame extends JFrame implements Observer{
 			}
 			
 		});
-		clt=new CallListenerThread();
-		clt.start();
+
 		
 		
 		button4.addActionListener(new ActionListener(){
