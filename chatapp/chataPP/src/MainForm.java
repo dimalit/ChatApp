@@ -1,41 +1,35 @@
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import java.awt.GridBagLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridLayout;
-
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Date;
-import java.awt.GridBagConstraints;
-import java.awt.Color;
-import javax.swing.text.BadLocationException;
-import java.awt.Dimension;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 /*import org.eclipse.wb.swing.FocusTraversalOnArray;*/
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Scanner;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.text.BadLocationException;
 
 public class MainForm implements Observer {
 
@@ -49,6 +43,12 @@ public class MainForm implements Observer {
 	private DefaultListModel dlm;
 	private JList list;
 	private Connection connection;
+	private ServerConnection server;
+	private String[][] frendmass = new String[1000][2];
+	private String[] headers = {"Name", "IP"};
+	private Integer size = 0;
+	private File file = new File("Friends.txt");
+	private JTable frends;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -62,7 +62,16 @@ public class MainForm implements Observer {
 		});
 	}
 
-	public MainForm() {
+	public MainForm() throws FileNotFoundException {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		server = new ServerConnection();
+		server.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding..");
+		server.connect();
+		readFriends();
 		initialize();
 	}
 
@@ -95,6 +104,8 @@ public class MainForm implements Observer {
 
 		JButton apply = new JButton("Apply");
 
+		JPanel conectFrends = new JPanel(new GridLayout(1, 2, 10, 0));
+
 		JLabel time = new JLabel();
 		time.setText("Time: 00:00:00");
 		time.setOpaque(true);
@@ -124,7 +135,7 @@ public class MainForm implements Observer {
 		remoteAddr.setOpaque(true);
 		remoteAddr.setPreferredSize(new Dimension(70, 25));
 
-	    textRAddr = new JTextArea(2, 0);
+		textRAddr = new JTextArea(2, 0);
 		textRAddr.setEditable(true);
 		JScrollPane scrollBar3 = new JScrollPane(textRAddr);
 		scrollBar3.setViewportView(textRAddr);
@@ -177,14 +188,16 @@ public class MainForm implements Observer {
 		friends.setBorder(new LineBorder(Color.BLACK, 1));
 		friends.setHorizontalAlignment(JLabel.CENTER);
 		friends.setPreferredSize(new Dimension(30, 40));
+		
+		frends = new JTable(frendmass, headers);
+		frends.setColumnSelectionAllowed(false);
+		frends.setRowSelectionAllowed(false);
+		frends.setCellSelectionEnabled(true);
+		frends.setPreferredScrollableViewportSize(new Dimension(200, 100));
+		JScrollPane scrollBar6 = new JScrollPane(frends);		
+		scrollBar6.setViewportView(frends);
 
-		String[] elements = { "FRIENDSFRIENDSFRIENDSFRIENDS", "FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS",
-				"FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS", "FRIENDS" };
-		JList northList = new JList(elements);
-		northList.setLayoutOrientation(JList.VERTICAL);
-		JScrollPane scrollBar6 = new JScrollPane(northList);
-		scrollBar6.setViewportView(northList);
-
+		
 		JButton add = new JButton("Add");
 		JButton delete = new JButton("Delete");
 		add.setPreferredSize(new Dimension(30, 25));
@@ -266,6 +279,25 @@ public class MainForm implements Observer {
 				}
 			}
 		});
+		
+		add.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addFriends();
+				try {
+					writeFriends();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			}			
+		});	
+		
+	       add.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent ae) {
+	            	 frends.repaint();
+	            }
+	        });
 
 		connect.addActionListener(new ActionListener() {
 			@Override
@@ -299,6 +331,35 @@ public class MainForm implements Observer {
 		});
 	}
 
+	public void addFriends(){
+			if (textRLogin.getText()!=""){
+				frendmass[size][0]=textRLogin.getText();
+				frendmass[size][1]=textRAddr.getText();	
+			size++;
+		}		
+	}
+
+	public void readFriends() throws FileNotFoundException{
+		Scanner in = new Scanner(System.in);
+		Scanner reader = new Scanner(file);
+		while (reader.hasNext()) {
+			 frendmass[size][0]=reader.next();
+			 frendmass[size][1]=reader.next();
+			 size++;
+			 
+		}
+	}
+	
+	public void writeFriends() throws FileNotFoundException{
+		PrintWriter writer = new PrintWriter(file);
+		for (int i=0;i<size;i++){
+			writer.print(frendmass[i][0]+" "); 
+			writer.print(frendmass[i][1]+" "); 
+			writer.flush();
+		}
+		writer.close();
+	}
+	
 	public boolean question(String nick, String remoteAddress) {
 		Object[] options = { "Receive", "Reject" };
 		int dialogResult = JOptionPane.showOptionDialog(frame,
