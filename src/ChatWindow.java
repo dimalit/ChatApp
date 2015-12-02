@@ -332,6 +332,8 @@ public class ChatWindow extends JFrame implements Observer {
 			mess.append("Message: " + mescom.getMessagetext() + "\n");
 		}
 	}
+	
+	
 }
 class Friend {
 	public String nick;
