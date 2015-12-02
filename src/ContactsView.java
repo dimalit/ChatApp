@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.Timer;
 
 public class ContactsView extends JPanel{
 
@@ -15,37 +16,42 @@ public class ContactsView extends JPanel{
     }
 
     private void createGUI(){
-
+        setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setPreferredSize(new Dimension(200, 600));
+
         JPanel top = new JPanel();
+        top.setBackground(Color.WHITE);
         top.setLayout(new BoxLayout(top,BoxLayout.Y_AXIS));
         JPanel bottom = new JPanel();
+        bottom.setBackground(Color.WHITE);
         bottom.setLayout(new BoxLayout(bottom,BoxLayout.Y_AXIS));
 
         JLabel favouritesL = new JLabel("Favourites");
         JLabel contactsL = new JLabel("Contacts");
         Font font = new Font("Verdana",Font.BOLD,14);
         favouritesL.setFont(font);
-        favouritesL.setSize(new Dimension(200, 50));
+        favouritesL.setSize(new Dimension(100, 50));
+        favouritesL.setHorizontalTextPosition(0);
         contactsL.setFont(font);
-        contactsL.setSize(new Dimension(200, 50));
+        contactsL.setSize(new Dimension(100, 50));
 
         contacts = new JPanel();
+        contacts.setBackground(Color.WHITE);
         contacts.setLayout(new BoxLayout(contacts,BoxLayout.Y_AXIS));
-        contacts.setMinimumSize(new Dimension(200, 250));
+        contacts.setMinimumSize(new Dimension(175, 150));
 
         favourites = new JPanel();
         favourites.setLayout(new BoxLayout(favourites,BoxLayout.Y_AXIS));
-        favourites.setMinimumSize(new Dimension(200, 250));
+        favourites.setMinimumSize(new Dimension(175, 150));
+        favourites.setBackground(Color.WHITE);
 
         JScrollPane contactsS = new JScrollPane(contacts);
-        contactsS.setMinimumSize(new Dimension(200, 250));
+        contactsS.setMinimumSize(new Dimension(175, 150));
         JScrollPane favouritesS = new JScrollPane(favourites);
-        favouritesS.setMinimumSize(new Dimension(200, 250));
+        favouritesS.setMinimumSize(new Dimension(175, 150));
 
-        bottom.setPreferredSize(new Dimension(200,300));
-        top.setPreferredSize(new Dimension(200, 300));
+        bottom.setPreferredSize(new Dimension(175,200));
+        top.setPreferredSize(new Dimension(175, 200));
 
         top.add(favouritesL);
         top.add(favouritesS);
@@ -55,7 +61,7 @@ public class ContactsView extends JPanel{
         add(top);
         add(bottom);
 
-        setMinimumSize(new Dimension(200, 600));
+
 
     }
 
@@ -66,15 +72,22 @@ public class ContactsView extends JPanel{
         ArrayList<Contact> contactsList = (ArrayList<Contact>) contactsViewModel.getList();
         for (Contact contact :  contactsList){
             list.add(new ContactPanel(contact));
+
         }
         for (ContactPanel cp : list){
+            System.out.println(cp.getNick());
             if (cp.isFav()) favourites.add(cp);
             else contacts.add(cp);
         }
+        updateUI();
+        contactsViewModel.onlineUpdate();
+
     }
 
     public void onlineUpdate(){
-        updateUI();
+        for (ContactPanel cp : list){
+            cp.update();
+        }
     }
 
 

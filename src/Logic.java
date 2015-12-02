@@ -33,6 +33,8 @@ public class Logic{
         serverConnection.connect();
         serverConnection.setLocalNick(localNick);
         serverConnection.goOnline();
+
+        contactsViewModel.getData();
     }
 
     public void setLocalNick(String nick){
@@ -195,5 +197,9 @@ public class Logic{
         disconnect();
         serverConnection.goOffline();
         serverConnection.disconnect();
+    }
+
+    public ServerConnection getServerConnection(){
+        return serverConnection;
     }
 }

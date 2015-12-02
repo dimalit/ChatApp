@@ -13,7 +13,7 @@ public class LFrame extends JFrame {
     Logic logic;
 
     private static final int Height = 600;
-    private static final int Widht = 800;
+    private static final int Widht = 1000;
 	
 	JButton Send;
 	JButton Apply;
@@ -71,6 +71,8 @@ public class LFrame extends JFrame {
         });
 
         contactsView = new ContactsView(logic.getContactsViewModel());
+
+        contactsView.setBounds(0,20,175,400);
         // !!!!!!!!!
         // ВОТ ТУТ ЕЁ ^ НОРМАЛЬНО РАСПОЛОЖИ И В НЕЙ САМОЙ МОЖЕШЬ МЕНЯТЬ РАЗМЕРЫ. НО ТОЛЬКО РАЗМЕРЫ ПО ДРУГОМУ ПОВОДУ - СПРАШИВАЙ
         // !!!!!!!!!
@@ -212,8 +214,8 @@ public class LFrame extends JFrame {
 
             }
         });
-		
-		
+		contactsView.setLocation(800,100);
+		panel.add(contactsView);
 		panel.add(login);
 		panel.add(textfieldlogin);
 		panel.add(mass);

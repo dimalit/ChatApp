@@ -1,8 +1,9 @@
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Timer;
 
-public class ContactsViewModel implements Runnable {
+public class ContactsViewModel{
     ContactsView contactsView;
     ArrayList<Contact> contactList = new ArrayList<Contact>();
     Logic logic;
@@ -21,7 +22,9 @@ public class ContactsViewModel implements Runnable {
 
     public void call(Contact contact){
         logic.getMainGui().changeEnterIp(contact.getIP());
+        logic.setRemoteIP(contact.getIP());
         logic.call();
+
     }
 
     public void removeContact(Contact contact){
@@ -33,8 +36,25 @@ public class ContactsViewModel implements Runnable {
         contactsView.fullUpdate();
     }
 
-
-    public void run() {
-        Timer timer = new Timer();
+    public void onlineUpdate(){
+        ServerConnection serverConnection = logic.getServerConnection();
+        for (Contact contact : contactList){
+            if (serverConnection.isNickOnline(contact.getNick())){
+                contact.setOnline(true);
+            }
+        }
+        contactsView.onlineUpdate();
     }
+
+    public void getData(){
+        ServerConnection serverConnection = logic.getServerConnection();
+        String[] nicks = serverConnection.getAllNicks();
+        for (String nick : nicks){
+            if (nick.equals(logic.getLocalNick())) continue;
+            contactList.add(new Contact(this, nick, serverConnection.getIpForNick(nick)));
+        }
+        updateView();
+    }
+
+
 }

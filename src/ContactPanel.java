@@ -8,12 +8,16 @@ public class ContactPanel extends JPanel{
     private JLabel label;
     private ImageIcon imageIcon;
 
-    public ContactPanel(final Contact contact){
+    public ContactPanel(Contact contact){
         this.contact=contact;
+        createGUI();
+    }
+
+    private void createGUI(){
         imageIcon  = new ImageIcon("src/images/off.png");
         label = new JLabel(contact.getNick());
         label.setIcon(imageIcon);
-        setBackground(Color.getHSBColor(188, 0, 97));
+        setBackground(Color.WHITE);
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -33,15 +37,16 @@ public class ContactPanel extends JPanel{
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                setBackground(Color.getHSBColor(188,32,100));
+                setBackground(Color.CYAN);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                setBackground(Color.getHSBColor(188,0,97));
+                setBackground(Color.WHITE);
             }
         });
-        setMinimumSize(new Dimension(200,50));
+        setMinimumSize(new Dimension(200,25));
+        setMaximumSize(new Dimension(200,25));
         add(label);
     }
 
@@ -53,6 +58,10 @@ public class ContactPanel extends JPanel{
         if (contact.getNick()!=label.getText()) label.setText(contact.getNick());
         if (contact.isOnline()) label.setIcon(new ImageIcon("src/images/on.png"));
         else label.setIcon(new ImageIcon("src/images/off.png"));
+    }
+
+    public String getNick(){
+        return contact.getNick();
     }
 
 }
