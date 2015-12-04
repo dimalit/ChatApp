@@ -219,7 +219,7 @@ public class ServerConnection {
 	}
 
 	public static void main(String[] args) {
-		String nick1 = "latin&РєРёСЂРёР»Р»РёС†Р°";
+		String nick1 = "latin&Р С”Р С‘РЎР‚Р С‘Р В»Р В»Р С‘РЎвЂ Р В°";
 		String nick2 = "another";
 
 		ServerConnection c = new ServerConnection();
