@@ -60,9 +60,16 @@ public class Connection{
     }
 
     public Command recieve() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
-        String s = reader.readLine();
+       // BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
+        String s= reader.readLine();
+        if(s.contains("Message")){
+            s+=reader.readLine();
+        }
+
         Command command = Command.createCommand(s);
         return command;
+    }
+    public Socket getSocket(){
+        return socket;
     }
 }
