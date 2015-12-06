@@ -299,15 +299,10 @@ public class MainForm implements Observer {
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
-			}
-		});
-
-		add.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent ae) {
 				frends.repaint();
 			}
 		});
+
 
 		connect.addActionListener(new ActionListener() {
 			@Override
