@@ -16,4 +16,7 @@ public class NickCommand extends Command{
         String s = "Connected to: " + this.nick + "\n";
         return s;
     }
+    public String getNick(){
+        return nick;
+    }
 }

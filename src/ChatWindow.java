@@ -245,11 +245,11 @@ public class ChatWindow extends JFrame implements Observer {
 					if (connection != null) {
 						comt = new CommandListenerThread(connection);
 						comt.addObserver(ChatWindow.this);
-						mess.append("connected to " + Protocol.IP);
+						mess.append("Connected to " + Protocol.IP + "\n");
 						comt.start();
 
 					} else {
-						mess.append("IP: " + Protocol.IP + " inaccessible");
+						mess.append("IP: " + Protocol.IP + " inaccessible\n");
 
 					}
 				} catch (IOException e) {
@@ -328,13 +328,11 @@ public class ChatWindow extends JFrame implements Observer {
 		MessageCommand mescom;
 		if (arg instanceof NickCommand) {
 			c = (NickCommand) arg;
-
 			mess.append(c.intoString() + "\n");
-
 		}
 		if (arg instanceof MessageCommand) {
 			mescom = (MessageCommand) arg;
-			mess.append("Message: " + mescom.getMessagetext() + "\n");
+			mess.append("Message:\n" + mescom.getMessagetext() + "\n");
 		}
 	}
 	
