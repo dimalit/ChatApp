@@ -45,7 +45,7 @@ public class MainForm implements Observer {
 	private Connection connection;
 	private ServerConnection server;
 	private String[][] frendmass = new String[1000][2];
-	private String[] headers = {"Name", "IP"};
+	private String[] headers = { "Name", "IP" };
 	private Integer size = 0;
 	private File file = new File("Friends.txt");
 	private JTable frends;
@@ -188,16 +188,15 @@ public class MainForm implements Observer {
 		friends.setBorder(new LineBorder(Color.BLACK, 1));
 		friends.setHorizontalAlignment(JLabel.CENTER);
 		friends.setPreferredSize(new Dimension(30, 40));
-		
+
 		frends = new JTable(frendmass, headers);
 		frends.setColumnSelectionAllowed(false);
 		frends.setRowSelectionAllowed(false);
 		frends.setCellSelectionEnabled(true);
 		frends.setPreferredScrollableViewportSize(new Dimension(200, 100));
-		JScrollPane scrollBar6 = new JScrollPane(frends);		
+		JScrollPane scrollBar6 = new JScrollPane(frends);
 		scrollBar6.setViewportView(frends);
 
-		
 		JButton add = new JButton("Add");
 		JButton delete = new JButton("Delete");
 		add.setPreferredSize(new Dimension(30, 25));
@@ -249,20 +248,31 @@ public class MainForm implements Observer {
 		textMess.addKeyListener(new KeyListener() {
 
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+				if (e.getKeyCode() == (KeyEvent.VK_ENTER)) {
 					send.doClick();
 				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
+
+			}
+		});
+
+		disconnect.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				if (connection != null)
+					try {
+						connection.disconnect();
+					} catch (IOException ignored) {
+					}
 
 			}
 		});
@@ -279,7 +289,7 @@ public class MainForm implements Observer {
 				}
 			}
 		});
-		
+
 		add.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -289,15 +299,15 @@ public class MainForm implements Observer {
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
-			}			
-		});	
-		
-	       add.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent ae) {
-	            	 frends.repaint();
-	            }
-	        });
+			}
+		});
+
+		add.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				frends.repaint();
+			}
+		});
 
 		connect.addActionListener(new ActionListener() {
 			@Override
@@ -331,35 +341,35 @@ public class MainForm implements Observer {
 		});
 	}
 
-	public void addFriends(){
-			if (textRLogin.getText()!=""){
-				frendmass[size][0]=textRLogin.getText();
-				frendmass[size][1]=textRAddr.getText();	
+	public void addFriends() {
+		if (textRLogin.getText() != "") {
+			frendmass[size][0] = textRLogin.getText();
+			frendmass[size][1] = textRAddr.getText();
 			size++;
-		}		
+		}
 	}
 
-	public void readFriends() throws FileNotFoundException{
+	public void readFriends() throws FileNotFoundException {
 		Scanner in = new Scanner(System.in);
 		Scanner reader = new Scanner(file);
 		while (reader.hasNext()) {
-			 frendmass[size][0]=reader.next();
-			 frendmass[size][1]=reader.next();
-			 size++;
-			 
+			frendmass[size][0] = reader.next();
+			frendmass[size][1] = reader.next();
+			size++;
+
 		}
 	}
-	
-	public void writeFriends() throws FileNotFoundException{
+
+	public void writeFriends() throws FileNotFoundException {
 		PrintWriter writer = new PrintWriter(file);
-		for (int i=0;i<size;i++){
-			writer.print(frendmass[i][0]+" "); 
-			writer.print(frendmass[i][1]+" "); 
+		for (int i = 0; i < size; i++) {
+			writer.print(frendmass[i][0] + " ");
+			writer.print(frendmass[i][1] + " ");
 			writer.flush();
 		}
 		writer.close();
 	}
-	
+
 	public boolean question(String nick, String remoteAddress) {
 		Object[] options = { "Receive", "Reject" };
 		int dialogResult = JOptionPane.showOptionDialog(frame,
