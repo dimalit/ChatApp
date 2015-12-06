@@ -39,7 +39,6 @@ public class CallListenerThread extends Observable implements Runnable {
             //serverSocket = new ServerSocket(Protocol.PORT);
             callListener = new CallListener();
             while (true){
-
                  connection = callListener.getConnection();
                 if (connection.getSocket()!=null) {
                     CommandListenerThread clt = new CommandListenerThread(connection);

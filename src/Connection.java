@@ -49,26 +49,16 @@ public class Connection{
         sout.flush();
     }
 
-    public void testRecieve() throws IOException {
-        PrintWriter w = new PrintWriter(socket.getOutputStream());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
-        String string;
-        Scanner r = new Scanner(new InputStreamReader(socket.getInputStream(),"UTF-8"));
-        while(r.hasNextLine()) {
-            System.out.println(r.nextLine());
-        }
-    }
-
     public Command recieve() throws IOException {
        // BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
         String s= reader.readLine();
         if(s.contains("Message")){
             s+=reader.readLine();
         }
-
         Command command = Command.createCommand(s);
         return command;
     }
+
     public Socket getSocket(){
         return socket;
     }

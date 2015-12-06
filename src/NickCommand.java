@@ -13,7 +13,7 @@ public class NickCommand extends Command{
         this.nick = s1[3];
     }
     public String intoString() {
-        String s = "Connected to: " + this.nick + "\n";
+        String s = "ChatApp 2015 user " + this.nick + "\n";
         return s;
     }
     public String getNick(){
