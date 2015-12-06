@@ -13,8 +13,10 @@ public class Caller {
     }
 
     public Connection call() throws IOException {
+
         Connection c = new Connection(s);
         c.sendNickHello(Protocol.localNick);
+
         return c;
     }
 

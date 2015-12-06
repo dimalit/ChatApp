@@ -4,7 +4,7 @@ import java.net.*;
 public class CallListener {
     private String remoteNick;
     private Boolean isBusy;
-    //private final static String IP = "localhost";
+
     private SocketAddress remoteAddress;
     private SocketAddress localAddress;
     private ServerSocket serverSocket;

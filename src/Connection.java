@@ -65,6 +65,7 @@ public class Connection{
         if(s.contains("Message")){
             s+=reader.readLine();
         }
+
         Command command = Command.createCommand(s);
         return command;
     }

@@ -122,6 +122,7 @@ public class ChatWindow extends JFrame implements Observer {
 		addButton.setMaximumSize(new Dimension(100, 25));
 		connectButton.setMaximumSize(new Dimension(100, 25));
 
+
 		friendsfield.setLayout(new BoxLayout(friendsfield, BoxLayout.Y_AXIS));
 		bigfield.setLayout(new BoxLayout(bigfield, BoxLayout.X_AXIS));
 		messages.setLayout(new BoxLayout(messages, BoxLayout.Y_AXIS));
@@ -253,6 +254,7 @@ public class ChatWindow extends JFrame implements Observer {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
+
 				}
 
 			}
@@ -326,7 +328,9 @@ public class ChatWindow extends JFrame implements Observer {
 		MessageCommand mescom;
 		if (arg instanceof NickCommand) {
 			c = (NickCommand) arg;
+
 			mess.append(c.intoString() + "\n");
+
 		}
 		if (arg instanceof MessageCommand) {
 			mescom = (MessageCommand) arg;
