@@ -3,18 +3,16 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Connection{
-    private Socket s;
-    private String nick;
+    private Socket socket;
     private OutputStream out;
     private PrintWriter sout;
-    private DataInputStream reader;
+    private BufferedReader reader;
 
-    public Connection(Socket s, String nick) throws IOException{
-        this.s = s;
-        out = this.s.getOutputStream();
+    public Connection(Socket s) throws IOException{
+        this.socket = s;
+        out = socket.getOutputStream();
         sout = new PrintWriter(out,true);
-        reader = new DataInputStream(this.s.getInputStream());
-        this.nick = nick;
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
     }
 
     public void sendMessage(String message) throws IOException{
@@ -26,7 +24,7 @@ public class Connection{
         sout.print("Disconnect\n");
         out.close();
         reader.close();
-        s.close();
+        socket.close();
     }
 
     public void sendNickHello(String nick) throws IOException {
@@ -35,7 +33,7 @@ public class Connection{
     }
 
     public void sendNickBusy(String nick) throws IOException {
-        if(s.isConnected()){
+        if(socket.isConnected()){
             sout.print("ChatApp 2015 user "+nick+" busy\n");
             sout.flush();
         }
@@ -51,21 +49,26 @@ public class Connection{
         sout.flush();
     }
 
-
     public void testRecieve() throws IOException {
-        PrintWriter w = new PrintWriter(s.getOutputStream());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream(),"UTF-8"));
+        PrintWriter w = new PrintWriter(socket.getOutputStream());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
         String string;
-        Scanner r = new Scanner(new InputStreamReader(s.getInputStream(),"UTF-8"));
+        Scanner r = new Scanner(new InputStreamReader(socket.getInputStream(),"UTF-8"));
         while(r.hasNextLine()) {
             System.out.println(r.nextLine());
         }
     }
 
     public Command recieve() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream(),"UTF-8"));
-        String s = reader.readLine();
+       // BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
+        String s= reader.readLine();
+        if(s.contains("Message")){
+            s+=reader.readLine();
+        }
         Command command = Command.createCommand(s);
         return command;
+    }
+    public Socket getSocket(){
+        return socket;
     }
 }

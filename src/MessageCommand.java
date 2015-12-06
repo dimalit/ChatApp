@@ -8,7 +8,7 @@ public class MessageCommand extends Command {
 
     public MessageCommand(CommandTypes type, String messagetext) {
         super(type);
-        this.setMessagetext(messagetext) ;
+        this.messagetext = messagetext ;
     }
 
     public String getMessagetext() {

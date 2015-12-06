@@ -4,11 +4,13 @@ public class NickCommand extends Command{
 
     public NickCommand(CommandTypes ctp) {
         super(ctp);
+
     }
 
     public NickCommand(CommandTypes ctp, String nick) {
         super(ctp);
-        this.nick = nick;
+        String[] s1 = nick.split(" ");
+        this.nick = s1[3];
     }
     public String intoString() {
         String s = "Connected to: " + this.nick + "\n";

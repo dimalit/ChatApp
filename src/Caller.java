@@ -3,39 +3,20 @@ import java.io.*;
 
 public class Caller {
     private Socket s;
-    private String nick;
+    /*private String nick;
     private final static int port = 28411;
     private String IP;
-    private String distNick;
+    private String distNick;*/
 
-    public Caller(String ip) throws IOException{
-        this.IP = ip;
-        s = new Socket(IP,port);
+    public Caller() throws IOException{
+        s = new Socket(Protocol.IP,Protocol.PORT);
     }
 
     public Connection call() throws IOException {
-        Connection c = new Connection(new Socket(IP,port),Protocol.nickname);
-        c.sendNickHello(nick);
+        Connection c = new Connection(s);
+        c.sendNickHello(Protocol.localNick);
         return c;
     }
 
-    public String getNick() {
-        return nick;
-    }
 
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public String getDistNick() {
-        return distNick;
-    }
-
-    public void setDistNick(String distNick) {
-        this.distNick = distNick;
-    }
 }
