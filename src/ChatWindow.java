@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.LinkedList;
+import java.text.SimpleDateFormat;
 
 
 public class ChatWindow extends JFrame implements Observer {
@@ -58,6 +59,16 @@ public class ChatWindow extends JFrame implements Observer {
 																	// nicks of
 																	// friends
 																	// for form
+		Protocol.serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
+		Protocol.serverConnection.connect();
+		if(Protocol.serverConnection.isConnected() == false){
+			mess.append("[System] Could not connect to the server" + "\n");
+		}
+		else {mess.append("[System] You connected to the server" + "\n");}
+
+		Protocol.serverConnection.setLocalNick(Protocol.localNick);
+		Protocol.serverConnection.goOnline();
+
 		JList<String> list = new JList(listModel);
 		Friend fr = new Friend("unnamed", 6666);
 		Friend fr1 = new Friend("unnamed", 5555);
@@ -209,6 +220,9 @@ public class ChatWindow extends JFrame implements Observer {
 
 			public void actionPerformed(ActionEvent event) {
 				message = textmess.getText();
+				long currentTimeMillis = System.currentTimeMillis();
+				String time = new SimpleDateFormat("HH:mm:ss").format(currentTimeMillis);
+				mess.append("\n"  + "   " + Protocol.localNick + " " + time + ":" + "\n" + "   " + message + "\n");
 				try {
 					if (comt != null) {
 						mess.append("Message:\n" + message + "\n");
@@ -228,7 +242,8 @@ public class ChatWindow extends JFrame implements Observer {
 
 			public void actionPerformed(ActionEvent event) {
 				text = text1.getText();
-				Protocol.localNick = text;
+				Protocol.serverConnection.setLocalNick(Protocol.localNick);
+				mess.append("[System] Nickname changed to: " + Protocol.localNick + "\n");
 			}
 		}
 
@@ -332,7 +347,9 @@ public class ChatWindow extends JFrame implements Observer {
 		}
 		if (arg instanceof MessageCommand) {
 			mescom = (MessageCommand) arg;
-			mess.append("Message:\n" + mescom.getMessagetext() + "\n");
+			long currentTimeMillis = System.currentTimeMillis();
+			String time = new SimpleDateFormat("HH:mm:ss").format(currentTimeMillis);
+			mess.append("\n"  + "   " + Protocol.remoteNick + " " + time + ":" + "\n" + "   " + mescom.getMessagetext() + "\n");
 		}
 	}
 	
