@@ -81,7 +81,7 @@ public class MainForm<JForm> {
 	private boolean forAccept;
 	private ServerConnection server;
 	private ContactsView friends;
-	private JList list;
+	private JList list,list1;
 
 	/**
 	 * Launch the application.
@@ -216,10 +216,7 @@ public class MainForm<JForm> {
 		forButton.add(update);
 		contactsPanel.add(forButton, BorderLayout.WEST);
 		JPanel forButton1 = new JPanel();
-		JButton save = new JButton("Save to");
 		update.setEnabled(true);
-		forButton.add(save);
-		save.setEnabled(false);
 		frame.getContentPane().add(mainPanel);
 		update.addActionListener(new ActionListener() {
 
@@ -232,23 +229,7 @@ public class MainForm<JForm> {
 			}
 
 		});
-		save.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.TXT", "*.*");
-
-				JFileChooser fileOpen = new JFileChooser();
-				fileOpen.setFileFilter(filter);
-				if (fileOpen.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-					try (FileWriter fw = new FileWriter(fileOpen.getSelectedFile())) {
-						for (int i = 0; i < friends.getStr().length; i++)
-							fw.write(friends.getStr()[i] + "\n");
-					} catch (IOException e1) {
-
-					}
-				}
-			}
-		});
+	
 
 		discButton.addActionListener(new ActionListener() {
 
@@ -299,6 +280,11 @@ public class MainForm<JForm> {
 						e1.printStackTrace();
 					}
 
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null,
+							"You must write remote address ");
 				}
 			}
 		});
@@ -371,18 +357,33 @@ public class MainForm<JForm> {
 					nickApplyButton.setEnabled(false);
 					friends = new ContactsView(server);
 					list = new JList(friends);
+					LocalContactsView local=new LocalContactsView();
+					frame.validate();
+					list1=new JList(local);
+					contactsPanel.add(list1, BorderLayout.EAST);
 					contactsPanel.add(list, BorderLayout.CENTER);
 					list.addListSelectionListener(new ListSelectionListener() {
 						public void valueChanged(ListSelectionEvent e) {
 							if (connection == null) {
-								remoteLogiField.setText(list.getSelectedValue().toString());
-								remoteAddrField.setText(server.getIpForNick(list.getSelectedValue().toString()));
+								String [] str=list.getSelectedValue().toString().split(" ");
+								remoteLogiField.setText(str[0]);
+								remoteAddrField.setText(server.getIpForNick(str[0]));
 							} else {
 								JOptionPane.showMessageDialog(null, "You must disconnect to choose");
 							}
 						}
 					});
-					save.setEnabled(true);
+					list1.addListSelectionListener(new ListSelectionListener() {
+						public void valueChanged(ListSelectionEvent e) {
+							if (connection == null) {
+								String [] str=list.getSelectedValue().toString().split("|");
+								remoteLogiField.setText(str[0]);
+								remoteAddrField.setText(str[1]);
+							} else {
+								JOptionPane.showMessageDialog(null, "You must disconnect to choose");
+							}
+						}
+					});
 					update.setEnabled(true);
 				} catch (IOException e1) {
 					e1.printStackTrace();
