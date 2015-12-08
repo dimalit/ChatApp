@@ -1,13 +1,8 @@
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
 import javax.swing.DefaultListModel;
 
 public class ContactsView extends DefaultListModel {
 	private String[] str;
 	private ContactsModel model;
-	private RandomAccessFile f;
 
 	ContactsView() {
 
@@ -30,5 +25,8 @@ public class ContactsView extends DefaultListModel {
 
 	}
 
+	String[] getStr() {
+		return str;
+	}
 
 }

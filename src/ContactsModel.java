@@ -8,33 +8,22 @@ public class ContactsModel {
 	private boolean isOnline;
 	private RandomAccessFile f;
 
-	ContactsModel(String nick, boolean online) {
-		this.nick = nick;
-		this.isOnline = online;
-	}
-
 	ContactsModel(String nick, String ip) {
 		this.ip = ip;
 		this.nick = nick;
 	}
 
+	ContactsModel() {
+
+	}
+
+	ContactsModel(String nick, boolean online) {
+		this.nick = nick;
+		this.isOnline = online;
+	}
+
 	public String getNick() {
 		return nick;
-	}
-
-	public String getIp() {
-		return ip;
-
-	}
-
-	public void addLocalNick(String nick, String ip) throws IOException {
-	f = new RandomAccessFile("LocalContacts.txt", "rw");
-		this.ip = ip;
-		this.nick = nick;
-		f.seek(f.length());
-		String str = nick + "|" + ip + "\n";
-		f.write(str.getBytes());
-		f.close();
 	}
 
 	public boolean isOnline() {
@@ -46,4 +35,20 @@ public class ContactsModel {
 			return nick + " online";
 		return nick;
 	}
+
+	public String getIp() {
+		return ip;
+
+	}
+
+	public void addLocalNick(String nick, String ip) throws IOException {
+		f = new RandomAccessFile("LocalContacts.txt", "rw");
+		this.ip = ip;
+		this.nick = nick;
+		f.seek(f.length());
+		String str = nick + "|" + ip + "\n";
+		f.write(str.getBytes());
+		f.close();
+	}
+
 }
