@@ -155,19 +155,19 @@ public class MainForm implements Observer {
 
 		frame.add(panel_1, BorderLayout.NORTH);
 
-		JPanel panel_2 = new JPanel(new GridLayout(1, 2, 30, 0));
+		JPanel panel_2 = new JPanel(new BorderLayout());
 		JButton send = new JButton("Send");
-		send.setPreferredSize(new Dimension(30, 20));
+		send.setPreferredSize(new Dimension(100, 30));
 
-		textMess = new JTextArea(3, 5);
+		textMess = new JTextArea(3,5);
 		textMess.setEditable(true);
 		textMess.setLineWrap(true);
 		JScrollPane scrollBar4 = new JScrollPane(textMess);
 		scrollBar4.setViewportView(textMess);
 
 		panel_2.setBackground(Color.LIGHT_GRAY);
-		panel_2.add(scrollBar4);
-		panel_2.add(send);
+		panel_2.add(scrollBar4,BorderLayout.CENTER);
+		panel_2.add(send,BorderLayout.EAST);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setOpaque(false);
@@ -197,6 +197,7 @@ public class MainForm implements Observer {
 		JScrollPane scrollBar6 = new JScrollPane(frends);
 		scrollBar6.setViewportView(frends);
 
+
 		JButton add = new JButton("Add");
 		JButton delete = new JButton("Delete");
 		add.setPreferredSize(new Dimension(30, 25));
@@ -204,6 +205,7 @@ public class MainForm implements Observer {
 		but.add(add);
 		but.add(delete);
 
+		
 		frend.add(friends, BorderLayout.NORTH);
 		frend.add(scrollBar6, BorderLayout.CENTER);
 		frend.add(but, BorderLayout.SOUTH);
@@ -299,10 +301,21 @@ public class MainForm implements Observer {
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
-				frends.repaint();
+			frends.repaint();
 			}
 		});
 
+		delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					deleteFriends();
+					writeFriends();
+				} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+				}
+			frends.repaint();
+			}
+		});
 
 		connect.addActionListener(new ActionListener() {
 			@Override
@@ -343,6 +356,16 @@ public class MainForm implements Observer {
 			size++;
 		}
 	}
+	
+
+	private void deleteFriends() throws FileNotFoundException {
+		int row = frends.getSelectedRow();
+		for (int i = row; i < size; i++) {
+			frendmass[i][0]=frendmass[i+1][0];
+			frendmass[i][1]=frendmass[i+1][1];
+		}
+		size--;
+	}
 
 	public void readFriends() throws FileNotFoundException {
 		Scanner in = new Scanner(System.in);
@@ -351,7 +374,6 @@ public class MainForm implements Observer {
 			frendmass[size][0] = reader.next();
 			frendmass[size][1] = reader.next();
 			size++;
-
 		}
 	}
 
