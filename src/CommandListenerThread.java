@@ -2,25 +2,26 @@ import java.io.IOException;
 import java.util.Observable;
 
 public class CommandListenerThread extends Observable implements Runnable {
-	private boolean stopFlag;
 	private boolean disconnected;
-	private Connection con;
+	private Connection connection;
 	private Command lastCommand = new Command();
 
 	public CommandListenerThread() {
-		// TODO Auto-generated constructor stub
+
 	}
 
-	public CommandListenerThread(Connection connection) {
+	public CommandListenerThread(Connection c) {
+		ownInit(c);
+	}
+
+	void setConnection(Connection c) {
+		ownInit(c);
+	}
+
+	private void ownInit(Connection connection) {
 		this.disconnected = false;
-		this.con = connection;
+		this.connection = connection;
 		this.lastCommand = new Command();
-	}
-
-	void setConnection(Connection con) {
-		disconnected = false;
-		this.con = con;
-		lastCommand = new Command();
 	}
 
 	Command getLastCommand() {
@@ -36,22 +37,29 @@ public class CommandListenerThread extends Observable implements Runnable {
 	public void run() {
 		while (!disconnected) {
 			try {
-				Command tmp = con.receive();
-				if (lastCommand != null) {
-					//System.out.println(lastCommand.getClass() + lastCommand.toString());
-					if ((lastCommand.type == (Command.CommandType.DISCONNECT)
-							|| (lastCommand.type.toString().equals("Rejected")))) {
+				lastCommand = connection.receive();
+				assert lastCommand == null;
+				if (lastCommand != null) 
+					switch (lastCommand.type) {
+					case MESSAGE:
+					case NICK:
+					case ACCEPT:
+						disconnected = false;
+						break;
+					case DISCONNECT:
+					case REJECT:
 						disconnected = true;
-						System.out.println("test");
-
+						break;
+					default: {
+						connection.reject();
+						disconnected = true;
+						break;
 					}
-				}
-
+					}
 				this.setChanged();
 				this.notifyObservers();
 
 			} catch (IOException e) {
-
 				e.printStackTrace();
 			}
 
@@ -60,13 +68,13 @@ public class CommandListenerThread extends Observable implements Runnable {
 	}
 
 	void start() {
+		disconnected = false;
 		Thread t = new Thread(this);
 		t.start();
 	}
 
 	void stop() {
 		disconnected = true;
-
 	}
 
 }
