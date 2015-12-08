@@ -9,7 +9,9 @@
 		this.ip = ip;
 		this.nick = nick;
 		}
-	
+		ContactsModel() {
+
+		}
 		ContactsModel(String nick, boolean online) {
 			this.nick = nick;
 			this.isOnline = online;
