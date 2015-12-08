@@ -82,6 +82,7 @@ public class MainForm<JForm> {
 	private ServerConnection server;
 	private ContactsView friends;
 	private JList list,list1;
+	private LocalContactsView local;
 
 	/**
 	 * Launch the application.
@@ -242,6 +243,15 @@ public class MainForm<JForm> {
 						forDisconnect();
 						connection = null;
 						commandLT.stop();
+							if (!local.findNick(remoteAddrField.getText())) {
+							int reply = JOptionPane.showConfirmDialog(null,
+									"Do you want to save this person to your contact list", "",
+									JOptionPane.YES_NO_OPTION);
+							if (reply == 1) {
+								ContactsModel modelForCont = new ContactsModel();
+								modelForCont.addLocalNick(remoteLogiField.getText(), remoteAddrField.getText());
+							}
+						}
 					}
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -357,11 +367,14 @@ public class MainForm<JForm> {
 					nickApplyButton.setEnabled(false);
 					friends = new ContactsView(server);
 					list = new JList(friends);
-					LocalContactsView local=new LocalContactsView();
-					frame.validate();
+					 local=new LocalContactsView();
+				
+					local = new LocalContactsView();
+					local.writeLocalNicks();
 					list1=new JList(local);
 					contactsPanel.add(list1, BorderLayout.EAST);
 					contactsPanel.add(list, BorderLayout.CENTER);
+					frame.validate();
 					list.addListSelectionListener(new ListSelectionListener() {
 						public void valueChanged(ListSelectionEvent e) {
 							if (connection == null) {
@@ -384,6 +397,7 @@ public class MainForm<JForm> {
 							}
 						}
 					});
+					connectButt.setEnabled(true);
 					update.setEnabled(true);
 				} catch (IOException e1) {
 					e1.printStackTrace();
