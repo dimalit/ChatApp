@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +16,7 @@ public class LocalContactsView extends DefaultListModel {
 	}
 
 	public void writeLocalNicks() throws IOException {
-	File file=new File("LocalContacts.txt");
-	if (file.exists() )
-	{	
+
 		BufferedReader reader = new BufferedReader(new FileReader("LocalContacts.txt"));
 		String line;
 		String[] arr;
@@ -30,23 +27,15 @@ public class LocalContactsView extends DefaultListModel {
 			addElement(line);
 		}
 	}
-	}
 
-public boolean findNick(String ip)
-	{if (loc.size()!=0)
+	public boolean findNick(String nick)
 	{
 		for (ContactsModel model: loc)
 		{
-			if (model.getIp().equals(ip))
+			if (model.getNick().equals(nick))
 						return true;
 		}
-	}
-	else
-	{
 		return false;
 	}
-		return false;
-	}
-
 
 }
