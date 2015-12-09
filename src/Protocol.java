@@ -6,4 +6,6 @@ public class Protocol {
     public static String remoteNick;
     public static String IP ;
     public static boolean statusBusy = false;
+    public static ServerConnection serverConnection = new ServerConnection();
+
 }
