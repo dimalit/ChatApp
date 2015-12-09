@@ -27,9 +27,9 @@ public class ContactsViewModel{
 
     }
 
-    public void removeContact(Contact contact){
+    public void removeContact(Contact contact, ContactPanel contactPanel){
         contactList.remove(contact);
-        updateView();
+        contactsView.delete(contactPanel);
     }
 
     public void updateView(){

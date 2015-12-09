@@ -90,5 +90,12 @@ public class ContactsView extends JPanel{
         }
     }
 
+    public void delete(ContactPanel contact){
+        if (contact.isFav()) favourites.remove(contact);
+        else contacts.remove(contact);
+        list.remove(contact);
+        updateUI();
+    }
+
 
 }

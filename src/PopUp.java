@@ -6,10 +6,12 @@ public class PopUp extends JPopupMenu {
 
     JMenuItem delete,fav,call;
     Contact contact;
+    ContactPanel contactPanel;
 
 
-    public PopUp(Contact contact){
-        this.contact = contact;
+    public PopUp(ContactPanel contact){
+        contactPanel=contact;
+        this.contact = contact.getContact();
         createGUI();
 
     }
@@ -44,7 +46,7 @@ public class PopUp extends JPopupMenu {
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contact.remove();
+                contact.remove(contactPanel);
             }
         });
     }

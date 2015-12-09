@@ -60,7 +60,9 @@ public class Contact {
         contactsViewModel.call(this);
     }
 
-    public void remove(){
-        contactsViewModel.removeContact(this);
+    public void remove(ContactPanel tmp){
+        contactsViewModel.removeContact(this,tmp);
+
     }
+
 }

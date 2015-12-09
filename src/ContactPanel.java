@@ -18,10 +18,10 @@ public class ContactPanel extends JPanel{
         label = new JLabel(contact.getNick());
         label.setIcon(imageIcon);
         setBackground(Color.WHITE);
+        final PopUp menu = new PopUp(this);
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                PopUp menu = new PopUp(contact);
                 menu.show(e.getComponent(), e.getX(), e.getY());
             }
 
@@ -62,6 +62,14 @@ public class ContactPanel extends JPanel{
 
     public String getNick(){
         return contact.getNick();
+    }
+
+    public void remove(){
+        contact.remove(this);
+    }
+
+    public Contact getContact(){
+        return contact;
     }
 
 }
