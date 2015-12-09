@@ -71,6 +71,7 @@ public class Logic{
         commandListenerThread = new CommandListenerThread(this.connection,this);
         Thread thread = new Thread(commandListenerThread);
         thread.start();
+        if (Options.autoSaveContacts) contactsViewModel.add(new Contact(contactsViewModel,remoteNick,connection.getRemoteIP()));
         setBusy(true);
         historyViewModel.clearView();
         historyViewModel.addSystemMessage("Connected to "+remoteNick);
@@ -114,6 +115,7 @@ public class Logic{
         }
         if (connection != null) {
             remoteNick = caller.getRemoteNick();
+            if (Options.autoSaveContacts) contactsViewModel.add(new Contact(contactsViewModel,remoteNick,IP));
             commandListenerThread = new CommandListenerThread(connection, this);
             Thread comThread = new Thread(commandListenerThread);
             comThread.start();
@@ -241,7 +243,9 @@ public class Logic{
             else out.write("false ");
             if (Options.saveContacts) out.write("true ");
             else out.write("false ");
-            if (Options.saveHistory) out.write("true");
+            if (Options.saveHistory) out.write("true ");
+            else out.write("false ");
+            if (Options.autoSaveContacts) out.write("true");
             else out.write("false");
             out.close();
         }
@@ -258,6 +262,7 @@ public class Logic{
             if (tmp[0].equals("false")) Options.saveNick=false;
             if (tmp[1].equals("false")) Options.saveContacts=false;
             if (tmp[2].equals("false")) Options.saveHistory=false;
+            if (tmp[3].equals("false")) Options.autoSaveContacts=false;
             in.close();
         }
         catch (IOException e){

@@ -6,6 +6,7 @@ import java.awt.event.WindowListener;
 
 public class OptionsFrame extends JFrame {
 
+    JCheckBox autoAddContacts;
     JCheckBox contacts;
     JCheckBox history;
     JCheckBox nick;
@@ -17,7 +18,7 @@ public class OptionsFrame extends JFrame {
 
     private void createGUI(){
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setSize(130, 100);
+        setSize(200, 140);
         setResizable(false);
         setAlwaysOnTop(true);
         setLocationRelativeTo(null);
@@ -25,6 +26,7 @@ public class OptionsFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
+        autoAddContacts = new JCheckBox("Add Contacts automatically");
         contacts = new JCheckBox("Save Contacts");
         history = new JCheckBox("Save History");
         nick = new JCheckBox("Save Nick");
@@ -34,6 +36,7 @@ public class OptionsFrame extends JFrame {
         if (Options.saveContacts) contacts.setSelected(true);
         if (Options.saveHistory) history.setSelected(true);
         if (Options.saveNick) nick.setSelected(true);
+        if (Options.autoSaveContacts) autoAddContacts.setSelected(true);
         contacts.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -57,6 +60,16 @@ public class OptionsFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (nick.isSelected()) Options.saveNick=true;
                 else Options.saveNick=false;
+            }
+        });
+
+        autoAddContacts.setLocation(10,70);
+        autoAddContacts.setSize(195,15);
+        autoAddContacts.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (autoAddContacts.isSelected()) Options.autoSaveContacts=true;
+                else Options.autoSaveContacts=false;
             }
         });
 
@@ -100,6 +113,7 @@ public class OptionsFrame extends JFrame {
         panel.add(contacts);
         panel.add(history);
         panel.add(nick);
+        panel.add(autoAddContacts);
 
         add(panel);
         setVisible(true);

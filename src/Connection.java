@@ -79,6 +79,10 @@ class Connection{
         }
     }
 
+    public String getRemoteIP(){
+        return socket.getInetAddress().getHostAddress();
+    }
+
     public Command recieve(){
         return  Command.getCommand(in);
     }
