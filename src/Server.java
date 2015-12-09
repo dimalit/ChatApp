@@ -10,7 +10,7 @@ class Server {
         BufferedReader in = null;
         ServerSocket servers = null;
         Socket fromclient = null;
-        // create server socket
+
 
         try {
             servers = new ServerSocket(28411);
