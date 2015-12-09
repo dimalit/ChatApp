@@ -18,8 +18,9 @@ public class Connection {
 	private Scanner inStream;
 	private String nickname;
 
-	public Connection(Socket s, String nickname) throws IOException {
+	public Connection(Socket s, String nickname) throws IOException, SocketException {
 		this.socket = s;
+		this.s.setSoTimeout(30000);
 		outStream = new PrintStream(s.getOutputStream(),true, ENCODING);
 		inStream = new Scanner(s.getInputStream());
 		this.nickname = nickname;
