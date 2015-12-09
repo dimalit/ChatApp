@@ -12,14 +12,14 @@ public class CallListener {
     private Command lastCommand;
     private NickCommand nickCommand;
 
-    public CallListener(String localNick, boolean isBusy){
+    public CallListener(String localNick){
         try {
             serverSocket = new ServerSocket(Protocol.PORT_NUMBER);
         } catch (IOException e) {
            //asd
         }
         this.localNick=localNick;
-        this.isBusy=isBusy;
+        this.isBusy= false;
     }
 
     public Connection getConnection() throws IOException {
@@ -49,10 +49,6 @@ public class CallListener {
     
     public void setNick(String nick){
     	localNick=nick;
-    }
-
-    public boolean getBusy(){
-        return isBusy;
     }
 
     public String getRemoteNick(){

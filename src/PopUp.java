@@ -40,7 +40,7 @@ public class PopUp extends JPopupMenu {
         fav.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contact.changeFav();
+                contact.changeFav(contactPanel);
             }
         });
         delete.addActionListener(new ActionListener() {

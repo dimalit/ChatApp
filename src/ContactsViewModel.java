@@ -21,9 +21,7 @@ public class ContactsViewModel{
     }
 
     public void call(Contact contact){
-        logic.getMainGui().changeEnterIp(contact.getIP());
-        logic.setRemoteIP(contact.getIP());
-        logic.call();
+        logic.call(contact.getIP());
 
     }
 
@@ -47,13 +45,22 @@ public class ContactsViewModel{
     }
 
     public void getData(){
-        ServerConnection serverConnection = logic.getServerConnection();
-        String[] nicks = serverConnection.getAllNicks();
-        for (String nick : nicks){
-            if (nick.equals(logic.getLocalNick())) continue;
-            contactList.add(new Contact(this, nick, serverConnection.getIpForNick(nick)));
-        }
+       // ServerConnection serverConnection = logic.getServerConnection();
+       // String[] nicks = serverConnection.getAllNicks();
+       // for (String nick : nicks){
+       //     if (nick.equals(logic.getLocalNick())) continue;
+       //     contactList.add(new Contact(this, nick, serverConnection.getIpForNick(nick)));
+       // }
+        contactList.add(new Contact(this,"Vasy","234"));
+        contactList.add(new Contact(this,"Vasert","2384"));
+        contactList.add(new Contact(this,"Vautr","2334"));
+        contactList.add(new Contact(this,"Vaityw","2234"));
         updateView();
+    }
+
+    public void add(Contact contact){
+        contactList.add(contact);
+        contactsView.addContact(contact);
     }
 
 

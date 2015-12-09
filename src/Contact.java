@@ -3,13 +3,6 @@ public class Contact {
     private String nick,IP;
     private ContactsViewModel contactsViewModel;
 
-    public Contact(String nick,String IP){
-        this.nick=nick;
-        this.IP=IP;
-        isFav=false;
-        isOnline=false;
-    }
-
     public Contact(ContactsViewModel cvm,String nick,String IP){
         contactsViewModel=cvm;
         this.nick=nick;
@@ -20,10 +13,6 @@ public class Contact {
 
     public boolean isFav() {
         return isFav;
-    }
-
-    public void setFav(boolean isFav) {
-        this.isFav = isFav;
     }
 
     public boolean isOnline() {
@@ -50,10 +39,17 @@ public class Contact {
         this.IP = IP;
     }
 
-    public void changeFav(){
-        if (isFav) isFav=false;
-        else isFav=true;
-        contactsViewModel.updateView();
+    public void changeFav(ContactPanel contactPanel){
+        if (isFav){
+            contactsViewModel.removeContact(this,contactPanel);
+            isFav=false;
+            contactsViewModel.add(this);
+        }
+        else {
+            contactsViewModel.removeContact(this,contactPanel);
+            isFav=true;
+            contactsViewModel.add(this);
+        }
     }
 
     public void call(){

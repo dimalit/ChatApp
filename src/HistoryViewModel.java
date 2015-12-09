@@ -11,10 +11,6 @@ public class HistoryViewModel {
     HistoryView historyView;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[kk:mm:ss dd.MM.yy]");
 
-    public HistoryViewModel(){
-
-    }
-
     public HistoryViewModel(Logic logic){
         this.logic = logic;
     }

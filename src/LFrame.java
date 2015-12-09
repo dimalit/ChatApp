@@ -92,12 +92,11 @@ public class LFrame extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    logic.setRemoteIP(EnterIp.getText());
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
                             logic.getHistoryViewModel().clearView();
-                            logic.call();
+                            logic.call(EnterIp.getText());
                         }
                     });
                 }
@@ -175,15 +174,8 @@ public class LFrame extends JFrame {
         Connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logic.setRemoteIP(EnterIp.getText());
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logic.getHistoryViewModel().clearView();
-                        logic.call();
-
-                    }
-                });
+                logic.getHistoryViewModel().clearView();
+                logic.call(EnterIp.getText());
             }
         });
 

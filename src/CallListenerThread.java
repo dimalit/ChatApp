@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.sql.*;
 
 public class CallListenerThread implements Runnable {
 
@@ -17,7 +16,7 @@ public class CallListenerThread implements Runnable {
 
 
     public CallListenerThread(String localNick,Boolean isBusy,Logic logic){
-        callListener = new CallListener(localNick, false);
+        callListener = new CallListener(localNick);
         this.logic = logic;
     }
 

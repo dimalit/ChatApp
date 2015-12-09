@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -22,6 +23,7 @@ public class Logic{
         else localNick="default";
         callListenerThread = new CallListenerThread(localNick,isBusy,this);
         callThread = new Thread(callListenerThread);
+        callThread.setDaemon(true);
         callThread.start();
         mainGui = new LFrame(this);
         try {
@@ -29,10 +31,10 @@ public class Logic{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
-        serverConnection.connect();
-        serverConnection.setLocalNick(localNick);
-        serverConnection.goOnline();
+       // serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
+       // serverConnection.connect();
+       // serverConnection.setLocalNick(localNick);
+       // serverConnection.goOnline();
 
         contactsViewModel.getData();
     }
@@ -41,7 +43,6 @@ public class Logic{
     	localNick=nick;
     	callListenerThread.setNick(localNick);
         serverConnection.setLocalNick(localNick);
-        writeNickToFile();
     }
 
     public void setRemoteNick(String nick){
@@ -72,33 +73,41 @@ public class Logic{
 
     }
 
-    public void reject(){
-        connection.reject();
-
-    }
 
     public void sendMessage(String message){
         connection.sendMessage(message);
     }
 
-    public void call(){
+    public void call(String IP) {
+        if (isConnected()){
+            if (JOptionPane.showConfirmDialog(mainGui,
+                    "You have an established connection with another user.\n If you will call this contact, current connection will be closed.\nAre you sure you want to do this?", "Warning",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                disconnect();
+            }
+
+            else{
+            return;
+        }}
+        mainGui.changeEnterIp(IP);
+        setRemoteIP(IP);
         mainGui.setConnected(true);
         setBusy(true);
-        caller = new Caller(localNick,remoteIP,this);
+        caller = new Caller(localNick, remoteIP, this);
         try {
             connection = caller.call();
         } catch (IOException e) {
             UltimateGUI ultimateGUI = new UltimateGUI("Failed to connect");
         }
-        if (connection!=null){
-            remoteNick=caller.getRemoteNick();
-            commandListenerThread = new CommandListenerThread(connection,this);
+        if (connection != null) {
+            remoteNick = caller.getRemoteNick();
+            commandListenerThread = new CommandListenerThread(connection, this);
             Thread comThread = new Thread(commandListenerThread);
             comThread.start();
-            historyViewModel.addSystemMessage("Connected to "+remoteNick);
+            historyViewModel.addSystemMessage("Connected to " + remoteNick);
             System.out.println("CONNECTED, YEY");
-        }
-        else{
+        } else {
             mainGui.setConnected(false);
             setBusy(false);
 
@@ -122,14 +131,6 @@ public class Logic{
             mainGui.setConnected(false);
         }
 
-    }
-
-    public boolean isBusy(){
-        return isBusy;
-    }
-
-    public void updateGUI(){
-        //
     }
 
     public String getLocalNick(){
@@ -199,6 +200,7 @@ public class Logic{
             serverConnection.goOffline();
             serverConnection.disconnect();
         }
+        writeNickToFile();
     }
 
     public ServerConnection getServerConnection(){

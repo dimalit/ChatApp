@@ -75,12 +75,11 @@ public class ContactsView extends JPanel{
 
         }
         for (ContactPanel cp : list){
-            System.out.println(cp.getNick());
             if (cp.isFav()) favourites.add(cp);
             else contacts.add(cp);
         }
         updateUI();
-        contactsViewModel.onlineUpdate();
+      //  contactsViewModel.onlineUpdate();
 
     }
 
@@ -95,6 +94,13 @@ public class ContactsView extends JPanel{
         else contacts.remove(contact);
         list.remove(contact);
         updateUI();
+    }
+
+    public void addContact(Contact contact){
+        ContactPanel cp = new ContactPanel(contact);
+        list.add(cp);
+        if (cp.isFav()) favourites.add(cp);
+        else contacts.add(cp);
     }
 
 

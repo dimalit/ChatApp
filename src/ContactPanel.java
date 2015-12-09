@@ -64,10 +64,6 @@ public class ContactPanel extends JPanel{
         return contact.getNick();
     }
 
-    public void remove(){
-        contact.remove(this);
-    }
-
     public Contact getContact(){
         return contact;
     }
