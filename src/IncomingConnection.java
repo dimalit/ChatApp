@@ -13,22 +13,22 @@ public class IncomingConnection extends JFrame {
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
 		final JPanel pan1 = new JPanel();
 		final JPanel pan2 = new JPanel();
-		final JLabel jLabel = new JLabel("User XXX from IP Y.Y.Y.Y wants to chat");
-		final JButton jButton = new JButton("Accept");
-		final JButton jButton1 = new JButton("Decline");
+		final JLabel jLabel = new JLabel("User "+ Protocol.remoteNick +" wants to chat");
+		final JButton acceptb = new JButton("Accept");
+		final JButton declineb = new JButton("Decline");
 
-		jButton.addActionListener(new ActionListener(){
+		acceptb.addActionListener(new ActionListener(){
 			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-	                //�������
-				 
+	                Protocol.statusBusy = true;
+
 
 	            }
 	        });
 		
 		
-		jButton1.addActionListener(new ActionListener(){
+		declineb.addActionListener(new ActionListener(){
 			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
@@ -38,16 +38,16 @@ public class IncomingConnection extends JFrame {
 	            }
 	        });
 		
-		jButton1.setPreferredSize(new Dimension(100, 25));
-		jButton.setPreferredSize(new Dimension(100, 25));
+		declineb.setPreferredSize(new Dimension(100, 25));
+		acceptb.setPreferredSize(new Dimension(100, 25));
 		
-		jButton1.setBackground(new Color(116, 199, 209));
-		jButton.setBackground(new Color(116, 199, 209));
+		declineb.setBackground(new Color(116, 199, 209));
+		acceptb.setBackground(new Color(116, 199, 209));
 		pan1.setBackground(new Color(220, 243, 246));
 		pan2.setBackground(new Color(220, 243, 246));
 		pan1.add(jLabel);
-		pan2.add(jButton);
-		pan2.add(jButton1);
+		pan2.add(acceptb);
+		pan2.add(declineb);
 
 		jPanel.add(pan1);
 		jPanel.add(pan2);
@@ -58,7 +58,7 @@ public class IncomingConnection extends JFrame {
 		this.setVisible(true);
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		IncomingConnection incomingConnection = new IncomingConnection();
-	}
+	}*/
 }

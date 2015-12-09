@@ -2,11 +2,10 @@ import java.io.*;
 import java.net.*;
 
 public class CallListener {
-    private String remoteNick;
     private Boolean isBusy;
 
     private SocketAddress remoteAddress;
-    private SocketAddress localAddress;
+
     private ServerSocket serverSocket;
 
 
@@ -27,14 +26,6 @@ public class CallListener {
         return serverSocket.getLocalSocketAddress();
     }
 
-    public String getLocalNick() {
-        return Protocol.localNick;
-    }
-
-    public SocketAddress getLocalAddress(){
-        return localAddress;
-    }
-
     public Boolean StatusBusy(){
         return isBusy;
     }
@@ -43,19 +34,4 @@ public class CallListener {
         this.isBusy = statusBusy;
     }
 
-    public SocketAddress getRemoteAddress(){
-        return remoteAddress;
-    }
-
-    public void setRemoteAddress(SocketAddress remoteAddress){
-        this.remoteAddress = remoteAddress;
-    }
-
-    public int getLocalPort(){
-        return Protocol.PORT;
-    }
-
-    public String getRemoteNick() {
-        return remoteNick;
-    }
 }

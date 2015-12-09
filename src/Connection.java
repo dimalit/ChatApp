@@ -16,7 +16,7 @@ public class Connection{
     }
 
     public void sendMessage(String message) throws IOException{
-        sout.write(new StringBuilder("Message\n").append(message).append("\n").toString().getBytes());
+        sout.write(new StringBuilder("Message: \n").append(message).append("\n").toString().getBytes());
         sout.flush();
     }
 

@@ -4,10 +4,15 @@ import java.net.*;
 
 public class CallListenerThread extends Observable implements Runnable {
     private Socket socket;
-   // private ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     private volatile boolean disconnected;
     private CallListener callListener;
     private Connection connection;
+
+    public CallListenerThread(){
+
+    }
+
     public void start() {
         this.disconnected = false;
         Thread t = new Thread(this);
@@ -36,10 +41,11 @@ public class CallListenerThread extends Observable implements Runnable {
     @Override
     public  void run(){
         try {
-            //serverSocket = new ServerSocket(Protocol.PORT);
-            callListener = new CallListener();
+            serverSocket = new ServerSocket(Protocol.PORT);
+            //callListener = new CallListener();
             while (true){
-                 connection = callListener.getConnection();
+                socket = serverSocket.accept();
+                connection = new Connection(socket);
                 if (connection.getSocket()!=null) {
                     CommandListenerThread clt = new CommandListenerThread(connection);
                     clt.addObserver(ChatWindow.observer);
@@ -50,5 +56,9 @@ public class CallListenerThread extends Observable implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setDisconnected(boolean b){
+        this.disconnected = b;
     }
 }

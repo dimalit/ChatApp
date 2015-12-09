@@ -213,6 +213,9 @@ public class ChatWindow extends JFrame implements Observer {
 					if (comt != null) {
 						mess.append(Protocol.localNick + ": " + message + "\n");
 						comt.getConnection().sendMessage(message);
+					}else{
+						mess.append(Protocol.localNick + ": " + message + "\n");
+						callt.getConnection().sendMessage(message);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -328,7 +331,7 @@ public class ChatWindow extends JFrame implements Observer {
 			c = (NickCommand) arg;
 			Protocol.remoteNick = c.getNick();
 			mess.append(c.intoString() + "\n");
-		}
+		}else
 		if (arg instanceof MessageCommand) {
 			mescom = (MessageCommand) arg;
 			mess.append(Protocol.remoteNick+": " + mescom.getMessagetext() + "\n\n");
