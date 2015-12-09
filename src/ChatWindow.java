@@ -239,17 +239,16 @@ public class ChatWindow extends JFrame implements Observer {
 		}
 
 		class ApplyAction implements ActionListener {
-			private String text;
 
 			public void actionPerformed(ActionEvent event) {
-				text = text1.getText();
+				Protocol.localNick = text1.getText();
 				Protocol.serverConnection.setLocalNick(Protocol.localNick);
 				mess.append("[System] Nickname changed to: " + Protocol.localNick + "\n");
+				apply.setEnabled(false);
 			}
 		}
 
 		class ConnectAction implements ActionListener {
-			private String textc;
 
 			public void actionPerformed(ActionEvent event) {
 				Protocol.IP = text3.getText();
@@ -266,7 +265,10 @@ public class ChatWindow extends JFrame implements Observer {
 
 					} else {
 						mess.append("IP: " + Protocol.IP + " inaccessible\n");
-
+						connect.setEnabled(true);
+						disconnect.setEnabled(false);
+						sendb.setEnabled(false);
+						apply.setEnabled(true);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -275,18 +277,26 @@ public class ChatWindow extends JFrame implements Observer {
 
 			}
 		}
+
 		class DisconnectAction implements ActionListener {
 
-			DisconnectAction() {
-			}
-
 			public void actionPerformed(ActionEvent event) {
-
+				if (comt != null) {
+					try {
+						comt.getConnection().disconnect();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				comt.stop();
+				comt = null;
+				sendb.setEnabled(false);
 				disconnect.setEnabled(false);
 				connect.setEnabled(true);
 				apply.setEnabled(true);
 			}
 		}
+
 		SendAction send = new SendAction();
 		sendb.addActionListener(send);
 		ApplyAction applyact = new ApplyAction();
