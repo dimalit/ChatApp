@@ -30,10 +30,10 @@ public class ContactsView extends JPanel{
         JLabel contactsL = new JLabel("Contacts");
         Font font = new Font("Verdana",Font.BOLD,14);
         favouritesL.setFont(font);
-        favouritesL.setSize(new Dimension(100, 50));
-        favouritesL.setHorizontalTextPosition(0);
+        //favouritesL.setSize(new Dimension(50, 50));
+        //favouritesL.setHorizontalTextPosition(0);
         contactsL.setFont(font);
-        contactsL.setSize(new Dimension(100, 50));
+        //contactsL.setSize(new Dimension(50, 50));
 
         contacts = new JPanel();
         contacts.setBackground(Color.WHITE);
@@ -79,7 +79,7 @@ public class ContactsView extends JPanel{
             else contacts.add(cp);
         }
         updateUI();
-      //  contactsViewModel.onlineUpdate();
+        contactsViewModel.onlineUpdate();
 
     }
 
@@ -101,6 +101,7 @@ public class ContactsView extends JPanel{
         list.add(cp);
         if (cp.isFav()) favourites.add(cp);
         else contacts.add(cp);
+        updateUI();
     }
 
 

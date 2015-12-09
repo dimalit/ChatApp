@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class CallListener {
     private String localNick,remoteNick;
-    private boolean isBusy;
+    private boolean isBusy,isOnline;
     private String remoteIP;
     private int remotePort;
     private ServerSocket serverSocket;
@@ -20,10 +20,15 @@ public class CallListener {
         }
         this.localNick=localNick;
         this.isBusy= false;
+        this.isOnline=true;
     }
 
     public Connection getConnection() throws IOException {
         Connection connection = new Connection(serverSocket.accept());
+        if (!isOnline){
+            connection.disconnect();
+            return null;
+        }
         if (!isBusy){
             connection.sendNickHello(localNick);
             lastCommand=connection.recieve();
@@ -53,5 +58,9 @@ public class CallListener {
 
     public String getRemoteNick(){
         return remoteNick;
+    }
+
+    public void setOnline(Boolean online){
+        isOnline=online;
     }
 }

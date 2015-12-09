@@ -14,7 +14,13 @@ public class ContactPanel extends JPanel{
     }
 
     private void createGUI(){
-        imageIcon  = new ImageIcon("src/images/off.png");
+        setToolTipText(contact.getIP());
+        if (contact.isOnline()){
+            imageIcon  = new ImageIcon("src/images/on.png");
+        }
+        else {
+            imageIcon = new ImageIcon("src/images/off.png");
+        }
         label = new JLabel(contact.getNick());
         label.setIcon(imageIcon);
         setBackground(Color.WHITE);

@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 
 
-public class AccorDis extends JFrame {
+public class IncomingCallForm extends JFrame {
 
     private static final int Height = 150;
     private static final int Widht = 300;
@@ -28,7 +28,7 @@ public class AccorDis extends JFrame {
 	
 
 
-	AccorDis(final Connection connection, final Logic logic, String username){
+	IncomingCallForm(final Connection connection, final Logic logic, String username){
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(Widht, Height);
         setResizable(false);

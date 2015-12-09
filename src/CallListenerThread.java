@@ -4,13 +4,10 @@ public class CallListenerThread implements Runnable {
 
     private String localNick;
     private CallListener callListener;
-    private boolean isBusy;
-    private String remoteIP;
-    private String lastAction;
     private boolean stop;
     private String remoteNick;
     private Connection remoteConnection;
-    private AccorDis form;
+    private IncomingCallForm form;
     Logic logic;
 
 
@@ -27,7 +24,7 @@ public class CallListenerThread implements Runnable {
                 remoteConnection = callListener.getConnection();
                 if (remoteConnection == null) continue;
                 remoteNick=callListener.getRemoteNick();
-                form = new AccorDis(remoteConnection,logic,remoteNick);
+                form = new IncomingCallForm(remoteConnection,logic,remoteNick);
                 System.out.println("AZAZA");
                 logic.setRemoteNick(remoteNick);
             }
@@ -45,8 +42,11 @@ public class CallListenerThread implements Runnable {
     }
 
     public void setBusy(Boolean isBusy){
-        this.isBusy=isBusy;
         callListener.setBusy(isBusy);
+    }
+
+    public void setOnline(Boolean online){
+        callListener.setOnline(online);
     }
     
     public void setNick(String nick){

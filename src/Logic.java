@@ -3,11 +3,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Logic{
-    private LFrame mainGui;
+    private MainGUI mainGui;
     private String localNick = "default",remoteNick,remoteIP;
-    private boolean isBusy;
+    private boolean isBusy,isOnline;
     private Connection connection = null;
     private Caller caller;
     private CallListenerThread callListenerThread;
@@ -18,6 +19,7 @@ public class Logic{
     private ContactsViewModel contactsViewModel = new ContactsViewModel(this);
 
     public Logic(){
+        readOptions();
         String tmp = getNickFromFile();
         if (tmp!=null) localNick=tmp;
         else localNick="default";
@@ -25,18 +27,23 @@ public class Logic{
         callThread = new Thread(callListenerThread);
         callThread.setDaemon(true);
         callThread.start();
-        mainGui = new LFrame(this);
+        mainGui = new MainGUI(this);
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-       // serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
-       // serverConnection.connect();
-       // serverConnection.setLocalNick(localNick);
-       // serverConnection.goOnline();
+        isOnline=true;
+        serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
+        serverConnection.connect();
+        serverConnection.setLocalNick(localNick);
+        serverConnection.goOnline();
 
+        contactsViewModel.readFromFile();
         contactsViewModel.getData();
+
+
+
     }
 
     public void setLocalNick(String nick){
@@ -79,6 +86,11 @@ public class Logic{
     }
 
     public void call(String IP) {
+        if (!isOnline){
+            UltimateGUI ultimateGUI = new UltimateGUI("You cannot call anyone, you're Offline!");
+            return;
+        }
+
         if (isConnected()){
             if (JOptionPane.showConfirmDialog(mainGui,
                     "You have an established connection with another user.\n If you will call this contact, current connection will be closed.\nAre you sure you want to do this?", "Warning",
@@ -122,7 +134,7 @@ public class Logic{
         if (isConnected()) {
             setBusy(false);
             historyViewModel.addSystemMessage("Disconnected");
-            historyViewModel.writeHistoryFile();
+            if (Options.saveHistory) historyViewModel.writeHistoryFile();
             remoteNick = null;
             remoteIP = null;
             commandListenerThread.kill();
@@ -145,7 +157,7 @@ public class Logic{
         return historyViewModel;
     }
 
-    public LFrame getMainGui(){
+    public MainGUI getMainGui(){
         return mainGui;
     }
 
@@ -200,7 +212,57 @@ public class Logic{
             serverConnection.goOffline();
             serverConnection.disconnect();
         }
-        writeNickToFile();
+        if (Options.saveNick) writeNickToFile();
+        if (Options.saveContacts) contactsViewModel.writeToFile();
+        writeOptions();
+    }
+
+    public void setOnline(boolean online){
+        isOnline=online;
+        if (isOnline){
+            callListenerThread.setOnline(true);
+            mainGui.setConnected(false);
+        }
+        else{
+            callListenerThread.setOnline(false);
+            mainGui.setOffline();
+        }
+    }
+
+    public boolean isOnline(){
+        return isOnline;
+    }
+
+    public void writeOptions(){
+        FileWriter out;
+        try{
+            out = new FileWriter("Options.txt");
+            if (Options.saveNick) out.write("true ");
+            else out.write("false ");
+            if (Options.saveContacts) out.write("true ");
+            else out.write("false ");
+            if (Options.saveHistory) out.write("true");
+            else out.write("false");
+            out.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void readOptions(){
+        Scanner in;
+        try{
+            in = new Scanner(new FileReader("Options.txt"));
+            String[] tmp = in.nextLine().split(" ");
+            if (tmp[0].equals("false")) Options.saveNick=false;
+            if (tmp[1].equals("false")) Options.saveContacts=false;
+            if (tmp[2].equals("false")) Options.saveHistory=false;
+            in.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public ServerConnection getServerConnection(){

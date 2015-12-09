@@ -1,5 +1,4 @@
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -8,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 
-public class LFrame extends JFrame {
+public class MainGUI extends JFrame {
 	JPanel panel = new JPanel();
     Logic logic;
 
@@ -19,24 +18,27 @@ public class LFrame extends JFrame {
 	JButton Apply;
 	JButton Disconnect;
 	JButton Connect;
+    JButton AddNewContact;
+    JButton Options;
+    JToggleButton toggleOffOnline;
 	
 	JLabel login;
-	JLabel addr;
-	HistoryView smth;
+	JLabel remoteAdress;
+	HistoryView historyView;
 	
 	JTextField textfieldlogin;	
 	JTextField EnterIp;
-    JTextField mass;
+    JTextField messageArea;
 
     ContactsView contactsView;
 
 	String text;
 	
-	Font font = new Font("Algerian", Font.BOLD, 13);
+	Font font = new Font("Verdana", Font.BOLD, 13);
 
 	LineBorder linebord = new LineBorder(Color.BLACK, 1);
 
-	LFrame(final Logic logic){
+	MainGUI(final Logic logic){
         this.logic=logic;
 
 		
@@ -44,11 +46,11 @@ public class LFrame extends JFrame {
 		panel.setLayout(null);
 		panel.setBackground(Color.white);
 		
-		login = new JLabel("Login");
+		login = new JLabel("login:");
 		login.setFont(font);
-		login.setBounds(10, 10, 50, 30);
+		login.setBounds(35, 40, 60, 30);
 		textfieldlogin = new JTextField(logic.getLocalNick());
-		textfieldlogin.setBounds(10, 40, 115, 20);
+		textfieldlogin.setBounds(80, 40, 115, 30);
 		textfieldlogin.setBorder(linebord);
         textfieldlogin.addKeyListener(new KeyListener() {
 
@@ -73,14 +75,13 @@ public class LFrame extends JFrame {
         contactsView = new ContactsView(logic.getContactsViewModel());
 
         contactsView.setBounds(0,20,175,400);
-        contactsView.setBorder(linebord);
 
 
-		addr = new JLabel("remote addr");
-		addr.setFont(font);
-		addr.setBounds(600,10,100,30);
+		remoteAdress = new JLabel("remote remoteAdress");
+		remoteAdress.setFont(font);
+		remoteAdress.setBounds(400,35,100,50);
 		EnterIp = new JTextField("files.litvinov.in.ua");
-		EnterIp.setBounds(600,40,150,20);
+		EnterIp.setBounds(500,40,150,30);
 		EnterIp.setBorder(linebord);
         EnterIp.addKeyListener(new KeyListener() {
             @Override
@@ -91,12 +92,11 @@ public class LFrame extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    logic.setRemoteIP(EnterIp.getText());
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
                             logic.getHistoryViewModel().clearView();
-                            logic.call();
+                            logic.call(EnterIp.getText());
                         }
                     });
                 }
@@ -108,12 +108,22 @@ public class LFrame extends JFrame {
 
             }
         });
+
+        Options = new JButton("Options");
+        Options.setLocation(820,60);
+        Options.setSize(150,25);
+        Options.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OptionsFrame opf = new OptionsFrame();
+            }
+        });
        
-		mass = new JTextField();
-	    mass.setHorizontalAlignment(JTextField.LEFT);
-		mass.setBorder(linebord);
-		mass.setBounds(10, 510, 636, 50);
-        mass.addKeyListener(new KeyListener() {
+		messageArea = new JTextField();
+	    messageArea.setHorizontalAlignment(JTextField.LEFT);
+		messageArea.setBorder(linebord);
+		messageArea.setBounds(10, 480, 650, 75);
+        messageArea.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
 
@@ -133,19 +143,58 @@ public class LFrame extends JFrame {
         });
 
 
-		smth = new HistoryView(logic.getHistoryViewModel());
-		smth.setLocation(48, 170);
-		smth.setSize(100,1000);
+		historyView = new HistoryView(logic.getHistoryViewModel());
+		historyView.setLocation(10, 140);
+		historyView.setSize(740,300);
 
+        toggleOffOnline = new JToggleButton();
 
-        JScrollPane scrollPane = new JScrollPane(smth);
+        toggleOffOnline.setLocation(200,48);
+        toggleOffOnline.setSize(17, 17);
+        toggleOffOnline.setBorderPainted(false);
+        toggleOffOnline.setFocusable(false);
+        toggleOffOnline.setBorder(null);
+        toggleOffOnline.setMargin(new Insets(0, 0, 0, 0));
+        toggleOffOnline.setPressedIcon(new ImageIcon("src/images/off.png"));
+        toggleOffOnline.setDisabledIcon(new ImageIcon("src/images/off.png"));
+        toggleOffOnline.setContentAreaFilled(false);
+        toggleOffOnline.setFocusPainted(false);
+        toggleOffOnline.setIcon(new ImageIcon("src/images/on.png"));
+
+        toggleOffOnline.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (logic.isOnline()) {
+                    toggleOffOnline.setIcon(new ImageIcon("src/images/off.png"));
+                    toggleOffOnline.setPressedIcon(new ImageIcon("src/images/on.png"));
+                     logic.setOnline(false);
+                }
+                else{
+                    toggleOffOnline.setIcon(new ImageIcon("src/images/on.png"));
+                    toggleOffOnline.setPressedIcon(new ImageIcon("src/images/off.png"));
+                    logic.setOnline(true);
+                }
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(historyView);
         scrollPane.setLocation(10, 140);
-        scrollPane.setSize(740,350);
+        scrollPane.setSize(740,300);
         scrollPane.setBorder(linebord);
+
+        AddNewContact = new JButton("Add new Contact");
+        AddNewContact.setLocation(820,30);
+        AddNewContact.setSize(150,25);
+        AddNewContact.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                NewContactFrame ncf = new NewContactFrame(logic.getContactsViewModel());
+            }
+        });
 		
 		Apply = new JButton("Apply");
-		Apply.setLocation(10, 70);
-		Apply.setSize(115,25);
+		Apply.setLocation(80, 80);
+		Apply.setSize(75,30);
 		Apply.setFont(font);
         Apply.addActionListener(new ActionListener() {
             @Override
@@ -155,8 +204,8 @@ public class LFrame extends JFrame {
         });
 		
 		Disconnect = new JButton("Disconnect");
-		Disconnect.setLocation(600,99);
-		Disconnect.setSize(150,25);
+		Disconnect.setLocation(600,80);
+		Disconnect.setSize(130,30);
 		Disconnect.setFont(font);
         Disconnect.addActionListener(new ActionListener() {
             @Override
@@ -168,27 +217,20 @@ public class LFrame extends JFrame {
 
 		
 	    Connect  = new JButton("Connect");
-	    Connect.setLocation(600,70);
-	    Connect.setSize(150, 25);
+	    Connect.setLocation(450,80);
+	    Connect.setSize(100, 30);
 	    Connect.setFont(font);
         Connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logic.setRemoteIP(EnterIp.getText());
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logic.getHistoryViewModel().clearView();
-                        logic.call();
-
-                    }
-                });
+                logic.getHistoryViewModel().clearView();
+                logic.call(EnterIp.getText());
             }
         });
 
 		Send = new JButton("Send");
-		Send.setLocation(650, 510);
-		Send.setSize(100,50);
+		Send.setLocation(680, 530);
+		Send.setSize(100,30);
 		Send.addActionListener(new ActionListener( ) {
         	public void actionPerformed(ActionEvent ae) {
         		send();
@@ -213,20 +255,21 @@ public class LFrame extends JFrame {
 
             }
         });
-		contactsView.setLocation(765,20);
-		contactsView.setSize(220,540);
-		
+		contactsView.setLocation(800,100);
 		panel.add(contactsView);
 		panel.add(login);
 		panel.add(textfieldlogin);
-		panel.add(mass);
+		panel.add(messageArea);
 		panel.add(scrollPane);
 		panel.add(EnterIp);
-		panel.add(addr);
+		panel.add(remoteAdress);
+        panel.add(toggleOffOnline);
 		panel.add(Send);
 		panel.add(Apply);
 		panel.add(Disconnect);
         panel.add(Connect);
+        panel.add(AddNewContact);
+        panel.add(Options);
 
 
         this.add(panel);
@@ -248,11 +291,11 @@ public class LFrame extends JFrame {
     }
 
     public void send(){
-        text = mass.getText();
+        text = messageArea.getText();
         if (Protocol.isMessageValid(text)) {
             logic.sendMessage(text);
             logic.getHistoryViewModel().addLocalMessage(text);
-            mass.setText("");
+            messageArea.setText("");
         }
     }
 
@@ -274,19 +317,32 @@ public class LFrame extends JFrame {
             Disconnect.setEnabled(true);
             textfieldlogin.setEditable(false);
             EnterIp.setEditable(false);
+            messageArea.setEnabled(true);
+            toggleOffOnline.setEnabled(false);
         }
         else {
             Connect.setEnabled(true);
             Apply.setEnabled(true);
             Send.setEnabled(false);
             Disconnect.setEnabled(false);
+            messageArea.setEnabled(false);
             textfieldlogin.setEditable(true);
             EnterIp.setEditable(true);
+            toggleOffOnline.setEnabled(true);
         }
     }
 
     public void changeEnterIp(String ip){
         EnterIp.setText(ip);
+    }
+
+    public void setOffline(){
+        Connect.setEnabled(false);
+        Apply.setEnabled(true);
+        Send.setEnabled(false);
+        Disconnect.setEnabled(false);
+        textfieldlogin.setEditable(true);
+        EnterIp.setEditable(false);
     }
 
 }

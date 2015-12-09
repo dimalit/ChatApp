@@ -1,3 +1,4 @@
+
 public class Contact {
     private boolean isFav,isOnline;
     private String nick,IP;
@@ -58,7 +59,16 @@ public class Contact {
 
     public void remove(ContactPanel tmp){
         contactsViewModel.removeContact(this,tmp);
+    }
 
+    public boolean equals(Object object){
+        Contact tmp = (Contact) object;
+        if (nick.equals(tmp.nick) && getIP().equals(tmp.getIP())) return true;
+        else return false;
+    }
+
+    public void setFav(Boolean b){
+        isFav=b;
     }
 
 }
