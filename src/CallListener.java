@@ -3,11 +3,7 @@ import java.net.*;
 
 public class CallListener {
     private Boolean isBusy;
-
-    private SocketAddress remoteAddress;
-
     private ServerSocket serverSocket;
-
 
     public CallListener(){
         setStatus(false);
@@ -33,5 +29,4 @@ public class CallListener {
     public void setStatus(Boolean statusBusy){
         this.isBusy = statusBusy;
     }
-
 }

@@ -13,6 +13,4 @@ public class Caller {
         c.sendNickHello(Protocol.localNick);
         return c;
     }
-
-
 }

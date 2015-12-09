@@ -26,8 +26,7 @@ public class IncomingConnection extends JFrame {
 
 	            }
 	        });
-		
-		
+
 		declineb.addActionListener(new ActionListener(){
 			
 			 @Override

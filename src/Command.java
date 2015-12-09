@@ -25,6 +25,4 @@ public class Command {
     public CommandTypes getType(){
         return commandTypes;
     }
-
-
 }

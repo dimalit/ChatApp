@@ -6,7 +6,6 @@ public class CallListenerThread extends Observable implements Runnable {
     private Socket socket;
     private ServerSocket serverSocket;
     private volatile boolean disconnected;
-    private CallListener callListener;
     private Connection connection;
 
     public CallListenerThread(){
@@ -42,7 +41,6 @@ public class CallListenerThread extends Observable implements Runnable {
     public  void run(){
         try {
             serverSocket = new ServerSocket(Protocol.PORT);
-            //callListener = new CallListener();
             while (true){
                 socket = serverSocket.accept();
                 connection = new Connection(socket);

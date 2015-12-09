@@ -1,6 +1,5 @@
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
 
 public class Connection{
     private Socket socket;
@@ -50,7 +49,6 @@ public class Connection{
     }
 
     public Command recieve() throws IOException {
-       // BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),"UTF-8"));
         String s = reader.readLine();
         if(s.contains("Message")){
             s+=reader.readLine();
