@@ -221,8 +221,8 @@ public class ChatWindow extends JFrame implements Observer {
 			public void actionPerformed(ActionEvent event) {
 				message = textmess.getText();
 				long currentTimeMillis = System.currentTimeMillis();
-				String time = new SimpleDateFormat("HH:mm:ss").format(currentTimeMillis);
-				mess.append("\n"  + "   " + Protocol.localNick + " " + time + ":" + "\n" + "   " + message + "\n");
+				String time = new SimpleDateFormat("[HH:mm:ss]").format(currentTimeMillis);
+				mess.append("\n" + time + " " + Protocol.localNick  + ":" + " " + message + "\n");
 				try {
 					if (comt != null) {
 						mess.append(Protocol.localNick + ": " + message + "\n");
@@ -361,14 +361,12 @@ public class ChatWindow extends JFrame implements Observer {
 			mescom = (MessageCommand) arg;
 
 			long currentTimeMillis = System.currentTimeMillis();
-			String time = new SimpleDateFormat("HH:mm:ss").format(currentTimeMillis);
-			mess.append("\n"  + "   " + Protocol.remoteNick + " " + time + ":" + "\n" + "   " + mescom.getMessagetext() + "\n");
+			String time = new SimpleDateFormat("[HH:mm:ss]").format(currentTimeMillis);
+			mess.append("\n" + time + " " + Protocol.remoteNick + ":" + " " + mescom.getMessagetext() + "\n");
 		}
-
 	}
-	
-	
 }
+
 class Friend {
 	public String nick;
 	public int ip;
