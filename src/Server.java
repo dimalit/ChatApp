@@ -6,7 +6,7 @@ import java.net.Socket;
 
 class Server {
     public static void main (String[] args) throws IOException {
-        System.out.println("Welcome to Server side");
+       
         BufferedReader in = null;
         ServerSocket servers = null;
         Socket fromclient = null;
