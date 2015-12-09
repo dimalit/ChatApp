@@ -13,11 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
-/*import org.eclipse.wb.swing.FocusTraversalOnArray;*/
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,8 +42,8 @@ public class MainForm implements Observer {
 	private JList list;
 	private Connection connection;
 	private ServerConnection server;
-	private String[][] frendmass = new String[1000][2];
-	private String[] headers = { "Name", "IP" };
+	private String[][] frendmass = new String[1000][3];
+	private String[] headers = { "Name", "IP","Online" };
 	private Integer size = 0;
 	private File file = new File("Friends.txt");
 	private JTable frends;
@@ -60,6 +58,7 @@ public class MainForm implements Observer {
 				}
 			}
 		});
+		
 	}
 
 	public MainForm() throws FileNotFoundException {
@@ -82,7 +81,7 @@ public class MainForm implements Observer {
 		int w = screen.width;
 		int h = screen.height;
 		frame = new JFrame("ChatApp");
-		frame.setSize(w / 2, h / 2);
+		frame.setSize(800 ,  500);
 		frame.setLocation(w / 4, h / 4);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -353,35 +352,49 @@ public class MainForm implements Observer {
 		if (textRLogin.getText() != "") {
 			frendmass[size][0] = textRLogin.getText();
 			frendmass[size][1] = textRAddr.getText();
+			online(size);
 			size++;
 		}
 	}
 	
-
+	public void online(int i){
+			boolean bol;
+			bol=server.isNickOnline(frendmass[i][0]);
+			if(bol){
+				frendmass[size][2] = "Online";
+			}
+	}
+	
 	private void deleteFriends() throws FileNotFoundException {
 		int row = frends.getSelectedRow();
 		for (int i = row; i < size; i++) {
 			frendmass[i][0]=frendmass[i+1][0];
 			frendmass[i][1]=frendmass[i+1][1];
+			frendmass[i][2]=frendmass[i+1][2];
 		}
 		size--;
 	}
 
 	public void readFriends() throws FileNotFoundException {
-		Scanner in = new Scanner(System.in);
-		Scanner reader = new Scanner(file);
-		while (reader.hasNext()) {
-			frendmass[size][0] = reader.next();
-			frendmass[size][1] = reader.next();
+		String[] fr = new String[1000];
+		String s;
+		fr=server.getAllNicks();
+		for(int i=0;i<fr.length;i++){
+			frendmass[i][0] = fr[i];
+			s=server.getIpForNick(fr[i]);
+			frendmass[i][1]=s;
+			online(i);
 			size++;
 		}
 	}
 
 	public void writeFriends() throws FileNotFoundException {
 		PrintWriter writer = new PrintWriter(file);
+		
 		for (int i = 0; i < size; i++) {
 			writer.print(frendmass[i][0] + " ");
 			writer.print(frendmass[i][1] + " ");
+			
 			writer.flush();
 		}
 		writer.close();
