@@ -9,6 +9,9 @@ public class Caller {
     }
 
     public Connection call() throws IOException {
+    	try {
+    		Class.forName("com.mysql.jdbc.Driver");
+    	} catch (ClassNotFoundException e) {}
         Connection c = new Connection(s);
         c.sendNickHello(Protocol.localNick);
         return c;

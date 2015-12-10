@@ -9,7 +9,6 @@ import java.util.Observer;
 import java.util.LinkedList;
 import java.text.SimpleDateFormat;
 
-
 public class ChatWindow extends JFrame implements Observer {
 	private CallListenerThread callt;
 	private CommandListenerThread comt;
@@ -59,19 +58,21 @@ public class ChatWindow extends JFrame implements Observer {
 																	// nicks of
 																	// friends
 																	// for form
-		Protocol.serverConnection.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
+		Protocol.serverConnection
+				.setServerAddress("jdbc:mysql://files.litvinov.in.ua/chatapp_server?characterEncoding=utf-8&useUnicode=true");
 		Protocol.serverConnection.connect();
-		if(Protocol.serverConnection.isConnected() == false){
+		if (Protocol.serverConnection.isConnected() == false) {
 			mess.append("[System] Could not connect to the server" + "\n");
+		} else {
+			mess.append("[System] You connected to the server" + "\n");
 		}
-		else {mess.append("[System] You connected to the server" + "\n");}
 
 		Protocol.serverConnection.setLocalNick(Protocol.localNick);
 		Protocol.serverConnection.goOnline();
 
 		JList<String> list = new JList(listModel);
-		Friend fr = new Friend("unnamed", 6666);
-		Friend fr1 = new Friend("unnamed", 5555);
+		Friend fr = new Friend("masha", "10.1.1.4");
+		Friend fr1 = new Friend("unnamed", "5555");
 		listfriends.add(fr);
 		listfriends.add(fr1);
 		listModel.addElement(fr.getNick());
@@ -85,7 +86,7 @@ public class ChatWindow extends JFrame implements Observer {
 		addButton.setFocusable(false);
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Friend newfr = new Friend("newfr", 6666);
+				Friend newfr = new Friend(Protocol.remoteNick, Protocol.IP);
 				listfriends.add(newfr);
 
 				listModel.addElement(newfr.getNick());
@@ -103,12 +104,15 @@ public class ChatWindow extends JFrame implements Observer {
 				for (int i = 0; i <= listfriends.size(); i++) {
 					if (listfriends.get(i).getNick() == listModel
 							.getElementAt(index)) {
-						int Ip = listfriends.get(i).getIp();// ip for connection
+						String Ip = listfriends.get(i).getIp();// ip for
+																// connection
 						break;
 					}
 				}
 				text2.setText(listModel.getElementAt(index));
 				// need connect to Ip
+				text3.setText(listfriends.get(index).getIp());
+
 			}
 		});
 
@@ -132,7 +136,6 @@ public class ChatWindow extends JFrame implements Observer {
 		removeButton.setMaximumSize(new Dimension(100, 25));
 		addButton.setMaximumSize(new Dimension(100, 25));
 		connectButton.setMaximumSize(new Dimension(100, 25));
-
 
 		friendsfield.setLayout(new BoxLayout(friendsfield, BoxLayout.Y_AXIS));
 		bigfield.setLayout(new BoxLayout(bigfield, BoxLayout.X_AXIS));
@@ -187,11 +190,11 @@ public class ChatWindow extends JFrame implements Observer {
 		txt3.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
 		field1.add(locallogin);
-		field2.add(remotelogin);
-		field3.add(txt3);
+		field2.add(txt3);
+		field3.add(remotelogin);
 		field1.add(text1);
-		field2.add(text2);
-		field3.add(text3);
+		field2.add(text3);
+		field3.add(text2);
 		field1.add(apply);
 		field2.add(connect);
 		field3.add(disconnect);
@@ -221,14 +224,16 @@ public class ChatWindow extends JFrame implements Observer {
 			public void actionPerformed(ActionEvent event) {
 				message = textmess.getText();
 				long currentTimeMillis = System.currentTimeMillis();
-				String time = new SimpleDateFormat("[HH:mm:ss]").format(currentTimeMillis);
-				mess.append("\n" + time + " " + Protocol.localNick  + ":" + " " + message + "\n");
+				if (comt != null) {
+				String time = new SimpleDateFormat("HH:mm:ss")
+						.format(currentTimeMillis);
+				mess.append(Protocol.localNick + " (" + time + "):" + "\n"
+						+ "   " + message + "\n");
+				}
 				try {
 					if (comt != null) {
-						mess.append(Protocol.localNick + ": " + message + "\n");
 						comt.getConnection().sendMessage(message);
-					}else{
-						mess.append(Protocol.localNick + ": " + message + "\n");
+					} else {
 						callt.getConnection().sendMessage(message);
 					}
 				} catch (IOException e) {
@@ -243,7 +248,8 @@ public class ChatWindow extends JFrame implements Observer {
 			public void actionPerformed(ActionEvent event) {
 				Protocol.localNick = text1.getText();
 				Protocol.serverConnection.setLocalNick(Protocol.localNick);
-				mess.append("[System] Nickname changed to: " + Protocol.localNick + "\n");
+				mess.append("[System] Nickname changed to: "
+						+ Protocol.localNick + "\n");
 				apply.setEnabled(false);
 			}
 		}
@@ -251,6 +257,7 @@ public class ChatWindow extends JFrame implements Observer {
 		class ConnectAction implements ActionListener {
 
 			public void actionPerformed(ActionEvent event) {
+				mess.setText("");
 				Protocol.IP = text3.getText();
 				connect.setEnabled(false);
 				disconnect.setEnabled(true);
@@ -294,6 +301,7 @@ public class ChatWindow extends JFrame implements Observer {
 				disconnect.setEnabled(false);
 				connect.setEnabled(true);
 				apply.setEnabled(true);
+				mess.append("-> Disconnected\n");
 			}
 		}
 
@@ -356,34 +364,39 @@ public class ChatWindow extends JFrame implements Observer {
 			c = (NickCommand) arg;
 			Protocol.remoteNick = c.getNick();
 			mess.append(c.intoString() + "\n");
-		}else
-		if (arg instanceof MessageCommand) {
+		} else if (arg instanceof MessageCommand) {
 			mescom = (MessageCommand) arg;
 
 			long currentTimeMillis = System.currentTimeMillis();
-			String time = new SimpleDateFormat("[HH:mm:ss]").format(currentTimeMillis);
-			mess.append("\n" + time + " " + Protocol.remoteNick + ":" + " " + mescom.getMessagetext() + "\n");
+			String time = new SimpleDateFormat("HH:mm:ss")
+					.format(currentTimeMillis);
+			mess.append(Protocol.remoteNick + " (" + time + "):" + "\n" + "   "
+					+ mescom.getMessagetext() + "\n");
 		}
+
 	}
+
 }
 
 class Friend {
 	public String nick;
-	public int ip;
-	
-	public Friend(String n ,int i){
+	public String ip;
+
+	public Friend(String n, String i) {
 		this.nick = n;
 		this.ip = i;
 	}
-	void set(String n ,int i){
+
+	void set(String n, String i) {
 		this.nick = n;
 		this.ip = i;
 	}
-	String getNick(){
+
+	String getNick() {
 		return nick;
 	}
-	
-	int getIp(){
+
+	String getIp() {
 		return ip;
 	}
 }
