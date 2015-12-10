@@ -22,42 +22,42 @@ import javax.swing.SwingUtilities;
 
 public class Form implements Observer{
 	
-	final JFrame frame = new JFrame("ChatApp2015");
+	 JFrame frame = new JFrame("ChatApp2015");
 	
 	
-	final JLabel TextNick = new JLabel();
-	final JLabel TextIP = new JLabel();
-	final JLabel forText3 = new JLabel();
-	final JLabel forText4 = new JLabel();	
+	 JLabel TextNick = new JLabel();
+	 JLabel TextIP = new JLabel();
+	 JLabel forText3 = new JLabel();
+	 JLabel forText4 = new JLabel();	
 	
 	
-	final JFrame frame1 = new JFrame(); //всплывающее окно
-	final JPanel mainPanel = new JPanel();
-	final JPanel panel2 = new JPanel(); //ник айпи(?)
-	final JPanel nickPanel = new JPanel();
-	final JPanel ipPanel = new JPanel(); 
-	final JPanel inputPanel = new JPanel(); 
-	final JPanel conPanel = new JPanel(); 
-	final JPanel outputPanel = new JPanel(); 
-	final JPanel panel8 = new JPanel(); //сплывающа€ панель не работает
-	final JPanel ioPanel = new JPanel();
-	final JPanel panel10 = new JPanel();
+	 JFrame frame1 = new JFrame(); //up wdw
+	 JPanel mainPanel = new JPanel();
+	 JPanel nickip = new JPanel(); //ник айпи(?)
+	 JPanel nickPanel = new JPanel();
+	 JPanel ipPanel = new JPanel(); 
+	 JPanel inputPanel = new JPanel(); 
+	 JPanel conPanel = new JPanel(); 
+	 JPanel outputPanel = new JPanel(); 
+	 JPanel panel1 = new JPanel(); 
+	 JPanel ioPanel = new JPanel();
+	 JPanel panel2 = new JPanel();
 	
 	
-	final TextField textfieldloclogin = new TextField(35);
-	final TextField textfieldIP = new TextField(35);
-	final JTextArea textArea = new JTextArea(); 
-	final JTextArea textfieldentermess = new JTextArea();
+	 TextField textfieldloclogin = new TextField(35);
+	 TextField textfieldIP = new TextField(35);
+	 JTextArea textArea = new JTextArea(); 
+	 JTextArea textfieldentermess = new JTextArea();
 	
 	
-	final JButton disconnect = new JButton("Disconnect");
-	final JButton accept = new JButton("Accept");
-	final JButton reject = new JButton("Reject");
-	final JButton apply = new JButton("Apply");
-	final JButton connect = new JButton("Connect");
-	final JButton send = new JButton("Send");
+	 JButton disconnect = new JButton("Disconnect");
+	 JButton accept = new JButton("Accept");
+	 JButton reject = new JButton("Reject");
+	 JButton apply = new JButton("Apply");
+	 JButton connect = new JButton("Connect");
+	 JButton send = new JButton("Send");
 
-	final JScrollPane areaScrollPane = new JScrollPane(textArea);
+	 JScrollPane areaScrollPane = new JScrollPane(textArea);
 
 	
 	private CommandListenerThread comlt;
@@ -96,39 +96,32 @@ public class Form implements Observer{
 
 
 
-		    //вверхн€€ панель дл€ ввода ника и ip друга
-		 panel2.setOpaque(false);
-		 panel2.setMaximumSize(new Dimension(screenWidth, screenHeight));
-		 panel2.setPreferredSize(new Dimension(screenWidth /2 ,screenHeight / 7));
-		 panel2.setLayout(new BoxLayout(panel2, BoxLayout.X_AXIS));
+
+		 nickip.setOpaque(false);
+		 nickip.setMaximumSize(new Dimension(screenWidth, screenHeight));
+		 nickip.setPreferredSize(new Dimension(screenWidth /3 ,screenHeight / 8));//input
+		 nickip.setLayout(new BoxLayout(nickip, BoxLayout.X_AXIS));
 
 
 
-		    //панель дл€ своего ника
 		 nickPanel.setOpaque(false);
 		 nickPanel.add(Box.createVerticalStrut(15));
 		 nickPanel.setLayout(new BoxLayout(nickPanel, BoxLayout.Y_AXIS));
-
-		 nickPanel.setPreferredSize(new Dimension(screenWidth/8,screenHeight / 8));
+		 nickPanel.setPreferredSize(new Dimension(screenWidth/8,screenHeight / 8));//nickpanel
 		 nickPanel.setMaximumSize(new Dimension(screenWidth/4,screenHeight / 4));
 		 nickPanel.setMinimumSize(new Dimension(screenWidth/8,screenHeight / 8));
 		 nickPanel.setOpaque(false);
 
-		 TextNick.setText("My nickname: ");
+		 TextNick.setText("Nickname: ");
 		 nickPanel.add(TextNick);
 		 textfieldloclogin.setMaximumSize(new Dimension(200 , 25));
 		 nickPanel.add(textfieldloclogin);
 		 nickPanel.add(apply);
 
-
-
-
-
-		    //панель дл€  ip друга
+		 
 		 ipPanel.setOpaque(false);
 		 ipPanel.add(Box.createVerticalStrut(15));
 		 ipPanel.setLayout(new BoxLayout(ipPanel, BoxLayout.Y_AXIS));
-
 		 ipPanel.setPreferredSize(new Dimension(screenWidth/8,screenHeight / 8));
 		 ipPanel.setMaximumSize(new Dimension(screenWidth/4,screenHeight / 4));
 		 ipPanel.setMinimumSize(new Dimension(screenWidth/8,screenHeight / 8));
@@ -140,10 +133,6 @@ public class Form implements Observer{
 		 ipPanel.add(textfieldIP, BorderLayout.SOUTH);
 
 
-
-
-
-		    //панель ввода текста
 		 inputPanel.setOpaque(false);
 		 inputPanel.setMaximumSize(new Dimension(screenWidth /2, screenHeight / 25));
 		 inputPanel.setPreferredSize(new Dimension(screenWidth /2 ,screenHeight / 25));
@@ -156,25 +145,16 @@ public class Form implements Observer{
 		 inputPanel.add(send);
 
 
-
-
-		    //панель дл€ вывода сообщений на экран
 		 outputPanel.setOpaque(false);
 		 outputPanel.setMaximumSize(new Dimension(screenWidth/2, 500));
 		 outputPanel.setPreferredSize(new Dimension(screenWidth/2 ,500));
 		 outputPanel.setMinimumSize(new Dimension(screenWidth/2,500));
-
-		 outputPanel.setLayout(new BorderLayout());
-		 
+		 outputPanel.setLayout(new BorderLayout());		 
 		 areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
 		 outputPanel.add(new JScrollPane(textArea));
 		 textArea.setEditable(false);
 
 
-
-
-		    //панель дл€ кнопочек
 		 conPanel.setOpaque(false);
 		 conPanel.setLayout(new BoxLayout(conPanel, BoxLayout.LINE_AXIS));
 		 disconnect.setEnabled(false);
@@ -189,7 +169,7 @@ public class Form implements Observer{
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					String message=textfieldentermess.getText();
-					textArea.append("You: "+message+"\n");
+					textArea.setText("You: "+message+"\n");
 					if(comlt!=null){
 						comlt.getConnection().sendMessage(message);
 					}else{
@@ -206,9 +186,10 @@ public class Form implements Observer{
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					ip=textfieldIP.getText();
-					textArea.append(ip +"\n");
+					textArea.setText(ip +"\n");
 					connect.setEnabled(false);
 					disconnect.setEnabled(true);
+					
 					
 					try{
 						Caller c=new Caller(ip);
@@ -220,7 +201,7 @@ public class Form implements Observer{
 							comlt.addObserver((Observer) Form.this);//!!!
 							comlt.start();
 					}else{
-						 textArea.append("could not connect ip: " + ip +"\n");
+						 textArea.setText("Error!" +"\n");
 						 
 						 connect.setEnabled(true);
 						 disconnect.setEnabled(false);
@@ -261,36 +242,23 @@ public class Form implements Observer{
 				
 			});
 		    
-			 frame1.setLocationRelativeTo(null);
+		    frame1.setLocationRelativeTo(null);
 			  
-			    panel8.add(accept);
-			    panel8.add(reject);
+		    panel1.add(accept);
+		    panel1.add(reject);
 			    
-			    forText3.setText("User " + Connection.NickName + " tries to connect to you" + "\n");
-			    frame1.add(forText3);
+		    forText3.setText("Somebody trying to get connection with you" + "\n");
+		    frame1.add(forText3);
 			    
-			    frame1.setSize(200, 100);
-			    frame1.add(panel8, BorderLayout.SOUTH);
-			    frame1.setAlwaysOnTop(true);
-			    frame1.setVisible(false); //будет тру когда звон€т
+		    frame1.setSize(200, 100);
+		    frame1.add(panel1, BorderLayout.SOUTH);
+		    frame1.setAlwaysOnTop(true);
+		    frame1.setVisible(false); //(?)
 			    
 			    
-			    accept.addActionListener(new ActionListener() {
-			        public void actionPerformed(ActionEvent e) {
 
-			        		//если соединилс€ 
-			        }
-			    });
-			    
-			    reject.addActionListener(new ActionListener() {
-			        public void actionPerformed(ActionEvent e) {
-
-			        		//если отказалс€
-			        }
-			    });
 			    
 			    
-			    //дл€ ввода и вывода сообщений
 			    ioPanel.setPreferredSize(new Dimension(screenWidth/2,600));
 			    ioPanel.setMaximumSize(new Dimension(screenWidth/2,600));
 			    ioPanel.setMinimumSize(new Dimension(screenWidth/2,600));
@@ -299,11 +267,11 @@ public class Form implements Observer{
 			    ioPanel.add(inputPanel, BorderLayout.SOUTH);
 			    frame.add(mainPanel);
 			    mainPanel.add(ioPanel, BorderLayout.CENTER);
-			    mainPanel.add(panel10, BorderLayout.EAST);
+			    mainPanel.add(panel2, BorderLayout.EAST);
 			    
-			    mainPanel.add(panel2, BorderLayout.NORTH);
-			    panel2.add(nickPanel);
-			    panel2.add(ipPanel);
+			    mainPanel.add(nickip, BorderLayout.NORTH);
+			    nickip.add(nickPanel);
+			    nickip.add(ipPanel);
 			    ipPanel.add(conPanel);
 			    
 			    
@@ -318,27 +286,19 @@ public void update(Observable o, Object arg){
     connect.setEnabled(false);
     
 
-    NickCommand nc;
     MessageCommand mc;
     Command com;
 
-    if(arg instanceof NickCommand){
-        nc=(NickCommand) arg;
-        nc.getNickName();
-        textArea.append("Connected to: "+NickName+"\n");
-    }
+
     if(arg instanceof MessageCommand){
         mc=(MessageCommand) arg;
 
-        long curTime = System.currentTimeMillis();
-        String time = new SimpleDateFormat("HH:mm:ss").format(curTime);
-
-        textArea.append("\n"  +/* "   " +NickName+*/ " " + time + ":" + "\n" + "   " + mc.getMessage() + "\n");
-  
+        textArea.setText(mc.getMessage());
     }
     if(arg instanceof Command){
         com =(Command) arg;
         if (com.getType()==CommandType.ACCEPT){
+        	textArea.setText("Accepted");
             connect.setEnabled(false);
             disconnect.setEnabled(true);
             send.setEnabled(true);
@@ -346,7 +306,7 @@ public void update(Observable o, Object arg){
         }
 
         if (com.getType()==CommandType.REJECT){
-            textArea.append("Declined");
+            textArea.setText("Declined");
             connect.setEnabled(true);
             disconnect.setEnabled(false);
             send.setEnabled(false);
@@ -354,7 +314,7 @@ public void update(Observable o, Object arg){
         }
 
         if (com.getType()==CommandType.DISCONNECT){
-            textArea.append("Disconnected");
+            textArea.setText("Disconnected");
             connect.setEnabled(true);
             disconnect.setEnabled(false);
             send.setEnabled(false);
