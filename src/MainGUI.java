@@ -34,7 +34,7 @@ public class MainGUI extends JFrame {
 
 	String text;
 	
-	Font font = new Font("Verdana", Font.BOLD, 13);
+	Font font = new Font("Roboto", Font.BOLD, 13);
 
 	LineBorder linebord = new LineBorder(Color.BLACK, 1);
 
@@ -42,15 +42,15 @@ public class MainGUI extends JFrame {
         this.logic=logic;
 
 		
-		JPanel panel = new JPanel();
+        JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.white);
 		
-		login = new JLabel("login:");
+		login = new JLabel("Login");
 		login.setFont(font);
-		login.setBounds(35, 40, 60, 30);
+		login.setBounds(10, 10, 50, 30);
 		textfieldlogin = new JTextField(logic.getLocalNick());
-		textfieldlogin.setBounds(80, 40, 115, 30);
+		textfieldlogin.setBounds(10, 40, 115, 20);
 		textfieldlogin.setBorder(linebord);
         textfieldlogin.addKeyListener(new KeyListener() {
 
@@ -79,9 +79,9 @@ public class MainGUI extends JFrame {
 
 		remoteAdress = new JLabel("remote remoteAdress");
 		remoteAdress.setFont(font);
-		remoteAdress.setBounds(400,35,100,50);
+		remoteAdress.setBounds(600,10,100,30);
 		EnterIp = new JTextField("files.litvinov.in.ua");
-		EnterIp.setBounds(500,40,150,30);
+		EnterIp.setBounds(600,40,150,20);
 		EnterIp.setBorder(linebord);
         EnterIp.addKeyListener(new KeyListener() {
             @Override
@@ -110,7 +110,7 @@ public class MainGUI extends JFrame {
         });
 
         Options = new JButton("Options");
-        Options.setLocation(820,60);
+        Options.setLocation(720,60);
         Options.setSize(150,25);
         Options.addActionListener(new ActionListener() {
             @Override
@@ -122,7 +122,7 @@ public class MainGUI extends JFrame {
 		messageArea = new JTextField();
 	    messageArea.setHorizontalAlignment(JTextField.LEFT);
 		messageArea.setBorder(linebord);
-		messageArea.setBounds(10, 480, 650, 75);
+		messageArea.setBounds(10, 510, 636, 50);
         messageArea.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -144,8 +144,8 @@ public class MainGUI extends JFrame {
 
 
 		historyView = new HistoryView(logic.getHistoryViewModel());
-		historyView.setLocation(10, 140);
-		historyView.setSize(740,300);
+		historyView.setLocation(48, 170);
+		historyView.setSize(100,1000);
 
         toggleOffOnline = new JToggleButton();
 
@@ -179,11 +179,11 @@ public class MainGUI extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(historyView);
         scrollPane.setLocation(10, 140);
-        scrollPane.setSize(740,300);
+        scrollPane.setSize(740,350);
         scrollPane.setBorder(linebord);
 
         AddNewContact = new JButton("Add new Contact");
-        AddNewContact.setLocation(820,30);
+        AddNewContact.setLocation(720,30);
         AddNewContact.setSize(150,25);
         AddNewContact.addActionListener(new ActionListener() {
             @Override
@@ -193,8 +193,8 @@ public class MainGUI extends JFrame {
         });
 		
 		Apply = new JButton("Apply");
-		Apply.setLocation(80, 80);
-		Apply.setSize(75,30);
+		Apply.setLocation(10, 70);
+		Apply.setSize(115,25);
 		Apply.setFont(font);
         Apply.addActionListener(new ActionListener() {
             @Override
@@ -203,9 +203,9 @@ public class MainGUI extends JFrame {
             }
         });
 		
-		Disconnect = new JButton("Disconnect");
-		Disconnect.setLocation(600,80);
-		Disconnect.setSize(130,30);
+        Disconnect = new JButton("Disconnect");
+		Disconnect.setLocation(600,99);
+		Disconnect.setSize(150,25);
 		Disconnect.setFont(font);
         Disconnect.addActionListener(new ActionListener() {
             @Override
@@ -228,9 +228,10 @@ public class MainGUI extends JFrame {
             }
         });
 
-		Send = new JButton("Send");
-		Send.setLocation(680, 530);
-		Send.setSize(100,30);
+        Connect  = new JButton("Connect");
+	    Connect.setLocation(600,70);
+	    Connect.setSize(150, 25);
+	    Connect.setFont(font);
 		Send.addActionListener(new ActionListener( ) {
         	public void actionPerformed(ActionEvent ae) {
         		send();
