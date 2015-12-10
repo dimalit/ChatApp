@@ -10,6 +10,7 @@ class Connection {
 	private Socket socket;
 	
 	public final static int port=28411;
+	public static String NickName;
 	
 	private Scanner in;
 	private DataOutputStream out;
@@ -65,7 +66,7 @@ class Connection {
 	
 	void chatApp2015(String NickName){
 		try {
-			out.writeUTF(new StringBuffer("ChatApp 2015").append(NickName).toString());
+			out.writeUTF(new StringBuffer("ChatApp 2015").append(Connection.NickName).toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

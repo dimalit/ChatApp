@@ -8,7 +8,6 @@ public class Caller {
 	
 	
 	InetAddress IP;
-	String NickName;
 	
 	
 	Caller(String ip) throws UnknownHostException{
@@ -18,7 +17,7 @@ public class Caller {
 	
 	Connection call() throws IOException{
 		Connection c=new Connection(new Socket(IP, Connection.port));
-		c.chatApp2015(NickName);
+		c.chatApp2015(Connection.NickName);
 		return c;
 	}
 }

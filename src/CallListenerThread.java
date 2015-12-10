@@ -27,9 +27,9 @@ public class CallListenerThread extends Observable implements Runnable  {
 
 			if(c!=null){
 				CommandListenerThread clt=new CommandListenerThread(c);
-				clt.addObserver(LabelFrame.obj);
+				clt.addObserver(Form.obj);
 				clt.start();
-				c.chatApp2015(NickName);
+				c.chatApp2015(Connection.NickName);
 				}
 			
 		}	

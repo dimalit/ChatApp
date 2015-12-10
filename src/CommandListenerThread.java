@@ -8,13 +8,13 @@ public class CommandListenerThread extends Observable implements Runnable{
 	volatile Command com;
 	
 	public CommandListenerThread(Connection c) {
-		this.c=c;		
+		this.c=c;
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		this.addObserver(LabelFrame.obj);
+		this.addObserver(Form.obj);
 		while(b!=true){
 			synchronized(this){
 				this.com=c.recieve();

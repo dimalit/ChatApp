@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 
 public class CallListener {
@@ -13,19 +14,20 @@ public class CallListener {
 	NickCommand nc;
 	
 	
-	CallListener(String NickName, boolean isBusy) throws IOException{
+	/*CallListener(String NickName, boolean isBusy) throws IOException{
 		ss=new ServerSocket(Connection.port);
 
 		this.NickName=NickName;
 		this.isBusy=isBusy;
-	}
+	}*/
 	
 	
-	Connection getConnection() throws IOException{
-		Connection c=new Connection(ss.accept());
+	Connection getConnection(Socket s) throws IOException{
+		Connection c=new Connection(s);
+		c.chatApp2015(Connection.NickName);
 		if(isBusy){
 			
-			c.userIsBusy(NickName);
+			c.userIsBusy(Connection.NickName);
 			c.disconnect();
 			return null;
 			

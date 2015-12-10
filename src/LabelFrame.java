@@ -1,4 +1,4 @@
-import java.awt.*;
+/*import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -11,15 +11,30 @@ import javax.swing.border.*;
 
 
 public class LabelFrame extends JFrame implements Observer{
+	/**
+	 * 
+	 */
+/*	private static final long serialVersionUID = -4789525072053991912L;
+	
+	JFrame frame=new JFrame("ChatApp");
+	JFrame upfr=new JFrame();
+	
 	JPanel panel = new JPanel();
 	
 	JTextArea textArea=new JTextArea();  
 	JTextArea textAreaMessage=new JTextArea();
 	
-	JButton button1;	//send
-	JButton button2;	//connect
-    JButton button3;	//apply
-    JButton button4;	//disconnect
+	JButton send;	//send
+	JButton connect;	//connect
+    JButton apply;	//apply
+    JButton disconnect;	//disconnect
+    
+    JPanel main=new JPanel();
+    JPanel nickname_ip=new JPanel();
+    JPanel nickname=new JPanel();
+    
+    
+    
 	
 	JLabel lable1;
 	JLabel lable2;
@@ -33,9 +48,7 @@ public class LabelFrame extends JFrame implements Observer{
     JTextField textfieldentermess;
         
     JScrollPane Scroll = new JScrollPane(textArea);   
-        
-     
-	
+     	
     String name = "Чат";
 
 	Font font = new Font("Time New Romans", Font.BOLD, 13);
@@ -73,7 +86,14 @@ public class LabelFrame extends JFrame implements Observer{
 		obj=this;
 		
 		clt=new CallListenerThread();
-		clt.start();		
+		clt.start();
+		
+		Toolkit kit = Toolkit.getDefaultToolkit();
+	    Dimension screenSize = kit.getScreenSize();
+	    int screenWidth = screenSize.width;
+	    int screenHeight = screenSize.height;
+	    frame.setSize(screenWidth / 2, screenWidth / 2);
+	    frame.setLocationRelativeTo(null);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
@@ -110,29 +130,29 @@ public class LabelFrame extends JFrame implements Observer{
 		textfieldentermess.setBounds(45, 315, 400, 25);
 		textfieldentermess.setBorder(linebord);
                 
-        button3 = new JButton("Apply");
-		button3.setFont(font);
-		button3.setBounds(90, 50, 115, 25);
-        button3.setForeground(Color.blue);
+        apply = new JButton("Apply");
+		apply.setFont(font);
+		apply.setBounds(90, 50, 115, 25);
+        apply.setForeground(Color.blue);
 		
 		lable3 = new JLabel();
         lable3.setBounds(45, 100, 505, 200);
 		lable3.setBorder(linebord);
 		
-		button2 = new JButton("Connect");
-        button2.setBounds(435, 22, 115, 25);
-		button2.setFont(font);
-        button2.setForeground(Color.blue);
+		connect = new JButton("Connect");
+        connect.setBounds(435, 22, 115, 25);
+		connect.setFont(font);
+        connect.setForeground(Color.blue);
                 
-        button4 = new JButton("Disconnect");
-        button4.setBounds(435, 50, 115, 25);
-		button4.setFont(font);
-        button4.setForeground(Color.blue);
+        disconnect = new JButton("Disconnect");
+        disconnect.setBounds(435, 50, 115, 25);
+		disconnect.setFont(font);
+        disconnect.setForeground(Color.blue);
 		
-		button1 = new JButton("Send");
-        button1.setBounds(450, 315, 100, 25);
-        button1.setFont(font);
-        button1.setForeground(Color.blue);
+		send = new JButton("Send");
+        send.setBounds(450, 315, 100, 25);
+        send.setFont(font);
+        send.setForeground(Color.blue);
 		
 		panel.add(lable1);
         panel.add(lable2);
@@ -142,20 +162,20 @@ public class LabelFrame extends JFrame implements Observer{
         panel.add(textfieldIP);
         panel.add(textfieldloclogin);
         panel.add(textfieldentermess);
-		panel.add(button1);
-        panel.add(button2);
-        panel.add(button3);
-        panel.add(button4);
+		panel.add(send);
+        panel.add(connect);
+        panel.add(apply);
+        panel.add(disconnect);
         panel.add(Scroll);
 
 		this.add(panel);
-		
+		//textAreaMessage.setText("aaaaa");
 		
 		Scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		panel.add(new JScrollPane(textArea));
 		textArea.setEditable(false);
 		
-		button1.addActionListener(new ActionListener(){
+		send.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -163,8 +183,9 @@ public class LabelFrame extends JFrame implements Observer{
 				String message=textfieldentermess.getText();
 				long time=System.currentTimeMillis();
 				String Stime = new SimpleDateFormat("HH:mm:ss").format(time);
-				textArea.append("\n"  + "   " + NickName + " " + Stime + ":" + "\n" + "   " + message + "\n");
-				textAreaMessage.setText("");
+				String s="\n"  + "   " + NickName + " " + Stime + ":" + "\n" + "   " + message + "\n";
+				//textArea.append();
+				textAreaMessage.setText(s);
 				if(comlt!=null){
 					comlt.getConnection().sendMessage(message);
 				}else{
@@ -175,28 +196,30 @@ public class LabelFrame extends JFrame implements Observer{
 		});
 		
 		
-		button2.addActionListener(new ActionListener(){
+		connect.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				ip=textfieldIP.getText();
-				button2.setEnabled(false);
-				button4.setEnabled(true);
+				connect.setEnabled(false);
+				disconnect.setEnabled(true);
 				
 				try{
 					Caller c=new Caller(NickName);
 					Connection con=c.call();
 					if(con!=null){
-						button1.setEnabled(true);
+						send.setEnabled(true);
+						
 						comlt=new CommandListenerThread(con);
 						comlt.addObserver(LabelFrame.this);
 						comlt.start();
 				}else{
-					 textArea.append("  could not connect ip addr: " + ip +"\n");
-					 button2.setEnabled(true);
-					 button4.setEnabled(false);
-					 button3.setEnabled(true);
+					 //textArea.append("  could not connect ip addr: " + ip +"\n");
+					 
+					 connect.setEnabled(true);
+					 disconnect.setEnabled(false);
+					 apply.setEnabled(true);
 				}
 			}catch(UnknownHostException e1){
 				
@@ -208,27 +231,27 @@ public class LabelFrame extends JFrame implements Observer{
 		});
 		
 		
-		button3.addActionListener(new ActionListener(){
+		apply.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				NickName=textfieldloclogin.getText();
-				button3.setEnabled(false);
+				apply.setEnabled(false);
 			}
 			
 		});
 
 		
 		
-		button4.addActionListener(new ActionListener(){
+		disconnect.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				button1.setEnabled(false);
-				button2.setEnabled(false);
-				button3.setEnabled(true);
+				send.setEnabled(false);
+				connect.setEnabled(false);
+				apply.setEnabled(true);
 			}
 			
 		});
@@ -239,14 +262,13 @@ public class LabelFrame extends JFrame implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
-		button1.setEnabled(true);
-		button2.setEnabled(false);
+		send.setEnabled(true);
+		connect.setEnabled(false);
 		NickCommand c;
 		MessageCommand mc;
 		
 		if(arg instanceof NickCommand){
             c=(NickCommand) arg;
-            //textArea.append(c.intoString()+"\n");
         }
         if(arg instanceof MessageCommand){
             mc=(MessageCommand) arg;
@@ -254,4 +276,4 @@ public class LabelFrame extends JFrame implements Observer{
         }
 	}
 
-}
+}*/

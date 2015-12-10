@@ -5,8 +5,9 @@ public class NickCommand extends Command {
 	boolean busy;
 	
 	
-	NickCommand(){
-		super(CommandType.NICK);
+	NickCommand(CommandType type, String NickName){
+		super(type);
+		this.NickName=NickName;
 	}
 	
 	
