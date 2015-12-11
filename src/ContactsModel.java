@@ -1,7 +1,10 @@
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
 
-public class ContactsModel {
+public class ContactsModel  {
 	private String nick, ip;
 	private boolean isOnline;
 	private RandomAccessFile f;
@@ -10,15 +13,15 @@ public class ContactsModel {
 		this.ip = ip;
 		this.nick = nick;
 	}
-
+	ContactsModel(String nick, boolean online) {
+		this.isOnline = online;
+		this.nick = nick;
+	}
 	ContactsModel() {
 
 	}
 
-	ContactsModel(String nick, boolean online) {
-		this.nick = nick;
-		this.isOnline = online;
-	}
+
 
 	public String getNick() {
 		return nick;
@@ -27,26 +30,25 @@ public class ContactsModel {
 	public boolean isOnline() {
 		return isOnline;
 	}
-
 	public String toString() {
-		if (isOnline)
-			return nick + " online";
-		return nick;
-	}
+				if (isOnline)
+					return nick + " online";
+				return nick;
+			}
 
 	public String getIp() {
 		return ip;
 
 	}
 
-	public void addLocalNick(String nick, String ip) throws IOException {
+	public void addLocalNick() throws IOException {
 		f = new RandomAccessFile("LocalContacts.txt", "rw");
-		this.ip = ip;
-		this.nick = nick;
 		f.seek(f.length());
+		System.out.println(nick+ip);
 		String str = nick + "|" + ip + "\n";
 		f.write(str.getBytes());
 		f.close();
+	
 	}
 
 }
