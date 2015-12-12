@@ -233,8 +233,8 @@ public class MainForm<JForm> {
 		mainPanel.add(main_panel);
 		model = new HistoryModel();
 		textArea = new HistoryView(model);
-		textArea.setBackground(new Color(255, 255, 204));
-		textArea.setBorder(new LineBorder(Color.CYAN, 3));
+		textArea.setBackground(Color.WHITE);
+		textArea.setBorder(new LineBorder(null, 0));
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		textArea.setRows(10);

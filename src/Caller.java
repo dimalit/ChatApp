@@ -42,7 +42,7 @@ public class Caller {
 		try {
 			Socket s = new Socket();
 			s.connect(remoteAddress, 1000);
-			return  new Connection(s, localNick);
+		return  new Connection(s, localNick);
 		} catch (IOException e) {
 			System.out.println("Not connected");
 			return null;
