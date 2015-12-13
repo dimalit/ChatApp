@@ -224,16 +224,19 @@ public class ChatWindow extends JFrame implements Observer {
 			public void actionPerformed(ActionEvent event) {
 				message = textmess.getText();
 				long currentTimeMillis = System.currentTimeMillis();
-				if (comt != null) {
-				String time = new SimpleDateFormat("HH:mm:ss")
-						.format(currentTimeMillis);
-				mess.append(Protocol.localNick + " (" + time + "):" + "\n"
-						+ "   " + message + "\n");
-				}
+
 				try {
 					if (comt != null) {
+						String time = new SimpleDateFormat("HH:mm:ss")
+							.format(currentTimeMillis);
+						mess.append(Protocol.localNick + " (" + time + "):" + "\n"
+								+ "   " + message + "\n");
 						comt.getConnection().sendMessage(message);
 					} else {
+						String time = new SimpleDateFormat("HH:mm:ss")
+								.format(currentTimeMillis);
+						mess.append(Protocol.localNick + " (" + time + "):" + "\n"
+								+ "   " + message + "\n");
 						callt.getConnection().sendMessage(message);
 					}
 				} catch (IOException e) {
