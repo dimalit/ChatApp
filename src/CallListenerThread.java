@@ -7,6 +7,8 @@ public class CallListenerThread extends Observable implements Runnable {
     private ServerSocket serverSocket;
     private volatile boolean disconnected;
     private Connection connection;
+    private boolean isBusy;
+    private CallListener callListener;
 
     public CallListenerThread(){
 
@@ -58,5 +60,10 @@ public class CallListenerThread extends Observable implements Runnable {
 
     public void setDisconnected(boolean b){
         this.disconnected = b;
+    }
+
+    public void setBusy(Boolean isBusy){
+        this.isBusy = isBusy;
+        callListener.setStatus(isBusy);
     }
 }

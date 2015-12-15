@@ -18,28 +18,22 @@ public class IncomingConnection extends JFrame {
 		final JButton declineb = new JButton("Decline");
 
 		acceptb.addActionListener(new ActionListener(){
-			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-	                Protocol.statusBusy = true;
-
 
 	            }
 	        });
 
 		declineb.addActionListener(new ActionListener(){
-			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-	                //���������
-				
 
 	            }
 	        });
-		
+
 		declineb.setPreferredSize(new Dimension(100, 25));
 		acceptb.setPreferredSize(new Dimension(100, 25));
-		
+
 		declineb.setBackground(new Color(116, 199, 209));
 		acceptb.setBackground(new Color(116, 199, 209));
 		pan1.setBackground(new Color(220, 243, 246));
@@ -50,14 +44,14 @@ public class IncomingConnection extends JFrame {
 
 		jPanel.add(pan1);
 		jPanel.add(pan2);
-	
+
 		this.add(jPanel);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
-	
-	/*public static void main(String[] args) {
+
+	public static void main(String[] args) {
 		IncomingConnection incomingConnection = new IncomingConnection();
-	}*/
+	}
 }

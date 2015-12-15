@@ -247,7 +247,6 @@ public class ChatWindow extends JFrame implements Observer {
 		}
 
 		class ApplyAction implements ActionListener {
-
 			public void actionPerformed(ActionEvent event) {
 				Protocol.localNick = text1.getText();
 				Protocol.serverConnection.setLocalNick(Protocol.localNick);
@@ -258,7 +257,6 @@ public class ChatWindow extends JFrame implements Observer {
 		}
 
 		class ConnectAction implements ActionListener {
-
 			public void actionPerformed(ActionEvent event) {
 				mess.setText("");
 				Protocol.IP = text3.getText();
@@ -274,7 +272,7 @@ public class ChatWindow extends JFrame implements Observer {
 						comt.start();
 
 					} else {
-						mess.append("IP: " + Protocol.IP + " inaccessible\n");
+						mess.append("IP: " + Protocol.IP + " inaccessible" + "\n");
 						connect.setEnabled(true);
 						disconnect.setEnabled(false);
 						sendb.setEnabled(false);
@@ -282,14 +280,11 @@ public class ChatWindow extends JFrame implements Observer {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-
 				}
-
 			}
 		}
 
 		class DisconnectAction implements ActionListener {
-
 			public void actionPerformed(ActionEvent event) {
 				if (comt != null) {
 					try {
@@ -359,15 +354,19 @@ public class ChatWindow extends JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		sendb.setEnabled(true);
-		connect.setEnabled(false);
+
 		NickCommand c;
 		MessageCommand mescom;
+		Command com;
+
+		sendb.setEnabled(true);
+		connect.setEnabled(false);
 		if (arg instanceof NickCommand) {
 			c = (NickCommand) arg;
 			Protocol.remoteNick = c.getNick();
 			mess.append(c.intoString() + "\n");
-		} else if (arg instanceof MessageCommand) {
+		}
+		if (arg instanceof MessageCommand) {
 			mescom = (MessageCommand) arg;
 
 			long currentTimeMillis = System.currentTimeMillis();
@@ -376,9 +375,37 @@ public class ChatWindow extends JFrame implements Observer {
 			mess.append(Protocol.remoteNick + " (" + time + "):" + "\n" + "   "
 					+ mescom.getMessagetext() + "\n");
 		}
-
+		if (arg instanceof Command) {
+			com = (Command) arg;
+			if (com.getType() == Command.CommandTypes.accept) {
+				connect.setEnabled(false);
+				disconnect.setEnabled(true);
+				sendb.setEnabled(true);
+				apply.setEnabled(false);
+			}
+			if (com.getType() == Command.CommandTypes.reject) {
+				mess.append("It seems like " + Protocol.remoteNick + " doesn't want to talk to you :c" + "\n");
+				connect.setEnabled(true);
+				disconnect.setEnabled(false);
+				sendb.setEnabled(false);
+				apply.setEnabled(true);
+			}
+			if (com.getType() == Command.CommandTypes.disconnect) {
+				mess.append("Looks like we lost him :c" + "\n");
+				connect.setEnabled(true);
+				disconnect.setEnabled(false);
+				sendb.setEnabled(false);
+				apply.setEnabled(true);
+			}
+			if (com.getType() == Command.CommandTypes.busy) {
+				mess.append(com.toString());
+				connect.setEnabled(true);
+				disconnect.setEnabled(false);
+				sendb.setEnabled(false);
+				apply.setEnabled(true);
+			}
+		}
 	}
-
 }
 
 class Friend {
