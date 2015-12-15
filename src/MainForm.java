@@ -418,6 +418,9 @@ public class MainForm<JForm> {
 					JScrollPane scroll2 = new JScrollPane(list1);
 					scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 					contactsPanel.add(scroll1);
+					JLabel name = new JLabel("List of local contacts");
+					name.setHorizontalAlignment(JLabel.CENTER);
+					contactsPanel.add(name);
 					contactsPanel.add(scroll2);
 					frame.validate();
 					list.addListSelectionListener(new ListSelectionListener() {
