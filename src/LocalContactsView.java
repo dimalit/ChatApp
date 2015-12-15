@@ -9,32 +9,33 @@ import java.util.Observer;
 
 import javax.swing.DefaultListModel;
 
-public class LocalContactsView extends DefaultListModel  {
+public class LocalContactsView extends DefaultListModel {
 	private ContactsModel m;
-private int number;
+	private int number;
+
 	LocalContactsView() throws FileNotFoundException {
 	}
 
 	public void writeLocalNicks() throws IOException {
-		File file=new File("LocalContacts.txt");
-		if (file.exists() )
-		{		BufferedReader reader = new BufferedReader(new FileReader(file));
-				String line;
-				String[] arr;
-				while ((line = reader.readLine()) != null) {
-					addElement(line);
-					number++;
-				}
-	}	}
-
-	public boolean findNick(String nick,String ip)
-	{if (getSize()!=0)
-	{String str=nick+"|"+ip;
-		if (contains(str))
-			return true;
+		File file = new File("LocalContacts.txt");
+		if (file.exists()) {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line;
+			String[] arr;
+			while ((line = reader.readLine()) != null) {
+				addElement(line);
+				number++;
+			}
+		}
 	}
+
+	public boolean findNick(String nick, String ip) {
+		if (!isEmpty()) {
+			String str = nick + "|" + ip;
+			if (contains(str))
+				return true;
+		}
 		return false;
 	}
-	
 
 }
