@@ -45,6 +45,8 @@ public class CallListenerThread extends Observable implements Runnable {
             serverSocket = new ServerSocket(Protocol.PORT);
             while (true){
                 socket = serverSocket.accept();
+                //IncomingConnection incomingConnection = new IncomingConnection();
+                //if(Protocol.statusBusy == true){
                 connection = new Connection(socket);
                 if (connection.getSocket()!=null) {
                     CommandListenerThread clt = new CommandListenerThread(connection);
@@ -52,6 +54,7 @@ public class CallListenerThread extends Observable implements Runnable {
                     clt.start();
                     connection.sendNickHello(Protocol.localNick);
                 }
+                //}
             }
         } catch (IOException e) {
             e.printStackTrace();

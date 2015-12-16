@@ -166,6 +166,7 @@ public class ChatWindow extends JFrame implements Observer {
 		text1.setMaximumSize(new Dimension(100, 25));
 		text2.setMaximumSize(new Dimension(100, 25));
 		text3.setMaximumSize(new Dimension(100, 25));
+		text2.setEnabled(false);
 
 		apply.setPreferredSize(new Dimension(100, 25));
 		apply.setMaximumSize(new Dimension(100, 25));
@@ -176,6 +177,7 @@ public class ChatWindow extends JFrame implements Observer {
 		sendb.setMaximumSize(new Dimension(70, 50));
 		sendb.setPreferredSize(new Dimension(70, 50));
 		disconnect.setEnabled(false);
+
 
 		apply.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 		text1.setAlignmentX(JComponent.CENTER_ALIGNMENT);
@@ -226,22 +228,25 @@ public class ChatWindow extends JFrame implements Observer {
 				long currentTimeMillis = System.currentTimeMillis();
 
 				try {
-					if (comt != null) {
-						String time = new SimpleDateFormat("HH:mm:ss")
-							.format(currentTimeMillis);
-						mess.append(Protocol.localNick + " (" + time + "):" + "\n"
-								+ "   " + message + "\n");
-						comt.getConnection().sendMessage(message);
-					} else {
-						String time = new SimpleDateFormat("HH:mm:ss")
-								.format(currentTimeMillis);
-						mess.append(Protocol.localNick + " (" + time + "):" + "\n"
-								+ "   " + message + "\n");
-						callt.getConnection().sendMessage(message);
+					if (connection != null) {
+						if (comt != null) {
+							String time = new SimpleDateFormat("HH:mm:ss")
+									.format(currentTimeMillis);
+							mess.append(Protocol.localNick + " (" + time + "):" + "\n"
+									+ "   " + message + "\n");
+							comt.getConnection().sendMessage(message);
+						} else {
+							String time = new SimpleDateFormat("HH:mm:ss")
+									.format(currentTimeMillis);
+							mess.append(Protocol.localNick + " (" + time + "):" + "\n"
+									+ "   " + message + "\n");
+							callt.getConnection().sendMessage(message);
+						}
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					}catch(IOException e){
+						e.printStackTrace();
+					}
+
 				textmess.setText("");
 			}
 		}
@@ -262,6 +267,7 @@ public class ChatWindow extends JFrame implements Observer {
 				Protocol.IP = text3.getText();
 				connect.setEnabled(false);
 				disconnect.setEnabled(true);
+				textmess.setEnabled(true);
 				try {
 					Caller caller = new Caller();
 					connection = caller.call();
@@ -278,6 +284,7 @@ public class ChatWindow extends JFrame implements Observer {
 						sendb.setEnabled(false);
 						apply.setEnabled(true);
 					}
+					text2.setText(Protocol.remoteNick);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -299,6 +306,7 @@ public class ChatWindow extends JFrame implements Observer {
 				disconnect.setEnabled(false);
 				connect.setEnabled(true);
 				apply.setEnabled(true);
+				text2.setEnabled(false);
 				mess.append("-> Disconnected\n");
 			}
 		}

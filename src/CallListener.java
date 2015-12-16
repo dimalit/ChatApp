@@ -18,9 +18,6 @@ public class CallListener {
         }
     }
 
-    public SocketAddress getListenAddress() throws IOException{
-        return serverSocket.getLocalSocketAddress();
-    }
 
     public Boolean StatusBusy(){
         return isBusy;

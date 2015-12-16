@@ -6,9 +6,10 @@ public class IncomingConnection extends JFrame {
 
 	public IncomingConnection() {
 		this.setSize(380, 150);
-		this.setTitle("Incoming Connection");
+		this.setTitle("Incoming call");
 		ImageIcon image = new ImageIcon("F:\\chaticon.jpg");
 		this.setIconImage(image.getImage());
+		final JFrame frame= new JFrame();
 		final JPanel jPanel = new JPanel();
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
 		final JPanel pan1 = new JPanel();
@@ -18,17 +19,21 @@ public class IncomingConnection extends JFrame {
 		final JButton declineb = new JButton("Decline");
 
 		acceptb.addActionListener(new ActionListener(){
+			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-
-	            }
+				 Protocol.statusBusy = true;
+				 frame.dispose();
+			 }
 	        });
 
 		declineb.addActionListener(new ActionListener(){
+			
 			 @Override
 			 public void actionPerformed(ActionEvent e){
-
-	            }
+				Protocol.statusBusy = false;
+				frame.dispose();
+			 }
 	        });
 
 		declineb.setPreferredSize(new Dimension(100, 25));
@@ -44,14 +49,15 @@ public class IncomingConnection extends JFrame {
 
 		jPanel.add(pan1);
 		jPanel.add(pan2);
-
-		this.add(jPanel);
-		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		this.setVisible(true);
+		frame.add(jPanel);
+		frame.pack();
+		//this.add(jPanel);
+		//this.setLocationRelativeTo(null);
+		frame.setLocationRelativeTo(null);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		//this.setVisible(true);
+		frame.setVisible(true);
 	}
 
-	public static void main(String[] args) {
-		IncomingConnection incomingConnection = new IncomingConnection();
-	}
+
 }
