@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.Timer;
 
 public class ContactsViewModel{
-    ContactsView contactsView;
+/*    ContactsView contactsView;
     ArrayList<Contact> contactList = new ArrayList<Contact>();
     Logic logic;
 
@@ -43,12 +43,10 @@ public class ContactsViewModel{
 
     public void removeContact(Contact contact, ContactPanel contactPanel){
         contactList.remove(contact);
-        contactsView.delete(contactPanel);
+
     }
 
-    public void updateView(){
-        contactsView.fullUpdate();
-    }
+
 
     public void onlineUpdate(){
         ServerConnection serverConnection = logic.getServerConnection();
@@ -57,24 +55,24 @@ public class ContactsViewModel{
                 contact.setOnline(true);
             }
         }
-        contactsView.onlineUpdate();
+
     }
 
     public void getData(){
-        ServerConnection serverConnection = logic.getServerConnection();
-        String[] nicks = serverConnection.getAllNicks();
+
+        //String[] nicks = serverConnection.getAllNicks();
         for (String nick : nicks){
             if (nick.equals(logic.getLocalNick())) continue;
             Contact c = new Contact(this, nick, serverConnection.getIpForNick(nick));
             if (contactList.contains(c)) continue;
             contactList.add(c);
         }
-        updateView();
+
     }
 
     public void add(Contact contact){
         contactList.add(contact);
-        contactsView.addContact(contact);
+
     }
 
     public void writeToFile() {
@@ -107,5 +105,5 @@ public class ContactsViewModel{
         } catch (IOException e){
             System.out.println("Failed to find a file Contacts.txt");
         }
-    }
+    }*/
 }

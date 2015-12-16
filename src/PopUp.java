@@ -3,7 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PopUp extends JPopupMenu {
-
+/*
     JMenuItem delete,fav,call;
     Contact contact;
     ContactPanel contactPanel;
@@ -50,4 +50,5 @@ public class PopUp extends JPopupMenu {
             }
         });
     }
+    */
 }

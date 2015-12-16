@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class HistoryViewModel {
+    /*
     Logic logic;
     List<String> Messagelist = new ArrayList<String>();
     HistoryView historyView;
@@ -72,5 +73,5 @@ public class HistoryViewModel {
         historyView.clear();
     }
 
-
+*/
 }

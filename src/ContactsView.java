@@ -5,104 +5,64 @@ import java.util.Timer;
 
 public class ContactsView extends JPanel{
 
-    private JPanel contacts,favourites;
-    private ContactsViewModel contactsViewModel;
+    private JPanel contactsP,favouritesP;
+
+    JLabel contactsL = new JLabel("Contacts");
+    JLabel favouritesL = new JLabel("Favourites");
+
     private ArrayList<ContactPanel> list = new ArrayList<ContactPanel>();
 
-    public ContactsView(ContactsViewModel cvm){
-        contactsViewModel=cvm;
-        contactsViewModel.setContactsView(this);
+    public ContactsView(){
         createGUI();
     }
 
     private void createGUI(){
-        setBackground(Color.WHITE);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(Colors.softGreen);
+        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
-        JPanel top = new JPanel();
-        top.setBackground(Color.WHITE);
-        top.setLayout(new BoxLayout(top,BoxLayout.Y_AXIS));
-        JPanel bottom = new JPanel();
-        bottom.setBackground(Color.WHITE);
-        bottom.setLayout(new BoxLayout(bottom,BoxLayout.Y_AXIS));
+        setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(favouritesL);
+        add(Box.createVerticalStrut(10));
 
-        JLabel favouritesL = new JLabel("Favourites");
-        JLabel contactsL = new JLabel("Contacts");
-        Font font = new Font("Verdana",Font.BOLD,14);
-        favouritesL.setFont(font);
-        //favouritesL.setSize(new Dimension(50, 50));
-        //favouritesL.setHorizontalTextPosition(0);
+        favouritesP = new JPanel();
+        favouritesP.setLayout(new BoxLayout(favouritesP,BoxLayout.Y_AXIS));
+        favouritesP.setBackground(Colors.softGreen);
+        favouritesP.setAlignmentX(Component.LEFT_ALIGNMENT);
+        favouritesP.setAutoscrolls(true);
+        add(favouritesP);
+
+
+        add(Box.createVerticalStrut(10));
+        add(contactsL);
+        add(Box.createVerticalStrut(10));
+
+        contactsP = new JPanel();
+        contactsP.setAutoscrolls(true);
+        contactsP.setLayout(new BoxLayout(contactsP,BoxLayout.Y_AXIS));
+        contactsP.setBackground(Colors.softGreen);
+        contactsP.setAlignmentX(Component.LEFT_ALIGNMENT);
+        add(contactsP);
+
+        favouritesP.add(new ContactPanel());
+        for (int i=0;i<15;i++) {
+            contactsP.add(new ContactPanel());
+        }
+
+
+
+    }
+
+    public void setLabelFont(Font font){
         contactsL.setFont(font);
-        //contactsL.setSize(new Dimension(50, 50));
-
-        contacts = new JPanel();
-        contacts.setBackground(Color.WHITE);
-        contacts.setLayout(new BoxLayout(contacts,BoxLayout.Y_AXIS));
-        contacts.setMinimumSize(new Dimension(175, 150));
-
-        favourites = new JPanel();
-        favourites.setLayout(new BoxLayout(favourites,BoxLayout.Y_AXIS));
-        favourites.setMinimumSize(new Dimension(175, 150));
-        favourites.setBackground(Color.WHITE);
-
-        JScrollPane contactsS = new JScrollPane(contacts);
-        contactsS.setMinimumSize(new Dimension(175, 150));
-        JScrollPane favouritesS = new JScrollPane(favourites);
-        favouritesS.setMinimumSize(new Dimension(175, 150));
-
-        bottom.setPreferredSize(new Dimension(175,200));
-        top.setPreferredSize(new Dimension(175, 200));
-
-        top.add(favouritesL);
-        top.add(favouritesS);
-        bottom.add(contactsL);
-        bottom.add(contactsS);
-
-        add(top);
-        add(bottom);
-
-
-
+        favouritesL.setFont(font);
     }
 
-    public void fullUpdate(){
-        contacts.removeAll();
-        favourites.removeAll();
-        list.clear();
-        ArrayList<Contact> contactsList = (ArrayList<Contact>) contactsViewModel.getList();
-        for (Contact contact :  contactsList){
-            list.add(new ContactPanel(contact));
 
-        }
-        for (ContactPanel cp : list){
-            if (cp.isFav()) favourites.add(cp);
-            else contacts.add(cp);
-        }
-        updateUI();
-        contactsViewModel.onlineUpdate();
 
-    }
 
-    public void onlineUpdate(){
-        for (ContactPanel cp : list){
-            cp.update();
-        }
-    }
 
-    public void delete(ContactPanel contact){
-        if (contact.isFav()) favourites.remove(contact);
-        else contacts.remove(contact);
-        list.remove(contact);
-        updateUI();
-    }
 
-    public void addContact(Contact contact){
-        ContactPanel cp = new ContactPanel(contact);
-        list.add(cp);
-        if (cp.isFav()) favourites.add(cp);
-        else contacts.add(cp);
-        updateUI();
-    }
+
 
 
 }

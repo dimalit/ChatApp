@@ -1,6 +1,7 @@
 import java.io.IOException;
 
-public class CallListenerThread implements Runnable {
+public class CallListenerThread {
+    /*
 
     private String localNick;
     private CallListener callListener;
@@ -8,13 +9,13 @@ public class CallListenerThread implements Runnable {
     private String remoteNick;
     private Connection remoteConnection;
     private IncomingCallForm form;
-    Logic logic;
 
 
 
-    public CallListenerThread(String localNick,Boolean isBusy,Logic logic){
+
+    public CallListenerThread(String localNick,Boolean isBusy){
         callListener = new CallListener(localNick);
-        this.logic = logic;
+
     }
 
     public void run() {
@@ -24,9 +25,9 @@ public class CallListenerThread implements Runnable {
                 remoteConnection = callListener.getConnection();
                 if (remoteConnection == null) continue;
                 remoteNick=callListener.getRemoteNick();
-                form = new IncomingCallForm(remoteConnection,logic,remoteNick);
+                form = new IncomingCallForm(remoteConnection,remoteNick);
                 System.out.println("AZAZA");
-                logic.setRemoteNick(remoteNick);
+
             }
         }
             catch(IOException e){
@@ -57,5 +58,5 @@ public class CallListenerThread implements Runnable {
 
     public void kill() {
         stop = true;
-    }
+    }*/
 }

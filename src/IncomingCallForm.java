@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 
 public class IncomingCallForm extends JFrame {
+    /*
 
     private static final int Height = 150;
     private static final int Widht = 300;
@@ -84,5 +85,5 @@ public class IncomingCallForm extends JFrame {
 		this.add(panel);
         setVisible(true);
 	}
-
+*/
 }

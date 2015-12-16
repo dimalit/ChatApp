@@ -1,349 +1,295 @@
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
-
+import javax.swing.plaf.metal.MetalScrollBarUI;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class MainGUI extends JFrame {
-	JPanel panel = new JPanel();
-    Logic logic;
 
-    private static final int Height = 600;
-    private static final int Widht = 1000;
-	
-	JButton Send;
-	JButton Apply;
-	JButton Disconnect;
-	JButton Connect;
-    JButton AddNewContact;
-    JButton Options;
-    JToggleButton toggleOffOnline;
-	
-	JLabel login;
-	JLabel remoteAdress;
-	HistoryView historyView;
-	
-	JTextField textfieldlogin;	
-	JTextField EnterIp;
-    JTextField messageArea;
+    final byte BTN_WIDTH = 97;
+    final byte BTN_HEIGHT = 27;
 
-    ContactsView contactsView;
+    JLabel logged = new JLabel("Logged as");
+    JLabel talking = new JLabel("Talking to");
+    JLabel localNick = new JLabel("EvGe22");
+    JLabel remoteNick = new JLabel("");
 
-	String text;
-	
-	Font font = new Font("Roboto", Font.BOLD, 13);
+    JTextArea messageField = new JTextArea();
+    JTextArea historyView = new JTextArea();
 
-	LineBorder linebord = new LineBorder(Color.BLACK, 1);
+    JLabel logoutBtn = new JLabel("");
+    JLabel disconnectBtn = new JLabel("");
+    JLabel optionsBtn = new JLabel("");
+    JLabel sendBtn = new JLabel("");
 
-	MainGUI(final Logic logic){
-        this.logic=logic;
+    ContactsView contactsView = new ContactsView();
 
-		
-        JPanel panel = new JPanel();
-		panel.setLayout(null);
-		panel.setBackground(Color.white);
-		
-		login = new JLabel("Login");
-		login.setFont(font);
-		login.setBounds(10, 10, 50, 30);
-		textfieldlogin = new JTextField(logic.getLocalNick());
-		textfieldlogin.setBounds(10, 40, 115, 20);
-		textfieldlogin.setBorder(linebord);
-        textfieldlogin.addKeyListener(new KeyListener() {
+    JScrollPane contactsPane = new JScrollPane(contactsView);
+    JScrollPane historyPane = new JScrollPane(historyView);
 
-            @Override
-            public void keyTyped(KeyEvent e) {
+    JPanel leftTopPanel = new JPanel();
+    JPanel leftBottomPanel = new JPanel();
 
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode()==KeyEvent.VK_ENTER){
-                    applyNick();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
-
-        contactsView = new ContactsView(logic.getContactsViewModel());
-
-        contactsView.setBounds(0,20,175,400);
+    Font bigFont,smallFont;
 
 
-		remoteAdress = new JLabel("remote remoteAdress");
-		remoteAdress.setFont(font);
-		remoteAdress.setBounds(600,10,100,30);
-		EnterIp = new JTextField("files.litvinov.in.ua");
-		EnterIp.setBounds(600,40,150,20);
-		EnterIp.setBorder(linebord);
-        EnterIp.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
+    public MainGUI(){
+        super("ChatApp 2015");
+        createGUI();
+    }
 
-            }
+    private void createGUI(){
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            logic.getHistoryViewModel().clearView();
-                            logic.call(EnterIp.getText());
-                        }
-                    });
-                }
-            }
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(860,550));
+        setLayout(null);
+        getContentPane().setBackground(Color.white);
 
+        try {
+            smallFont =  Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(15f);
+            bigFont =  Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(18f);
 
-            @Override
-            public void keyReleased(KeyEvent e) {
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            }
-        });
+        leftTopPanel.setBackground(Colors.softGreen);
+        leftTopPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Colors.midGreen));
+        leftTopPanel.setBounds(-1,-1,280,123);
+        leftTopPanel.setLayout(null);
+        add(leftTopPanel);
 
-        Options = new JButton("Options");
-        Options.setLocation(720,60);
-        Options.setSize(150,25);
-        Options.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                OptionsFrame opf = new OptionsFrame();
-            }
-        });
-       
-		messageArea = new JTextField();
-	    messageArea.setHorizontalAlignment(JTextField.LEFT);
-		messageArea.setBorder(linebord);
-		messageArea.setBounds(10, 510, 636, 50);
-        messageArea.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
+        leftBottomPanel.setBackground(Colors.softGreen);
+        leftBottomPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Colors.midGreen));
+        leftBottomPanel.setBounds(-1,121,280,getHeight()-150);
+        leftBottomPanel.setLayout(null);
+        add(leftBottomPanel);
 
-            }
+        logged.setBounds(25,10,150,40);
+        logged.setFont(bigFont);
+        leftTopPanel.add(logged);
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode()==KeyEvent.VK_ENTER){
-                    send();
-                }
-            }
+        localNick.setBounds(25,32,150,40);
+        localNick.setFont(bigFont);
+        leftTopPanel.add(localNick);
 
-            @Override
-            public void keyReleased(KeyEvent e) {
+        talking.setBounds(153,10,150,40);
+        talking.setFont(bigFont);
+        leftTopPanel.add(talking);
 
-            }
-        });
+        remoteNick.setBounds(153,32,150,40);
+        remoteNick.setFont(bigFont);
+        leftTopPanel.add(remoteNick);
 
+        logoutBtn.setIcon(new ImageIcon("src/images/logoutN.png"));
+        logoutBtn.setDisabledIcon(new ImageIcon("src/images/logoutD.png"));
+        logoutBtn.setBounds(20,80,BTN_WIDTH,BTN_HEIGHT);
+        leftTopPanel.add(logoutBtn);
 
-		historyView = new HistoryView(logic.getHistoryViewModel());
-		historyView.setLocation(48, 170);
-		historyView.setSize(100,1000);
+        disconnectBtn.setIcon(new ImageIcon("src/images/disconN.png"));
+        disconnectBtn.setDisabledIcon(new ImageIcon("src/images/disconD.png"));
+        disconnectBtn.setEnabled(false);
+        disconnectBtn.setBounds(155,80,BTN_WIDTH,BTN_HEIGHT);
+        leftTopPanel.add(disconnectBtn);
 
-        toggleOffOnline = new JToggleButton();
+        messageField.setBounds(getWidth()-544,getHeight()-122,430,50);
+        messageField.setFont(smallFont);
+        messageField.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Colors.lightGreen));
+        messageField.setBackground(Colors.softGreen);
+        add(messageField);
+        messageField.setEnabled(false);
 
-        toggleOffOnline.setLocation(200,48);
-        toggleOffOnline.setSize(17, 17);
-        toggleOffOnline.setBorderPainted(false);
-        toggleOffOnline.setFocusable(false);
-        toggleOffOnline.setBorder(null);
-        toggleOffOnline.setMargin(new Insets(0, 0, 0, 0));
-        toggleOffOnline.setPressedIcon(new ImageIcon("src/images/off.png"));
-        toggleOffOnline.setDisabledIcon(new ImageIcon("src/images/off.png"));
-        toggleOffOnline.setContentAreaFilled(false);
-        toggleOffOnline.setFocusPainted(false);
-        toggleOffOnline.setIcon(new ImageIcon("src/images/on.png"));
+        sendBtn.setIcon(new ImageIcon("src/images/sendN.png"));
+        sendBtn.setDisabledIcon(new ImageIcon("src/images/sendD.png"));
+        sendBtn.setEnabled(false);
+        sendBtn.setBounds(getWidth()-96,getHeight()-124, 51,51);
+        add(sendBtn);
 
-        toggleOffOnline.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (logic.isOnline()) {
-                    toggleOffOnline.setIcon(new ImageIcon("src/images/off.png"));
-                    toggleOffOnline.setPressedIcon(new ImageIcon("src/images/on.png"));
-                     logic.setOnline(false);
-                }
-                else{
-                    toggleOffOnline.setIcon(new ImageIcon("src/images/on.png"));
-                    toggleOffOnline.setPressedIcon(new ImageIcon("src/images/off.png"));
-                    logic.setOnline(true);
-                }
-            }
-        });
+        optionsBtn.setIcon(new ImageIcon("src/images/optionsN.png"));
+        optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
+        add(optionsBtn);
 
-        JScrollPane scrollPane = new JScrollPane(historyView);
-        scrollPane.setLocation(10, 140);
-        scrollPane.setSize(740,350);
-        scrollPane.setBorder(linebord);
+        historyPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, Integer.MAX_VALUE));
+        historyPane.getVerticalScrollBar().setUI(new MyScrollbarUI());
+        historyPane.setBackground(Color.white);
+        historyPane.setBorder(null);
 
-        AddNewContact = new JButton("Add new Contact");
-        AddNewContact.setLocation(720,30);
-        AddNewContact.setSize(150,25);
-        AddNewContact.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                NewContactFrame ncf = new NewContactFrame(logic.getContactsViewModel());
-            }
-        });
-		
-		Apply = new JButton("Apply");
-		Apply.setLocation(10, 70);
-		Apply.setSize(115,25);
-		Apply.setFont(font);
-        Apply.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                applyNick();
-            }
-        });
-		
-        Disconnect = new JButton("Disconnect");
-		Disconnect.setLocation(600,99);
-		Disconnect.setSize(150,25);
-		Disconnect.setFont(font);
-        Disconnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logic.disconnect();
-            }
-        });
+        add(historyPane);
+
+        contactsPane.getVerticalScrollBar().setPreferredSize(new Dimension(15,Integer.MAX_VALUE));
+        contactsPane.getVerticalScrollBar().setUI(new MyScrollbarUI());
+        contactsPane.setBounds(25, 18, 240, leftBottomPanel.getHeight() - 50);
+        contactsPane.setBorder(null);
+        contactsPane.setBackground(Colors.softGreen);
+        contactsView.setLabelFont(bigFont);
+        leftBottomPanel.add(contactsPane);
 
 
-		
-	    Connect  = new JButton("Connect");
-	    Connect.setLocation(450,80);
-	    Connect.setSize(100, 30);
-	    Connect.setFont(font);
-        Connect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logic.getHistoryViewModel().clearView();
-                logic.call(EnterIp.getText());
-            }
-        });
-
-        Connect  = new JButton("Connect");
-	    Connect.setLocation(600,70);
-	    Connect.setSize(150, 25);
-	    Connect.setFont(font);
-		Send.addActionListener(new ActionListener( ) {
-        	public void actionPerformed(ActionEvent ae) {
-        		send();
-        	}
-        });
-
-        final JFrame frame = this;
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                if (logic.isConnected()){
-                    if (JOptionPane.showConfirmDialog(frame,
-                            "You have an established connection with another user.\n Are you sure you want to close the program?", "Warning",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                        exit();
-                    }
-                }
-                else{
-                    exit();
-                }
-
-            }
-        });
-		contactsView.setLocation(800,100);
-		panel.add(contactsView);
-		panel.add(login);
-		panel.add(textfieldlogin);
-		panel.add(messageArea);
-		panel.add(scrollPane);
-		panel.add(EnterIp);
-		panel.add(remoteAdress);
-        panel.add(toggleOffOnline);
-		panel.add(Send);
-		panel.add(Apply);
-		panel.add(Disconnect);
-        panel.add(Connect);
-        panel.add(AddNewContact);
-        panel.add(Options);
+        historyView.setFont(smallFont);
+        historyView.setEditable(false);
+        historyView.setText("\n\n\n\n\nasd\nafsdfsf\nafwasd\nasdfgd\naefasdf\nasdfsdrsetsd\naefsdfgste\nasfdsetsd\nsdfdgsersfg\nsdfgsgse\nserdfsd\naserfsdf\nsdfnn\n\n\n\\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\nsdfsdf");
 
 
-        this.add(panel);
-
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setSize(Widht, Height);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setTitle("ChatApp");
-        setConnected(false);
+        resize();
         setVisible(true);
-		
-	
-	}
+        addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        resize();
+                    }
+                });
+            }
+        });
 
-    public void exit(){
-        logic.exit();
-        System.exit(0);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        resize();
+                    }
+                });
+            }
+        });
     }
 
-    public void send(){
-        text = messageArea.getText();
-        if (Protocol.isMessageValid(text)) {
-            logic.sendMessage(text);
-            logic.getHistoryViewModel().addLocalMessage(text);
-            messageArea.setText("");
+
+
+    /*public static void main(String[] args) {
+        NewGUI a = new NewGUI();
+    }*/
+
+    public void resize(){
+        leftBottomPanel.setBounds(-1,121,280,getHeight()-150);
+        contactsPane.setBounds(25, 18, 240, leftBottomPanel.getHeight() - 50);
+        historyPane.setBounds(321,40,getWidth()-370,getHeight()-195);
+        sendBtn.setBounds(getWidth()-96,getHeight()-124, 51,51);
+        optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
+        messageField.setBounds(320,getHeight()-122,getWidth()-430 /*430*/,50);
+
+    }
+
+    public JLabel getOptionsBtn() {
+        return optionsBtn;
+    }
+
+    public JLabel getDisconnectBtn() {
+        return disconnectBtn;
+    }
+
+    public JLabel getLogoutBtn() {
+        return logoutBtn;
+    }
+
+    public JTextArea getHistoryView() {
+        return historyView;
+    }
+
+    public JTextArea getMessageField() {
+        return messageField;
+    }
+
+    public JLabel getRemoteNick() {
+        return remoteNick;
+    }
+
+    public JLabel getLocalNick() {
+        return localNick;
+    }
+
+    public JLabel getSendBtn() {
+        return sendBtn;
+    }
+
+    public ContactsView getContactsView() {
+        return contactsView;
+    }
+
+    public void setConnected(){
+        disconnectBtn.setEnabled(true);
+        sendBtn.setEnabled(true);
+        messageField.setEnabled(true);
+        logoutBtn.setEnabled(false);
+        messageField.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Colors.midGreen));
+    }
+
+    public void setDisconnected(){
+        disconnectBtn.setEnabled(false);
+        sendBtn.setEnabled(false);
+        messageField.setEnabled(false);
+        logoutBtn.setEnabled(true);
+        messageField.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Colors.lightGreen));
+    }
+
+    private static class MyScrollbarUI extends MetalScrollBarUI {
+
+        private Image imageThumb, imageTrack;
+        private JButton b = new JButton() {
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(0, 0);
+        }
+
+        };
+
+        MyScrollbarUI() {
+            imageThumb = PlainImage.create(15, 15, Colors.mainGreen);
+            imageTrack = PlainImage.create(15, 15, Colors.darkGreen);
+        }
+
+    @Override
+        protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+             g.translate(thumbBounds.x, thumbBounds.y);
+             g.setColor( Color.red );
+             g.drawRect( 0, 0, thumbBounds.width - 2, thumbBounds.height - 1 );
+             AffineTransform transform = AffineTransform.getScaleInstance((double)thumbBounds.width/imageThumb.getWidth(null),(double)thumbBounds.height/imageThumb.getHeight(null));
+             ((Graphics2D)g).drawImage(imageThumb, transform, null);
+             g.translate(-thumbBounds.x, -thumbBounds.y );
+        }
+
+        @Override
+        protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+            g.translate(trackBounds.x, trackBounds.y);
+            ((Graphics2D)g).drawImage(imageTrack,AffineTransform.getScaleInstance(1,(double)trackBounds.height/imageTrack.getHeight(null)),null);
+            g.translate(-trackBounds.x, -trackBounds.y );
+        }
+
+        @Override
+        protected JButton createDecreaseButton(int orientation) {
+            return b;
+        }
+
+        @Override
+        protected JButton createIncreaseButton(int orientation) {
+            return b;
         }
     }
 
-    public void applyNick(){
-        text=textfieldlogin.getText().replaceAll("\\s+", "_").replaceAll("\\-+","-").replaceAll("_+","_");
-         if (text.endsWith("_")) text=text.substring(0,text.length()-1);
-        textfieldlogin.setText(text);
-        if (Protocol.isNickValid(text))logic.setLocalNick(text);
-        else {
-            UltimateGUI ultimateGUI = new UltimateGUI("Only latin, numbers and \"_\" \"-\" ");
-        }
-    }
+    private static class PlainImage {
 
-    public void setConnected(boolean b){
-        if (b){
-            Connect.setEnabled(false);
-            Apply.setEnabled(false);
-            Send.setEnabled(true);
-            Disconnect.setEnabled(true);
-            textfieldlogin.setEditable(false);
-            EnterIp.setEditable(false);
-            messageArea.setEnabled(true);
-            toggleOffOnline.setEnabled(false);
+        static public Image create(int w, int h, Color c) {
+            BufferedImage bi = new BufferedImage(
+                    w, h, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = bi.createGraphics();
+            g2d.setPaint(c);
+            g2d.fillRect(0, 0, w, h);
+            g2d.dispose();
+            return bi;
         }
-        else {
-            Connect.setEnabled(true);
-            Apply.setEnabled(true);
-            Send.setEnabled(false);
-            Disconnect.setEnabled(false);
-            messageArea.setEnabled(false);
-            textfieldlogin.setEditable(true);
-            EnterIp.setEditable(true);
-            toggleOffOnline.setEnabled(true);
-        }
-    }
-
-    public void changeEnterIp(String ip){
-        EnterIp.setText(ip);
-    }
-
-    public void setOffline(){
-        Connect.setEnabled(false);
-        Apply.setEnabled(true);
-        Send.setEnabled(false);
-        Disconnect.setEnabled(false);
-        textfieldlogin.setEditable(true);
-        EnterIp.setEditable(false);
     }
 
 }

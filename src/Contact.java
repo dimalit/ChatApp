@@ -1,6 +1,6 @@
 
 public class Contact {
-    private boolean isFav,isOnline;
+  /*  private boolean isFav,isOnline;
     private String nick,IP;
     private ContactsViewModel contactsViewModel;
 
@@ -70,5 +70,5 @@ public class Contact {
     public void setFav(Boolean b){
         isFav=b;
     }
-
+*/
 }

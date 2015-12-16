@@ -2,11 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 
 public class ContactPanel extends JPanel{
     private Contact contact;
-    private JLabel label;
-    private ImageIcon imageIcon;
+    private JLabel label = new JLabel();
+    private Font font;
+
+    public ContactPanel(){
+        createGUI();
+    }
 
     public ContactPanel(Contact contact){
         this.contact=contact;
@@ -14,48 +20,25 @@ public class ContactPanel extends JPanel{
     }
 
     private void createGUI(){
-        setToolTipText(contact.getIP());
-        if (contact.isOnline()){
-            imageIcon  = new ImageIcon("src/images/on.png");
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT,new File("src/font/roboto-thin.ttf")).deriveFont(15f);
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        else {
-            imageIcon = new ImageIcon("src/images/off.png");
-        }
-        label = new JLabel(contact.getNick());
-        label.setIcon(imageIcon);
-        setBackground(Color.WHITE);
-        final PopUp menu = new PopUp(this);
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                menu.show(e.getComponent(), e.getX(), e.getY());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setBackground(Color.CYAN);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(Color.WHITE);
-            }
-        });
-        setMinimumSize(new Dimension(200,25));
-        setMaximumSize(new Dimension(200,25));
+        setLayout(null);
+        setBackground(Colors.midGreen);
+        setMinimumSize(new Dimension(200, 25));
+        setPreferredSize(new Dimension(200,25));
+        setMaximumSize(new Dimension(200, 25));
+        label.setBounds(5, 3, 200, 20);
+        label.setFont(font);
+        label.setText("Contact exz");
+        label.setIcon(new ImageIcon("src/images/on.png"));
         add(label);
     }
-
+/*
     public boolean isFav(){
         return contact.isFav();
     }
@@ -72,6 +55,14 @@ public class ContactPanel extends JPanel{
 
     public Contact getContact(){
         return contact;
+    }
+*/
+    public static void main(String[] args) {
+        final JFrame test = new JFrame();
+        test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        test.add(new ContactPanel());
+        test.setVisible(true);
+
     }
 
 }

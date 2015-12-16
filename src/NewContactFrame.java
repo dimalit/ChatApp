@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class NewContactFrame extends JFrame{
+    /*
 
     JButton Cancel;
     JButton Accept;
@@ -76,5 +77,6 @@ public class NewContactFrame extends JFrame{
     public void close(){
         dispose();
     }
+    */
 
 }

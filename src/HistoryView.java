@@ -1,12 +1,12 @@
 import javax.swing.*;
 
-public class HistoryView extends JTextArea{
-    HistoryViewModel historyViewModel;
+public class HistoryView {
+    /*
     int currentSize=0;
 
-    public HistoryView(HistoryViewModel historyViewModel){
-        this.historyViewModel=historyViewModel;
-        historyViewModel.setHistoryView(this);
+    public HistoryView(){
+
+
         setEditable(false);
         setAutoscrolls(true);
     }
@@ -23,4 +23,5 @@ public class HistoryView extends JTextArea{
         currentSize=0;
         setText("");
     }
+    */
 }
