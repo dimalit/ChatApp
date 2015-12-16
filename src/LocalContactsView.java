@@ -30,12 +30,8 @@ public class LocalContactsView extends DefaultListModel {
 	}
 
 	public boolean findNick(String nick, String ip) {
-		if (!isEmpty()) {
-			String str = nick + "|" + ip;
-			if (contains(str))
-				return true;
-		}
-		return false;
+		System.out.println(nick + " "+ ip);
+		return contains(nick+"|"+ip);
 	}
 
 }
