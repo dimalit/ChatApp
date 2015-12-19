@@ -22,7 +22,6 @@ public class Caller {
         lastCommand = connection.recieve();
         if (lastCommand.type==CommandType.NICK) {
             nickCommand = (NickCommand) lastCommand;
-
         }
         else{
             connection.disconnect();
@@ -44,7 +43,7 @@ public class Caller {
         }
 
         //Если не занят, то отсылаем ник и ждём подтверждения
-        connection.sendNickHello(localNick);
+
         lastCommand = connection.recieve();
 
         //Если Accept - вернуть connection

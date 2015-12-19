@@ -27,6 +27,7 @@ public class ContactPanel extends JPanel{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         setLayout(null);
         setBackground(Colors.midGreen);
         setMinimumSize(new Dimension(200, 25));
@@ -34,17 +35,17 @@ public class ContactPanel extends JPanel{
         setMaximumSize(new Dimension(200, 25));
         label.setBounds(5, 3, 200, 20);
         label.setFont(font);
-        label.setText("Contact exz");
-        label.setIcon(new ImageIcon("src/images/on.png"));
+        label.setText(contact.getNick());
+        if (contact.isOnline()) label.setIcon(new ImageIcon("src/images/on.png"));
+        else label.setIcon(new ImageIcon("src/images/off.png"));
         add(label);
     }
-/*
+
     public boolean isFav(){
         return contact.isFav();
     }
 
     public void update(){
-        if (contact.getNick()!=label.getText()) label.setText(contact.getNick());
         if (contact.isOnline()) label.setIcon(new ImageIcon("src/images/on.png"));
         else label.setIcon(new ImageIcon("src/images/off.png"));
     }
@@ -56,13 +57,6 @@ public class ContactPanel extends JPanel{
     public Contact getContact(){
         return contact;
     }
-*/
-    public static void main(String[] args) {
-        final JFrame test = new JFrame();
-        test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        test.add(new ContactPanel());
-        test.setVisible(true);
 
-    }
 
 }

@@ -19,8 +19,44 @@ class Connection{
         }
     }
 
+    public void sendServerHello(){
+        try {
+            out.write(new StringBuilder(Protocol.HELLO_SERVER).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.HELLO_CLIENT;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void sendNickHello(String nick){
+    public void sendCall(String nick){
+        try {
+            out.write(new StringBuilder(Protocol.CALL).append(" ").append(nick).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.CALL;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendLogin(String nick,String password){
+        try {
+            out.write(new StringBuilder(Protocol.LOGIN).append(" ").append(nick).append(" ").append(password.hashCode()).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.LOGIN;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendSignUp(String nick,String password){
+        try {
+            out.write(new StringBuilder(Protocol.SIGNUP).append(" ").append(nick).append(" ").append(password.hashCode()).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.SIGNUP;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*public void sendNickHello(String nick){
         try {
             out.write(new StringBuilder(Protocol.GREETING).append(nick).append("\n").toString().getBytes("UTF-8"));
             lastCommand=CommandType.NICK;
@@ -28,6 +64,8 @@ class Connection{
             e.printStackTrace();
         }
     }
+
+
 
     public void sendNickBusy(String nick){
         try {
@@ -56,7 +94,7 @@ class Connection{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    } */
 
     public void sendMessage(String message){
         try {
@@ -79,15 +117,20 @@ class Connection{
         }
     }
 
-    public String getRemoteIP(){
-        return socket.getInetAddress().getHostAddress();
+    public void disconnectFromUser(String nick){
+        try{
+            out.write(new StringBuilder(Protocol.DISCONNECT_FROM_USER).append(nick).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.DISCONNECT_FROM_USER;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getContacts(){
+
     }
 
     public Command recieve(){
         return  Command.getCommand(in);
-    }
-
-    public CommandType getLastCommand(){
-        return lastCommand;
     }
 }

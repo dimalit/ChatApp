@@ -25,7 +25,7 @@ public class MainGUI extends JFrame {
 
     JLabel logoutBtn = new JLabel("");
     JLabel disconnectBtn = new JLabel("");
-    JLabel optionsBtn = new JLabel("");
+    //JLabel optionsBtn = new JLabel("");
     JLabel sendBtn = new JLabel("");
 
     ContactsView contactsView = new ContactsView();
@@ -46,7 +46,7 @@ public class MainGUI extends JFrame {
 
     private void createGUI(){
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(860,550));
         setLayout(null);
         getContentPane().setBackground(Color.white);
@@ -113,9 +113,9 @@ public class MainGUI extends JFrame {
         sendBtn.setBounds(getWidth()-96,getHeight()-124, 51,51);
         add(sendBtn);
 
-        optionsBtn.setIcon(new ImageIcon("src/images/optionsN.png"));
+        /*optionsBtn.setIcon(new ImageIcon("src/images/optionsN.png"));
         optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
-        add(optionsBtn);
+        add(optionsBtn);*/
 
         historyPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, Integer.MAX_VALUE));
         historyPane.getVerticalScrollBar().setUI(new MyScrollbarUI());
@@ -139,7 +139,6 @@ public class MainGUI extends JFrame {
 
 
         resize();
-        setVisible(true);
         addWindowStateListener(new WindowStateListener() {
             @Override
             public void windowStateChanged(WindowEvent e) {
@@ -166,25 +165,19 @@ public class MainGUI extends JFrame {
         });
     }
 
-
-
-    /*public static void main(String[] args) {
-        NewGUI a = new NewGUI();
-    }*/
-
     public void resize(){
         leftBottomPanel.setBounds(-1,121,280,getHeight()-150);
         contactsPane.setBounds(25, 18, 240, leftBottomPanel.getHeight() - 50);
         historyPane.setBounds(321,40,getWidth()-370,getHeight()-195);
         sendBtn.setBounds(getWidth()-96,getHeight()-124, 51,51);
-        optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
+        //optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
         messageField.setBounds(320,getHeight()-122,getWidth()-430 /*430*/,50);
 
     }
 
-    public JLabel getOptionsBtn() {
+   /* public JLabel getOptionsBtn() {
         return optionsBtn;
-    }
+    } */
 
     public JLabel getDisconnectBtn() {
         return disconnectBtn;
@@ -232,6 +225,10 @@ public class MainGUI extends JFrame {
         messageField.setEnabled(false);
         logoutBtn.setEnabled(true);
         messageField.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Colors.lightGreen));
+    }
+
+    public void setLocalNick(String nick){
+        localNick.setText(nick);
     }
 
     private static class MyScrollbarUI extends MetalScrollBarUI {

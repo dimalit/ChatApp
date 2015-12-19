@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -6,14 +7,13 @@ import java.util.Date;
 import java.util.List;
 
 public class HistoryViewModel {
-    /*
-    Logic logic;
+    String localNick,remoteNick;
     List<String> Messagelist = new ArrayList<String>();
-    HistoryView historyView;
+    JTextArea historyView;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[kk:mm:ss dd.MM.yy]");
 
-    public HistoryViewModel(Logic logic){
-        this.logic = logic;
+    public HistoryViewModel(){
+
     }
 
     private String composeString(String message){
@@ -21,12 +21,12 @@ public class HistoryViewModel {
     }
 
     public void addRemoteMessage(String message){
-        Messagelist.add(new StringBuilder(logic.getRemoteNick()).append(" ").append(composeString(message)).toString());
+        Messagelist.add(new StringBuilder(remoteNick).append(" ").append(composeString(message)).toString());
         notifyHistoryView();
     }
 
     public void addLocalMessage(String message){
-        Messagelist.add(new StringBuilder(logic.getLocalNick()).append(" ").append(composeString(message)).toString());
+        Messagelist.add(new StringBuilder(localNick).append(" ").append(composeString(message)).toString());
         notifyHistoryView();
     }
 
@@ -36,7 +36,7 @@ public class HistoryViewModel {
     }
 
     public void notifyHistoryView(){
-        historyView.updateYourself();
+
     }
 
     public int getSize(){
@@ -47,7 +47,7 @@ public class HistoryViewModel {
         return Messagelist.get(i);
     }
 
-    public void setHistoryView(HistoryView historyView){
+    public void setHistoryView(JTextArea historyView){
         this.historyView = historyView;
     }
 
@@ -56,7 +56,7 @@ public class HistoryViewModel {
         FileWriter out = null;
         try {
             out = new FileWriter(new StringBuilder(simpleDateFormat.format(
-                    new Date(System.currentTimeMillis()))).append(logic.getRemoteNick()).append(".txt").toString());
+                    new Date(System.currentTimeMillis()))).append(remoteNick).append(".txt").toString());
             for (String string : Messagelist){
                 out.write(string+"\n");
                 out.flush();
@@ -70,8 +70,8 @@ public class HistoryViewModel {
 
     public void clearView(){
         Messagelist = new ArrayList<String>();
-        historyView.clear();
+        historyView.setText("");
     }
 
-*/
+
 }

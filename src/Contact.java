@@ -1,13 +1,11 @@
 
 public class Contact {
-  /*  private boolean isFav,isOnline;
-    private String nick,IP;
-    private ContactsViewModel contactsViewModel;
+    private boolean isFav,isOnline;
+    private String nick;
 
-    public Contact(ContactsViewModel cvm,String nick,String IP){
-        contactsViewModel=cvm;
+
+    public Contact(String nick){
         this.nick=nick;
-        this.IP=IP;
         isFav=false;
         isOnline=false;
     }
@@ -32,43 +30,29 @@ public class Contact {
         this.nick = nick;
     }
 
-    public String getIP() {
-        return IP;
-    }
 
-    public void setIP(String IP) {
-        this.IP = IP;
-    }
-
-    public void changeFav(ContactPanel contactPanel){
+    public void changeFav(){
         if (isFav){
-            contactsViewModel.removeContact(this,contactPanel);
             isFav=false;
-            contactsViewModel.add(this);
         }
         else {
-            contactsViewModel.removeContact(this,contactPanel);
             isFav=true;
-            contactsViewModel.add(this);
         }
-    }
-
-    public void call(){
-        contactsViewModel.call(this);
-    }
-
-    public void remove(ContactPanel tmp){
-        contactsViewModel.removeContact(this,tmp);
     }
 
     public boolean equals(Object object){
         Contact tmp = (Contact) object;
-        if (nick.equals(tmp.nick) && getIP().equals(tmp.getIP())) return true;
+        if (nick.equals(tmp.nick)) return true;
         else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return nick.hashCode();
     }
 
     public void setFav(Boolean b){
         isFav=b;
     }
-*/
+
 }

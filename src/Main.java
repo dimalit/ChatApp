@@ -1,14 +1,170 @@
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
 
 public class Main extends JFrame {
 
     MainGUI mainFrame;
+    LogInWindow logInWindow;
+    SignUpWindow signUpWindow;
+    Connection connection;
+
+    boolean isConnected;
 
     public Main() {
+        try {
+            connection = ServerCaller.call();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (connection==null) {
+            UltimateGUI ultimateGUI = new UltimateGUI("Could not connect to main server");
+        }
+        else {
+            createMainFrame();
+            createLogInWindow();
+            createSignUpWindow();
+        }
+    }
+
+
+
+    private void createLogInWindow(){
+        logInWindow = new LogInWindow();
+
+        logInWindow.getSigninBtn().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                logInWindow.getSigninBtn().setIcon(new ImageIcon("src/images/signingP.png"));
+                String tmp = "";
+                for (char c : logInWindow.getPassword().getPassword()){
+                    tmp+=c;
+                }
+                tmp = "" + tmp.hashCode();
+                connection.sendLogin(logInWindow.getLogin().getText(),tmp);
+                Command command = connection.recieve();
+                if (command.type==CommandType.ACCEPT) {
+                    mainFrame.setLocalNick(logInWindow.getLogin().getText());
+                    logInWindow.setVisible(false);
+                    signUpWindow.dispose();
+                    mainFrame.setVisible(true);
+                }
+                else{
+                    UltimateGUI ultimateGUI = new UltimateGUI("Wrong login\\password");
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                logInWindow.getSigninBtn().setIcon(new ImageIcon("src/images/signingN.png"));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                logInWindow.getSigninBtn().setIcon(new ImageIcon("src/images/signingH.png"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                logInWindow.getSigninBtn().setIcon(new ImageIcon("src/images/signingN.png"));
+            }
+        });
+
+        logInWindow.getSignupBtn().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                logInWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptP.png"));
+                logInWindow.dispose();
+                signUpWindow.setVisible(true);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                logInWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptN.png"));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                logInWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptH.png"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                logInWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptN.png"));
+            }
+        });
+    }
+
+    private void createSignUpWindow(){
+        signUpWindow = new SignUpWindow();
+
+        signUpWindow.getSignupBtn().addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                signUpWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptP.png"));
+                String tmp = "",tmp1 ="";
+                for (char c : signUpWindow.getPassword().getPassword()){
+                    tmp+=c;
+                }
+                for (char c : signUpWindow.getPasswordC().getPassword()){
+                    tmp1+=c;
+                }
+                if (tmp.equals(tmp1)) {
+                    tmp = "" + tmp.hashCode();
+                    connection.sendSignUp(signUpWindow.getLogin().getText(), tmp);
+                    Command command = connection.recieve();
+                    System.out.println("Getting accept");
+                    if (command.type == CommandType.ACCEPT) {
+                        System.out.println("Got accept");
+                        mainFrame.setLocalNick(signUpWindow.getLogin().getText());
+                        signUpWindow.setVisible(false);
+                        signUpWindow.dispose();
+                        mainFrame.setVisible(true);
+                    } else {
+                        UltimateGUI ultimateGUI = new UltimateGUI("User with such login already exists");
+                    }
+
+                }
+                else{
+                    UltimateGUI ultimateGUI = new UltimateGUI("Passwords must match!");
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                signUpWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptN.png"));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                signUpWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptH.png"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                signUpWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptN.png"));
+            }
+        });
+    }
+
+    private void createMainFrame(){
         mainFrame = new MainGUI();
 
         mainFrame.getDisconnectBtn().addMouseListener(new MouseListener() {
@@ -80,6 +236,10 @@ public class Main extends JFrame {
                     @Override
                     public void run() {
                         mainFrame.getLogoutBtn().setIcon(new ImageIcon("src/images/logoutP.png"));
+                        mainFrame.dispose();
+                        createMainFrame();
+                        createLogInWindow();
+                        createSignUpWindow();
                     }
                 });
             }
@@ -110,58 +270,6 @@ public class Main extends JFrame {
                     @Override
                     public void run() {
                         mainFrame.getLogoutBtn().setIcon(new ImageIcon("src/images/logoutN.png"));
-                    }
-                });
-            }
-        });
-
-        mainFrame.getOptionsBtn().addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainFrame.getOptionsBtn().setIcon(new ImageIcon("src/images/optionsP.png"));
-                    }
-                });
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainFrame.getOptionsBtn().setIcon(new ImageIcon("src/images/optionsP.png"));
-                    }
-                });
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainFrame.getOptionsBtn().setIcon(new ImageIcon("src/images/optionsN.png"));
-                    }
-                });
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainFrame.getOptionsBtn().setIcon(new ImageIcon("src/images/optionsH.png"));
-                    }
-                });
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainFrame.getOptionsBtn().setIcon(new ImageIcon("src/images/optionsN.png"));
                     }
                 });
             }
@@ -239,10 +347,52 @@ public class Main extends JFrame {
             }
         });
 
-        mainFrame.setConnected();
+        mainFrame.setDisconnected();
 
+        mainFrame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
 
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (isConnected) {
+
+                }
+                else{
+                    mainFrame.dispose();
+                    System.exit(0);
+                }
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
+
     public static void main(String[] args) {
         Main main = new Main();
     }

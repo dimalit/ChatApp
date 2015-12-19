@@ -22,6 +22,8 @@ public class Command {
         if (string.contains(Protocol.REJECTED)) return new Command(CommandType.REJECT);
         if (string.contains(Protocol.GREETING)) return  new NickCommand(string);
         if (string.contains(Protocol.MESSAGE)) return new MessageCommand(Protocol.decode(in.nextLine()));
+        if (string.contains(Protocol.HELLO_SERVER)) return new Command(CommandType.HELLO_SERVER);
+        if (string.contains(Protocol.HELLO_CLIENT)) return new Command(CommandType.HELLO_CLIENT);
         return null;
     }
 

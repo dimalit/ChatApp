@@ -25,27 +25,7 @@ public class CallListener {
 
     public Connection getConnection() throws IOException {
         Connection connection = new Connection(serverSocket.accept());
-        if (!isOnline){
-            connection.disconnect();
-            return null;
-        }
-        if (!isBusy){
-            connection.sendNickHello(localNick);
-            lastCommand=connection.recieve();
-            if (lastCommand.type==CommandType.NICK){
-                nickCommand = (NickCommand) lastCommand;
-                remoteNick = nickCommand.getNick();
-                return connection;
-            }
-            else{
-                return null;
-            }
-        }
-        else{
-            connection.sendNickBusy(localNick);
-            connection.disconnect();
-            return null;
-        }
+        return connection;
     }
 
     public void setBusy(boolean isBusy) {

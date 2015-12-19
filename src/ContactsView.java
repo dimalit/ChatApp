@@ -42,15 +42,9 @@ public class ContactsView extends JPanel{
         contactsP.setBackground(Colors.softGreen);
         contactsP.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(contactsP);
-
-        favouritesP.add(new ContactPanel());
-        for (int i=0;i<15;i++) {
-            contactsP.add(new ContactPanel());
-        }
-
-
-
     }
+
+
 
     public void setLabelFont(Font font){
         contactsL.setFont(font);
