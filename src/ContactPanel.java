@@ -1,3 +1,5 @@
+import com.sun.org.apache.bcel.internal.generic.POP;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -29,7 +31,7 @@ public class ContactPanel extends JPanel{
         }
 
         setLayout(null);
-        setBackground(Colors.midGreen);
+        setBackground(Colors.softGreen);
         setMinimumSize(new Dimension(200, 25));
         setPreferredSize(new Dimension(200,25));
         setMaximumSize(new Dimension(200, 25));
@@ -39,6 +41,34 @@ public class ContactPanel extends JPanel{
         if (contact.isOnline()) label.setIcon(new ImageIcon("src/images/on.png"));
         else label.setIcon(new ImageIcon("src/images/off.png"));
         add(label);
+
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                PopUp popUp = new PopUp(getThis());
+                popUp.show(label,e.getX(),e.getY());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setBackground(Colors.mainGreen);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setBackground(Colors.softGreen);
+            }
+        });
     }
 
     public boolean isFav(){
@@ -56,6 +86,10 @@ public class ContactPanel extends JPanel{
 
     public Contact getContact(){
         return contact;
+    }
+
+    private ContactPanel getThis(){
+        return this;
     }
 
 

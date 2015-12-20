@@ -12,8 +12,9 @@ public class HistoryViewModel {
     JTextArea historyView;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("[kk:mm:ss dd.MM.yy]");
 
-    public HistoryViewModel(){
 
+    public HistoryViewModel(JTextArea historyView){
+        this.historyView = historyView;
     }
 
     private String composeString(String message){
@@ -21,34 +22,28 @@ public class HistoryViewModel {
     }
 
     public void addRemoteMessage(String message){
-        Messagelist.add(new StringBuilder(remoteNick).append(" ").append(composeString(message)).toString());
-        notifyHistoryView();
+        String tmp = new StringBuilder(remoteNick).append(" ").append(composeString(message)).toString();
+        Messagelist.add(tmp);
+        historyView.append(tmp+"\n");
+
     }
 
     public void addLocalMessage(String message){
-        Messagelist.add(new StringBuilder(localNick).append(" ").append(composeString(message)).toString());
-        notifyHistoryView();
+        String tmp = new StringBuilder(localNick).append(" ").append(composeString(message)).toString();
+        Messagelist.add(tmp);
+        historyView.append(tmp+"\n");
+
     }
 
     public void addSystemMessage(String message){
         Messagelist.add(composeString(message));
-        notifyHistoryView();
-    }
-
-    public void notifyHistoryView(){
+        historyView.append(composeString(message)+"\n");
 
     }
 
-    public int getSize(){
-        return Messagelist.size();
-    }
 
     public String get(int i){
         return Messagelist.get(i);
-    }
-
-    public void setHistoryView(JTextArea historyView){
-        this.historyView = historyView;
     }
 
     public void writeHistoryFile(){

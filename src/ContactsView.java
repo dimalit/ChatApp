@@ -44,6 +44,19 @@ public class ContactsView extends JPanel{
         add(contactsP);
     }
 
+    public void addContact(Contact contact){
+        ContactPanel tmp = new ContactPanel(contact);
+        if (contact.isFav()) favouritesP.add(tmp);
+        else contactsP.add(tmp);
+    }
+
+    public void delete(ContactPanel contact){
+        if (contact.isFav()) favouritesP.remove(contact);
+        else contactsP.remove(contact);
+        list.remove(contact);
+        updateUI();
+    }
+
 
 
     public void setLabelFont(Font font){

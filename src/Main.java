@@ -2,13 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends JFrame {
 
     MainGUI mainFrame;
     LogInWindow logInWindow;
     SignUpWindow signUpWindow;
-    Connection connection;
+    HistoryViewModel historyViewModel;
+    ContactsViewModel contactsViewModel;
+    public static Connection connection;
 
     boolean isConnected;
 
@@ -26,6 +29,8 @@ public class Main extends JFrame {
             createMainFrame();
             createLogInWindow();
             createSignUpWindow();
+            historyViewModel = new HistoryViewModel(mainFrame.getHistoryView());
+            contactsViewModel = new ContactsViewModel(mainFrame.getContactsView());
         }
     }
 
@@ -55,6 +60,8 @@ public class Main extends JFrame {
                     logInWindow.setVisible(false);
                     signUpWindow.dispose();
                     mainFrame.setVisible(true);
+                    CommandListenerThread clt = new CommandListenerThread(connection);
+                    clt.start();
                 }
                 else{
                     UltimateGUI ultimateGUI = new UltimateGUI("Wrong login\\password");
@@ -105,6 +112,44 @@ public class Main extends JFrame {
                 logInWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptN.png"));
             }
         });
+
+        logInWindow.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                connection.disconnect();
+                System.exit(0);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
 
     private void createSignUpWindow(){
@@ -137,6 +182,8 @@ public class Main extends JFrame {
                         signUpWindow.setVisible(false);
                         signUpWindow.dispose();
                         mainFrame.setVisible(true);
+                        CommandListenerThread clt = new CommandListenerThread(connection);
+                        clt.start();
                     } else {
                         UltimateGUI ultimateGUI = new UltimateGUI("User with such login already exists");
                     }
@@ -160,6 +207,44 @@ public class Main extends JFrame {
             @Override
             public void mouseExited(MouseEvent e) {
                 signUpWindow.getSignupBtn().setIcon(new ImageIcon("src/images/signuptN.png"));
+            }
+        });
+
+        signUpWindow.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                connection.disconnect();
+                System.exit(0);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
             }
         });
     }
@@ -236,6 +321,7 @@ public class Main extends JFrame {
                     @Override
                     public void run() {
                         mainFrame.getLogoutBtn().setIcon(new ImageIcon("src/images/logoutP.png"));
+                        connection.logout();
                         mainFrame.dispose();
                         createMainFrame();
                         createLogInWindow();
@@ -361,8 +447,7 @@ public class Main extends JFrame {
 
                 }
                 else{
-                    mainFrame.dispose();
-                    System.exit(0);
+                    exit();
                 }
             }
 
@@ -391,6 +476,56 @@ public class Main extends JFrame {
 
             }
         });
+    }
+
+    private void exit(){
+        connection.disconnect();
+        System.exit(0);
+    }
+
+
+
+    private class CommandListenerThread extends Thread{
+
+        private Command lastCommand;
+        private Connection connection;
+        private boolean stop;
+
+
+        public CommandListenerThread(Connection connection){
+            this.connection=connection;
+
+        }
+
+        public void run() {
+
+            connection.getContacts();
+
+            while (!stop) {
+                lastCommand = connection.recieve();
+                if (lastCommand==null) continue;
+                switch (lastCommand.type){
+                    case CONTACTS:{
+                        ContactsCommand tmp = (ContactsCommand) lastCommand;
+                        ArrayList<Contact> tmpArr = tmp.getArrayList();
+                        System.out.println("Got contacts");
+                        for (Contact contact : tmpArr){
+                            contact.setContactsViewModel(contactsViewModel);
+                            contactsViewModel.add(contact);
+                        }
+                        break;
+                    }
+                    case LOGOUT:{
+                        return;
+                    }
+
+                }
+            }
+        }
+
+        public void kill(){
+            stop = true;
+        }
     }
 
     public static void main(String[] args) {

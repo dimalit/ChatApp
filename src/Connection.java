@@ -117,6 +117,15 @@ class Connection{
         }
     }
 
+    public void logout(){
+        try {
+            out.write(new StringBuilder(Protocol.LOGOUT).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.LOGOUT;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void disconnectFromUser(String nick){
         try{
             out.write(new StringBuilder(Protocol.DISCONNECT_FROM_USER).append(nick).append("\n").toString().getBytes("UTF-8"));
@@ -127,8 +136,22 @@ class Connection{
     }
 
     public void getContacts(){
+        try {
+            out.write(new StringBuilder(Protocol.GET_CONTACTS).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.GET_CONTACTS;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendContacts(){
 
     }
+
+    public void getOnline(){
+
+    }
+
 
     public Command recieve(){
         return  Command.getCommand(in);
