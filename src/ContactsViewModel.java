@@ -36,4 +36,11 @@ public class ContactsViewModel{
     }
 
 
+    public String getContacts() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Contact contact : contactList){
+            stringBuilder.append(" ").append(contact.getNick()).append(" ").append(contact.isFav());
+        }
+        return stringBuilder.toString();
+    }
 }

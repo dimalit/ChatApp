@@ -55,29 +55,6 @@ class Connection{
         }
     }
 
-
-    /*public void sendNickHello(String nick){
-        try {
-            out.write(new StringBuilder(Protocol.GREETING).append(nick).append("\n").toString().getBytes("UTF-8"));
-            lastCommand=CommandType.NICK;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void sendNickBusy(String nick){
-        try {
-            out.write(new StringBuilder(Protocol.GREETING).append(nick).append(" busy").append("\n").toString().getBytes("UTF-8"));
-            lastCommand=CommandType.NICK;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
     public void accept(){
         try {
             out.write(new StringBuilder(Protocol.ACCEPTED).append("\n").toString().getBytes("UTF-8"));
@@ -94,7 +71,7 @@ class Connection{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    } */
+    }
 
     public void sendMessage(String message){
         try {
@@ -135,22 +112,29 @@ class Connection{
         }
     }
 
-    public void getContacts(){
+    public void getContacts(String regex){
         try {
-            out.write(new StringBuilder(Protocol.GET_CONTACTS).append("\n").toString().getBytes("UTF-8"));
+            out.write(new StringBuilder(Protocol.GET_CONTACTS).append(" ").append(regex).append("\n").toString().getBytes("UTF-8"));
             lastCommand=CommandType.GET_CONTACTS;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendContacts(){
-
+    public void sendContacts(String contacts){
+        try {
+            out.write(new StringBuilder(Protocol.CONTACTS).append(contacts).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.CONTACTS;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getOnline(){
 
     }
+
+
 
 
     public Command recieve(){

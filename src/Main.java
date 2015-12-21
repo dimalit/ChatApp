@@ -479,6 +479,7 @@ public class Main extends JFrame {
     }
 
     private void exit(){
+        connection.sendContacts(contactsViewModel.getContacts());
         connection.disconnect();
         System.exit(0);
     }
@@ -499,14 +500,14 @@ public class Main extends JFrame {
 
         public void run() {
 
-            connection.getContacts();
+            connection.getContacts("");
 
             while (!stop) {
                 lastCommand = connection.recieve();
                 if (lastCommand==null) continue;
                 switch (lastCommand.type){
-                    case CONTACTS:{
-                        ContactsCommand tmp = (ContactsCommand) lastCommand;
+                    case MY_CONTACTS:{
+                        MyContactsCommand tmp = (MyContactsCommand) lastCommand;
                         ArrayList<Contact> tmpArr = tmp.getArrayList();
                         System.out.println("Got contacts");
                         for (Contact contact : tmpArr){
