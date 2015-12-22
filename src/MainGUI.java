@@ -118,14 +118,14 @@ public class MainGUI extends JFrame {
         add(optionsBtn);*/
 
         historyPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, Integer.MAX_VALUE));
-        historyPane.getVerticalScrollBar().setUI(new MyScrollbarUI());
+        historyPane.getVerticalScrollBar().setUI(new MyScrollBarUI());
         historyPane.setBackground(Color.white);
         historyPane.setBorder(null);
 
         add(historyPane);
 
         contactsPane.getVerticalScrollBar().setPreferredSize(new Dimension(15,Integer.MAX_VALUE));
-        contactsPane.getVerticalScrollBar().setUI(new MyScrollbarUI());
+        contactsPane.getVerticalScrollBar().setUI(new MyScrollBarUI());
         contactsPane.setBounds(25, 18, 240, leftBottomPanel.getHeight() - 50);
         contactsPane.setBorder(null);
         contactsPane.setBackground(Colors.softGreen);
@@ -135,7 +135,7 @@ public class MainGUI extends JFrame {
 
         historyView.setFont(smallFont);
         historyView.setEditable(false);
-        historyView.setText("\n\n\n\n\nasd\nafsdfsf\nafwasd\nasdfgd\naefasdf\nasdfsdrsetsd\naefsdfgste\nasfdsetsd\nsdfdgsersfg\nsdfgsgse\nserdfsd\naserfsdf\nsdfnn\n\n\n\\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\n\n\n\nsdfsdf");
+        historyView.setText("");
 
 
         resize();
@@ -231,62 +231,15 @@ public class MainGUI extends JFrame {
         localNick.setText(nick);
     }
 
-    private static class MyScrollbarUI extends MetalScrollBarUI {
-
-        private Image imageThumb, imageTrack;
-        private JButton b = new JButton() {
-
-        @Override
-        public Dimension getPreferredSize() {
-            return new Dimension(0, 0);
-        }
-
-        };
-
-        MyScrollbarUI() {
-            imageThumb = PlainImage.create(15, 15, Colors.mainGreen);
-            imageTrack = PlainImage.create(15, 15, Colors.darkGreen);
-        }
-
-    @Override
-        protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
-             g.translate(thumbBounds.x, thumbBounds.y);
-             g.setColor( Color.red );
-             g.drawRect( 0, 0, thumbBounds.width - 2, thumbBounds.height - 1 );
-             AffineTransform transform = AffineTransform.getScaleInstance((double)thumbBounds.width/imageThumb.getWidth(null),(double)thumbBounds.height/imageThumb.getHeight(null));
-             ((Graphics2D)g).drawImage(imageThumb, transform, null);
-             g.translate(-thumbBounds.x, -thumbBounds.y );
-        }
-
-        @Override
-        protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-            g.translate(trackBounds.x, trackBounds.y);
-            ((Graphics2D)g).drawImage(imageTrack,AffineTransform.getScaleInstance(1,(double)trackBounds.height/imageTrack.getHeight(null)),null);
-            g.translate(-trackBounds.x, -trackBounds.y );
-        }
-
-        @Override
-        protected JButton createDecreaseButton(int orientation) {
-            return b;
-        }
-
-        @Override
-        protected JButton createIncreaseButton(int orientation) {
-            return b;
-        }
+    public Font getSmallFont() {
+        return smallFont;
     }
 
-    private static class PlainImage {
-
-        static public Image create(int w, int h, Color c) {
-            BufferedImage bi = new BufferedImage(
-                    w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = bi.createGraphics();
-            g2d.setPaint(c);
-            g2d.fillRect(0, 0, w, h);
-            g2d.dispose();
-            return bi;
-        }
+    public Font getBigFont(){
+        return bigFont;
     }
 
+    public void setRemoteNick(String remoteNick) {
+        this.remoteNick.setText(remoteNick);
+    }
 }

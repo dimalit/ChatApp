@@ -22,7 +22,7 @@ public class HistoryViewModel {
     }
 
     public void addRemoteMessage(String message){
-        String tmp = new StringBuilder(remoteNick).append(" ").append(composeString(message)).toString();
+        String tmp = new StringBuilder().append(" ").append(composeString(message)).toString();
         Messagelist.add(tmp);
         historyView.append(tmp+"\n");
 

@@ -1,5 +1,3 @@
-import com.sun.org.apache.bcel.internal.generic.POP;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;

@@ -57,6 +57,7 @@ class Connection{
 
     public void accept(){
         try {
+
             out.write(new StringBuilder(Protocol.ACCEPTED).append("\n").toString().getBytes("UTF-8"));
             lastCommand=CommandType.ACCEPT;
         } catch (IOException e) {
@@ -66,6 +67,7 @@ class Connection{
 
     public void reject(){
         try {
+
             out.write(new StringBuilder(Protocol.REJECTED).append("\n").toString().getBytes("UTF-8"));
             lastCommand=CommandType.REJECT;
         } catch (IOException e) {

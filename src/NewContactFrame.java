@@ -6,7 +6,7 @@ public class NewContactFrame extends JFrame{
     /*
 
     JButton Cancel;
-    JButton Accept;
+    JButton accept;
 
     JTextArea nickArea;
     JTextArea ipArea;
@@ -40,10 +40,10 @@ public class NewContactFrame extends JFrame{
         ipArea.setSize(250,20);
 
 
-        Accept = new JButton("Accept");
-        Accept.setLocation(18, 80);
-        Accept.setSize(130,30);
-        Accept.addActionListener(new ActionListener() {
+        accept = new JButton("accept");
+        accept.setLocation(18, 80);
+        accept.setSize(130,30);
+        accept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Contact c = new Contact(cvm,nickArea.getText(),ipArea.getText());
@@ -63,7 +63,7 @@ public class NewContactFrame extends JFrame{
         });
 
 
-        panel.add(Accept);
+        panel.add(accept);
         panel.add(Cancel);
         panel.add(nickArea);
         panel.add(ipArea);

@@ -46,7 +46,7 @@ public class Caller {
 
         lastCommand = connection.recieve();
 
-        //Если Accept - вернуть connection
+        //Если accept - вернуть connection
         if (lastCommand.type==CommandType.ACCEPT) return connection;
         else{
             UltimateGUI ultimateGUI = new UltimateGUI(remoteNick+" rejected your call");

@@ -48,6 +48,7 @@ public class ContactsView extends JPanel{
         ContactPanel tmp = new ContactPanel(contact);
         if (contact.isFav()) favouritesP.add(tmp);
         else contactsP.add(tmp);
+        updateUI();
     }
 
     public void delete(ContactPanel contact){

@@ -34,7 +34,7 @@ public class PopUp extends JPopupMenu {
         call.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.connection.sendCall(contact.getNick());
+                contact.sendCall();
             }
         });
 

@@ -3,6 +3,7 @@ public class Contact {
     private boolean isFav,isOnline;
     private String nick;
     private ContactsViewModel contactsViewModel;
+    private Main main;
 
 
     public Contact(ContactsViewModel cvm,String nick){
@@ -20,6 +21,10 @@ public class Contact {
         return isFav;
     }
 
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
     public boolean isOnline() {
         return isOnline;
     }
@@ -35,7 +40,6 @@ public class Contact {
     public void setNick(String nick) {
         this.nick = nick;
     }
-
 
     public void changeFav(ContactPanel contactPanel){
         if (isFav){
@@ -69,4 +73,7 @@ public class Contact {
         isFav=b;
     }
 
+    public void sendCall() {
+        main.call(nick);
+    }
 }
