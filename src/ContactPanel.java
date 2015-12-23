@@ -21,7 +21,7 @@ public class ContactPanel extends JPanel{
 
     private void createGUI(){
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT,new File("src/font/roboto-thin.ttf")).deriveFont(15f);
+            font = Font.createFont(Font.TRUETYPE_FONT,Main.class.getClassLoader().getResourceAsStream("roboto-thin.ttf")).deriveFont(15f);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -36,8 +36,8 @@ public class ContactPanel extends JPanel{
         label.setBounds(5, 3, 200, 20);
         label.setFont(font);
         label.setText(contact.getNick());
-        if (contact.isOnline()) label.setIcon(new ImageIcon("src/images/on.png"));
-        else label.setIcon(new ImageIcon("src/images/off.png"));
+        if (contact.isOnline()) label.setIcon(new ImageIcon(Main.class.getResource("/on.png")));
+        else label.setIcon(new ImageIcon(Main.class.getResource("/off.png")));
         add(label);
 
         addMouseListener(new MouseListener() {
@@ -74,8 +74,15 @@ public class ContactPanel extends JPanel{
     }
 
     public void update(){
-        if (contact.isOnline()) label.setIcon(new ImageIcon("src/images/on.png"));
-        else label.setIcon(new ImageIcon("src/images/off.png"));
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (contact.isOnline()) label.setIcon(new ImageIcon(Main.class.getResource("/on.png")));
+                else label.setIcon(new ImageIcon(Main.class.getResource("/off.png")));
+                label.updateUI();
+            }
+        });
+
     }
 
     public String getNick(){

@@ -33,7 +33,7 @@ public class SignUpWindow extends JFrame {
 
         Font font = null;
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(15f);
+            font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getClassLoader().getResourceAsStream("roboto-thin.ttf")).deriveFont(15f);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -213,8 +213,8 @@ public class SignUpWindow extends JFrame {
         });
 
         signupBtn = new JLabel("");
-        signupBtn.setIcon(new ImageIcon("src/images/signuptN.png"));
-        signupBtn.setDisabledIcon(new ImageIcon("src/images/signuptD.png"));
+        signupBtn.setIcon(new ImageIcon(Main.class.getResource("/signuptN.png")));
+        signupBtn.setDisabledIcon(new ImageIcon(Main.class.getResource("/signuptD.png")));
         signupBtn.setBounds(97,145,97,27);
         signupBtn.setEnabled(false);
         panel.add(signupBtn);

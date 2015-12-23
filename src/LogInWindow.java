@@ -15,7 +15,7 @@ public class LogInWindow extends JFrame {
 
     public LogInWindow(){
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(new Dimension(300,200));
         setLocation(getX()-150,getY()-100);
@@ -34,7 +34,7 @@ public class LogInWindow extends JFrame {
 
         Font font = null;
         try {
-           font = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(15f);
+           font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getClassLoader().getResourceAsStream("roboto-thin.ttf")).deriveFont(15f);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -157,15 +157,15 @@ public class LogInWindow extends JFrame {
         });
 
         signinBtn = new JLabel("");
-        signinBtn.setIcon(new ImageIcon("src/images/signingN.png"));
-        signinBtn.setDisabledIcon(new ImageIcon("src/images/signingD.png"));
+        signinBtn.setIcon(new ImageIcon(Main.class.getResource("/signingN.png")));
+        signinBtn.setDisabledIcon(new ImageIcon(Main.class.getResource("/signingD.png")));
         signinBtn.setBounds(40,105,97,27);
         signinBtn.setEnabled(false);
         panel.add(signinBtn);
 
         signupBtn = new JLabel("");
-        signupBtn.setIcon(new ImageIcon("src/images/signuptN.png"));
-        signupBtn.setDisabledIcon(new ImageIcon("src/images/signuptD.png"));
+        signupBtn.setIcon(new ImageIcon(Main.class.getResource("/signuptN.png")));
+        signupBtn.setDisabledIcon(new ImageIcon(Main.class.getResource("/signuptD.png")));
         signupBtn.setBounds(157,105,97,27);
         signupBtn.setEnabled(true);
         panel.add(signupBtn);

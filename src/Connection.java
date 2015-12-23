@@ -57,7 +57,6 @@ class Connection{
 
     public void accept(){
         try {
-
             out.write(new StringBuilder(Protocol.ACCEPTED).append("\n").toString().getBytes("UTF-8"));
             lastCommand=CommandType.ACCEPT;
         } catch (IOException e) {
@@ -105,9 +104,9 @@ class Connection{
         }
     }
 
-    public void disconnectFromUser(String nick){
+    public void disconnectFromUser(){
         try{
-            out.write(new StringBuilder(Protocol.DISCONNECT_FROM_USER).append(nick).append("\n").toString().getBytes("UTF-8"));
+            out.write(new StringBuilder(Protocol.DISCONNECT_FROM_USER).append("\n").toString().getBytes("UTF-8"));
             lastCommand=CommandType.DISCONNECT_FROM_USER;
         }catch (Exception e){
             e.printStackTrace();
@@ -123,6 +122,15 @@ class Connection{
         }
     }
 
+    public void getMyContacts(){
+        try {
+            out.write(new StringBuilder(Protocol.GET_MY_CONTACTS).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.GET_MY_CONTACTS;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendContacts(String contacts){
         try {
             out.write(new StringBuilder(Protocol.CONTACTS).append(contacts).append("\n").toString().getBytes("UTF-8"));
@@ -132,8 +140,13 @@ class Connection{
         }
     }
 
-    public void getOnline(){
-
+    public void getOnline(String s){
+        try {
+            out.write(new StringBuilder(Protocol.ONLINE_CONTACTS).append(s).append("\n").toString().getBytes("UTF-8"));
+            lastCommand=CommandType.ONLINE_CONTACTS;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

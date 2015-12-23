@@ -18,17 +18,20 @@ public class HistoryViewModel {
     }
 
     private String composeString(String message){
+        System.out.println(message);
         return new StringBuilder(simpleDateFormat.format(new Date(System.currentTimeMillis()))).append(" ").append(message).toString();
     }
 
     public void addRemoteMessage(String message){
-        String tmp = new StringBuilder().append(" ").append(composeString(message)).toString();
+        System.out.println(remoteNick);
+        String tmp = new StringBuilder(remoteNick).append(" ").append(composeString(message)).toString();
         Messagelist.add(tmp);
         historyView.append(tmp+"\n");
 
     }
 
     public void addLocalMessage(String message){
+        System.out.println(localNick);
         String tmp = new StringBuilder(localNick).append(" ").append(composeString(message)).toString();
         Messagelist.add(tmp);
         historyView.append(tmp+"\n");
@@ -38,7 +41,6 @@ public class HistoryViewModel {
     public void addSystemMessage(String message){
         Messagelist.add(composeString(message));
         historyView.append(composeString(message)+"\n");
-
     }
 
 
@@ -68,5 +70,11 @@ public class HistoryViewModel {
         historyView.setText("");
     }
 
+    public void setLocalNick(String localNick) {
+        this.localNick = localNick;
+    }
 
+    public void setRemoteNick(String remoteNick) {
+        this.remoteNick = remoteNick;
+    }
 }

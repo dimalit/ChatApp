@@ -25,6 +25,7 @@ public class ContactsViewModel{
 
 
     public void add(Contact contact){
+        if (contactList.contains(contact)) return;
         contactList.add(contact);
         contactsView.addContact(contact);
 
@@ -37,5 +38,20 @@ public class ContactsViewModel{
             stringBuilder.append(" ").append(contact.getNick()).append(" ").append(contact.isFav());
         }
         return stringBuilder.toString();
+    }
+
+    public String getOnlineCintacts(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Contact contact : contactList){
+            stringBuilder.append(" ").append(contact.getNick());
+        }
+        return stringBuilder.toString();
+    }
+
+    public void updateOnline(ArrayList<Boolean> onlines){
+        for (int i=0;i<onlines.size();i++){
+            contactList.get(i).setOnline(onlines.get(i));
+        }
+        contactsView.onlineUpdate();
     }
 }

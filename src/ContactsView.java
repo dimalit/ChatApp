@@ -46,6 +46,7 @@ public class ContactsView extends JPanel{
 
     public void addContact(Contact contact){
         ContactPanel tmp = new ContactPanel(contact);
+        list.add(tmp);
         if (contact.isFav()) favouritesP.add(tmp);
         else contactsP.add(tmp);
         updateUI();
@@ -58,19 +59,15 @@ public class ContactsView extends JPanel{
         updateUI();
     }
 
-
-
     public void setLabelFont(Font font){
         contactsL.setFont(font);
         favouritesL.setFont(font);
     }
 
-
-
-
-
-
-
-
-
+    public void onlineUpdate() {
+        for (ContactPanel cp : list){
+            cp.update();
+        }
+        updateUI();
+    }
 }

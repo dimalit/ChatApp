@@ -26,6 +26,7 @@ public class PopUp extends JPopupMenu {
             fav.setText("Add to favourites");
         }
         call = new JMenuItem("Call");
+        if (Main.isConnected) call.setEnabled(false);
 
         add(call);
         add(fav);

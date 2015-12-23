@@ -21,6 +21,7 @@ public class Protocol {
     public static final String EMPTYMYCONTACTS = "EmptyMyCntcts";
     public static final String BUSY = "Busy";
     public static final String OFFLINE = "Offline";
+    public static final String ONLINE_CONTACTS = "Online Cntcts";
 
 
     public static String encode(String string){

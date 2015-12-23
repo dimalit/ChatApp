@@ -13,7 +13,7 @@ public class UltimateGUI extends JFrame{
         super("Error");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 100);
+        setSize(450, 100);
         setResizable(false);
         setAlwaysOnTop(true);
         setLocationRelativeTo(null);
@@ -29,10 +29,10 @@ public class UltimateGUI extends JFrame{
         panel.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Colors.midGreen));
         panel.setBackground(Colors.softGreen);
         panel.setLayout(null);
-        panel.setSize(300,150);
+        panel.setSize(450,150);
 
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(15f);
+            font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getClassLoader().getResourceAsStream("roboto-thin.ttf")).deriveFont(15f);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -41,15 +41,15 @@ public class UltimateGUI extends JFrame{
 
         JLabel label = new JLabel(string);
         label.setLocation(0,0);
-        label.setSize(300,50);
+        label.setSize(450,50);
         label.setHorizontalAlignment(0);
         label.setFont(font);
 
 
 
         okButton = new JLabel("");
-        okButton.setIcon(new ImageIcon("src/images/okN.png"));
-        okButton.setLocation(100,50);
+        okButton.setIcon(new ImageIcon(Main.class.getResource("/okN.png")));
+        okButton.setLocation(175,50);
         okButton.setSize(97,27);
         okButton.addMouseListener(new MouseListener() {
             @Override
@@ -59,7 +59,7 @@ public class UltimateGUI extends JFrame{
 
             @Override
             public void mousePressed(MouseEvent e) {
-                okButton.setIcon(new ImageIcon("src/images/okP.png"));
+                okButton.setIcon(new ImageIcon(Main.class.getResource("/okP.png")));
             }
 
             @Override
@@ -69,12 +69,12 @@ public class UltimateGUI extends JFrame{
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                okButton.setIcon(new ImageIcon("src/images/okH.png"));
+                okButton.setIcon(new ImageIcon(Main.class.getResource("/okH.png")));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                okButton.setIcon(new ImageIcon("src/images/okN.png"));
+                okButton.setIcon(new ImageIcon(Main.class.getResource("/okN.png")));
             }
         });
 
@@ -87,7 +87,7 @@ public class UltimateGUI extends JFrame{
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    okButton.setIcon(new ImageIcon("src/images/okP.png"));
+                    okButton.setIcon(new ImageIcon(Main.class.getResource("/okP.png")));
 
                 }
             }

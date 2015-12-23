@@ -56,6 +56,16 @@ public class Command {
         if (string.startsWith(Protocol.EMPTYCONTACTS)) return new Command(CommandType.EMPTYCONTACTS);
         if (string.startsWith(Protocol.EMPTYMYCONTACTS)) return new Command(CommandType.EMPTYMYCONTACTS);
         if (string.startsWith(Protocol.CALL)) return new CallCommand(string.replace(Protocol.CALL+" ",""));
+        if (string.startsWith(Protocol.DISCONNECT_FROM_USER)) return new Command(CommandType.DISCONNECT_FROM_USER);
+        if (string.startsWith(Protocol.ONLINE_CONTACTS)) {
+            string = string.replace(Protocol.ONLINE_CONTACTS+" ","");
+            String[] tmp = string.split(" ");
+            ArrayList<Boolean> onlines = new ArrayList<Boolean>();
+            for (String s : tmp){
+                onlines.add(Boolean.parseBoolean(s));
+            }
+            return new OnlineCommand(onlines);
+        }
 
         return null;
     }

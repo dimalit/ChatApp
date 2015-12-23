@@ -22,11 +22,13 @@ public class MainGUI extends JFrame {
 
     JTextArea messageField = new JTextArea();
     JTextArea historyView = new JTextArea();
+    JTextArea findContacts = new JTextArea();
 
     JLabel logoutBtn = new JLabel("");
     JLabel disconnectBtn = new JLabel("");
     //JLabel optionsBtn = new JLabel("");
     JLabel sendBtn = new JLabel("");
+    JLabel findButton = new JLabel("");
 
     ContactsView contactsView = new ContactsView();
 
@@ -52,8 +54,8 @@ public class MainGUI extends JFrame {
         getContentPane().setBackground(Color.white);
 
         try {
-            smallFont =  Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(15f);
-            bigFont =  Font.createFont(Font.TRUETYPE_FONT, new File("src/font/roboto-thin.ttf")).deriveFont(18f);
+            smallFont =  Font.createFont(Font.TRUETYPE_FONT, Main.class.getClassLoader().getResourceAsStream("roboto-thin.ttf")).deriveFont(15f);
+            bigFont =  Font.createFont(Font.TRUETYPE_FONT, Main.class.getClassLoader().getResourceAsStream("roboto-thin.ttf")).deriveFont(18f);
 
         } catch (FontFormatException e) {
             e.printStackTrace();
@@ -89,13 +91,15 @@ public class MainGUI extends JFrame {
         remoteNick.setFont(bigFont);
         leftTopPanel.add(remoteNick);
 
-        logoutBtn.setIcon(new ImageIcon("src/images/logoutN.png"));
-        logoutBtn.setDisabledIcon(new ImageIcon("src/images/logoutD.png"));
+
+
+        logoutBtn.setIcon(new ImageIcon(Main.class.getResource("/logoutN.png")));
+        logoutBtn.setDisabledIcon(new ImageIcon(Main.class.getResource("/logoutD.png")));
         logoutBtn.setBounds(20,80,BTN_WIDTH,BTN_HEIGHT);
         leftTopPanel.add(logoutBtn);
 
-        disconnectBtn.setIcon(new ImageIcon("src/images/disconN.png"));
-        disconnectBtn.setDisabledIcon(new ImageIcon("src/images/disconD.png"));
+        disconnectBtn.setIcon(new ImageIcon(Main.class.getResource("/disconN.png")));
+        disconnectBtn.setDisabledIcon(new ImageIcon(Main.class.getResource("/disconD.png")));
         disconnectBtn.setEnabled(false);
         disconnectBtn.setBounds(155,80,BTN_WIDTH,BTN_HEIGHT);
         leftTopPanel.add(disconnectBtn);
@@ -104,16 +108,18 @@ public class MainGUI extends JFrame {
         messageField.setFont(smallFont);
         messageField.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Colors.lightGreen));
         messageField.setBackground(Colors.softGreen);
+        messageField.getDocument().putProperty("filterNewlines", Boolean.TRUE);
         add(messageField);
         messageField.setEnabled(false);
+        messageField.setLineWrap(true);
 
-        sendBtn.setIcon(new ImageIcon("src/images/sendN.png"));
-        sendBtn.setDisabledIcon(new ImageIcon("src/images/sendD.png"));
+        sendBtn.setIcon(new ImageIcon(Main.class.getResource("/sendN.png")));
+        sendBtn.setDisabledIcon(new ImageIcon(Main.class.getResource("/sendD.png")));
         sendBtn.setEnabled(false);
         sendBtn.setBounds(getWidth()-96,getHeight()-124, 51,51);
         add(sendBtn);
 
-        /*optionsBtn.setIcon(new ImageIcon("src/images/optionsN.png"));
+        /*optionsBtn.setIcon(new ImageIcon(Main.class.getResource("/optionsN.png")));
         optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
         add(optionsBtn);*/
 
@@ -124,9 +130,19 @@ public class MainGUI extends JFrame {
 
         add(historyPane);
 
+        findContacts.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Colors.midGreen));
+        findContacts.setBounds(25,14,200,25);
+        findButton.setFont(smallFont);
+        leftBottomPanel.add(findContacts);
+
+        findButton.setBounds(237,14,24,24);
+        findButton.setIcon(new ImageIcon(Main.class.getResource("/findN.png")));
+        leftBottomPanel.add(findButton);
+
+
         contactsPane.getVerticalScrollBar().setPreferredSize(new Dimension(15,Integer.MAX_VALUE));
         contactsPane.getVerticalScrollBar().setUI(new MyScrollBarUI());
-        contactsPane.setBounds(25, 18, 240, leftBottomPanel.getHeight() - 50);
+        contactsPane.setBounds(25, 48, 240, leftBottomPanel.getHeight() - 80);
         contactsPane.setBorder(null);
         contactsPane.setBackground(Colors.softGreen);
         contactsView.setLabelFont(bigFont);
@@ -136,6 +152,7 @@ public class MainGUI extends JFrame {
         historyView.setFont(smallFont);
         historyView.setEditable(false);
         historyView.setText("");
+        historyView.setLineWrap(true);
 
 
         resize();
@@ -167,7 +184,7 @@ public class MainGUI extends JFrame {
 
     public void resize(){
         leftBottomPanel.setBounds(-1,121,280,getHeight()-150);
-        contactsPane.setBounds(25, 18, 240, leftBottomPanel.getHeight() - 50);
+        contactsPane.setBounds(25, 48, 240, leftBottomPanel.getHeight() - 80);
         historyPane.setBounds(321,40,getWidth()-370,getHeight()-195);
         sendBtn.setBounds(getWidth()-96,getHeight()-124, 51,51);
         //optionsBtn.setBounds(getWidth()-47,getHeight()-70,24,24);
@@ -209,6 +226,14 @@ public class MainGUI extends JFrame {
 
     public ContactsView getContactsView() {
         return contactsView;
+    }
+
+    public JLabel getFindButton() {
+        return findButton;
+    }
+
+    public JTextArea getFindContacts() {
+        return findContacts;
     }
 
     public void setConnected(){
