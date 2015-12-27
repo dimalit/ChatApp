@@ -65,6 +65,10 @@ public class HistoryViewModel {
 
     }
 
+    public void setHistoryView(JTextArea historyView) {
+        this.historyView = historyView;
+    }
+
     public void clearView(){
         Messagelist = new ArrayList<String>();
         historyView.setText("");

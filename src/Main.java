@@ -32,9 +32,6 @@ public class Main extends JFrame {
             createMainFrame();
             createLogInWindow();
             createSignUpWindow();
-            historyViewModel = new HistoryViewModel(mainFrame.getHistoryView());
-            historyViewModel.setLocalNick(login);
-            contactsViewModel = new ContactsViewModel(mainFrame.getContactsView());
         }
 
     }
@@ -62,17 +59,21 @@ public class Main extends JFrame {
                 tmp = "" + tmp.hashCode();
                 connection.sendLogin(logInWindow.getLogin().getText(),tmp);
                 Command command = connection.recieve();
+                System.out.println(command.type);
                 if (command.type==CommandType.ACCEPT) {
                     mainFrame.setLocalNick(logInWindow.getLogin().getText());
+                    historyViewModel = new HistoryViewModel(mainFrame.getHistoryView());
+                    contactsViewModel = new ContactsViewModel(mainFrame.getContactsView());
                     historyViewModel.setLocalNick(logInWindow.getLogin().getText());
                     logInWindow.setVisible(false);
                     signUpWindow.dispose();
                     mainFrame.setVisible(true);
                     CommandListenerThread clt = new CommandListenerThread(connection);
                     clt.start();
+
                 }
                 else{
-                    UltimateGUI ultimateGUI = new UltimateGUI("Wrong login\\password or \nsuch user is already online");
+                    UltimateGUI ultimateGUI = new UltimateGUI("Wrong login\\password or such user is already online");
                 }
             }
 
@@ -336,6 +337,7 @@ public class Main extends JFrame {
                     public void run() {
                         mainFrame.getLogoutBtn().setIcon(new ImageIcon(Main.class.getResource("/logoutP.png")));
                         connection.logout();
+                        connection.sendContacts(contactsViewModel.getContacts());
                         mainFrame.dispose();
                         createMainFrame();
                         createLogInWindow();
@@ -545,6 +547,7 @@ public class Main extends JFrame {
     public void call(String nick) {
         connection.sendCall(nick);
         remoteNick = nick;
+        isConnected=true;
         historyViewModel.setRemoteNick(nick);
         historyViewModel.clearView();
     }
@@ -576,6 +579,7 @@ public class Main extends JFrame {
 
 
             while (!stop) {
+                System.out.println("waiting for a new command");
                 lastCommand = connection.recieve();
                 if (lastCommand==null) continue;
                 switch (lastCommand.type){
@@ -591,6 +595,8 @@ public class Main extends JFrame {
                         break;
                     }
                     case LOGOUT:{
+                        System.out.println("got logout");
+                        onlineTimer.cancel();
                         return;
                     }
                     case BUSY:{
@@ -640,11 +646,11 @@ public class Main extends JFrame {
                     case ACCEPT:{
                         mainFrame.setConnected();
                         mainFrame.setRemoteNick(remoteNick);
-                        isConnected=true;
                         break;
                     }
                     case REJECT:{
                         UltimateGUI ultimateGUI = new UltimateGUI("User rejected your call");
+                        isConnected=false;
                         break;
                     }
                     case EMPTYCONTACTS:{
@@ -848,7 +854,7 @@ public class Main extends JFrame {
             panel.setBorder(BorderFactory.createMatteBorder(2,2,2,2,Colors.midGreen));
 
             nickName = new JLabel(username+ " is calling");
-            nickName.setLocation(60, 10);
+            nickName.setLocation(80, 10);
             nickName.setFont(mainFrame.getSmallFont());
             nickName.setSize(200, 54);
 
@@ -915,7 +921,7 @@ public class Main extends JFrame {
 
 
             dismiss = new JLabel("");
-            dismiss.setLocation(190, 80);
+            dismiss.setLocation(170, 80);
             dismiss.setSize(97, 27);
             dismiss.setIcon(new ImageIcon(Main.class.getResource("/rejectN.png")));
             dismiss.addMouseListener(new MouseListener() {

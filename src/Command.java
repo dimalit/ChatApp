@@ -66,6 +66,7 @@ public class Command {
             }
             return new OnlineCommand(onlines);
         }
+        if (string.startsWith(Protocol.LOGOUT)) return new Command(CommandType.LOGOUT);
 
         return null;
     }
